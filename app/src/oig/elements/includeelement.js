@@ -71,8 +71,7 @@ var oig;
             throw '[oig:include] xpointer cannot be used when parse is text';
           }
 
-          // @todo no href means document.location to fetch itself
-          url = href;
+          url = typeof href === 'string' ? href : document.URL;
           var resource = oig.resource(url);
 
           resource.load()
@@ -85,19 +84,23 @@ var oig;
                 } else {
                   doc = new DOMParser().parseFromString(text, 'text/' + parse);
                   node = element.ownerDocument.importNode(parse === 'html' ? doc.body : doc.documentElement, true);
-
                   if (xpointer) {
                     var frag = element.ownerDocument.createDocumentFragment(),
                       xPathResult = element.ownerDocument.evaluate(xpointer, node, null, XPathResult.ANY_TYPE, null),
+                      found = [],
                       next;
                     while (xPathResult && (next = xPathResult.iterateNext())) {
-                      frag.appendChild(element.ownerDocument.importNode(next.cloneNode(true), true));
+                      found.push(next);
                     }
+                    found.forEach(function (/**Node*/node) {
+                      frag.appendChild(element.ownerDocument.importNode(node.cloneNode(true), true));
+                    });
                     node = frag;
                   }
                 }
                 element.parentNode.replaceChild(node, element);
               } catch (e) {
+                console.error(e)
                 throw e;
               }
             },

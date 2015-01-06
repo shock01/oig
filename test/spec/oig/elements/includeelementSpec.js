@@ -63,7 +63,7 @@ describe('include element', function () {
     beforeEach(function () {
       html = '<div><span id="1">Hello</span><span id="2">World</span></div>';
       promise = new Promise(function (resolve, reject) {
-        resolve(html);
+        resolve('<div><span id="1">Hello</span><span id="2">World</span></div>');
       });
     });
 
@@ -71,15 +71,28 @@ describe('include element', function () {
 
       beforeEach(function () {
         element.setAttribute("href", "test.xml");
+        parent.appendChild(element);
+        return promise;
       });
 
-      it('should call the resource', function (done) {
-        promise.then(function () {
-          done();
-          expect(oig.resource.calledWith(element.getAttribute('href'))).to.be.true;
-          expect(resource.load.called).to.be.true;
-        });
+      it('should call the resource', function () {
+        expect(oig.resource.calledWith(element.getAttribute('href'))).to.be.true;
+        expect(resource.load.called).to.be.true;
+
+      });
+    });
+
+    describe('no href attribute with xpointer', function () {
+
+      beforeEach(function () {
+        element.setAttribute("xpointer", "//div");
         parent.appendChild(element);
+        return promise;
+      });
+
+      it('should call the resource', function () {
+        expect(oig.resource.calledWith(document.URL)).to.be.true;
+        expect(resource.load.called).to.be.true;
       });
     });
 
@@ -88,14 +101,12 @@ describe('include element', function () {
       beforeEach(function () {
         element.setAttribute('href', 'test.xml');
         element.setAttribute('xpointer', '//*[@id=1]');
+        parent.appendChild(element);
+        return promise;
       });
 
-      it('should change the element with the new contents', function (done) {
-        promise.then(function () {
-          done();
-          expect(parent.innerHTML).to.equal('<span id="1">Hello</span>');
-        });
-        parent.appendChild(element);
+      it('should change the element with the new contents', function () {
+        expect(parent.innerHTML).to.equal('<span id="1">Hello</span>');
       });
     });
 
@@ -104,14 +115,12 @@ describe('include element', function () {
       beforeEach(function () {
         element.setAttribute('href', 'test.xml');
         element.setAttribute('parse', 'xml');
+        parent.appendChild(element);
+        return promise;
       });
 
-      it('should change the element with the new contents', function (done) {
-        promise.then(function () {
-          done();
-          expect(parent.innerHTML).to.equal(html);
-        });
-        parent.appendChild(element);
+      it('should change the element with the new contents', function () {
+        expect(parent.innerHTML).to.equal(html);
       });
     });
 
@@ -120,14 +129,12 @@ describe('include element', function () {
       beforeEach(function () {
         element.setAttribute('href', 'test.xml');
         element.setAttribute('parse', 'text');
+        parent.appendChild(element);
+        return promise;
       });
 
-      it('should change the element with the new contents', function (done) {
-        promise.then(function () {
-          done();
-          expect(parent.textContent).to.equal(html);
-        });
-        parent.appendChild(element);
+      it('should change the element with the new contents', function () {
+        expect(parent.textContent).to.equal(html);
       });
     });
 
