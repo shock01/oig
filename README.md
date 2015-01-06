@@ -1,5 +1,7 @@
 ## OIG 
 
+DISCLAIMER: Documentation is really not finished yet!!! 
+
 > A simple MVVM based implementation using evergreen features like Custom Elements, DOM Level 4 
 (Work in Chrome, Opera latest also works, Firefox might work).
 > Run it like: 
