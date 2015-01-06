@@ -87,6 +87,24 @@ When onunload is defined on viewModel then onunload method is called before disp
 
 ------------------------------------------------------------------------------------------------------------------------
 
+## Include Element
+
+------------------------------------------------------------------------------------------------------------------------
+
+The include element can be used to include partial views. 
+Content can be included as html,text or xml. By default content will be included as html.
+
+XPointer attribute can be used for including specific content. 
+When attribute parse is text it will throw exception.
+
+Alternate content can be included to show up when an error occurs including the content. (TODO)
+
+      <oig-include href="myfile.html" xpointer="//div" parse="html"/>
+      <oig-include href="myfile.html" parse="text"/>
+
+
+------------------------------------------------------------------------------------------------------------------------
+
 ## Listener Element
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -94,9 +112,18 @@ When onunload is defined on viewModel then onunload method is called before disp
 Event listeners are defined on a custom element named 'oig-listener'. 
 Multiple events can be listened to by 'on' attribute on the listener element.
 
+- attributes
+     * on<eventType> - required attribute value is parsed and executed on current dataContext, multiple events can be specified on a single element
+     * target - optional attribute to specify the domId of the element that should equal the event target
+     * prevent-default - optional attribute to prevent default event action
+     * stop-progagation - optional attribute to stop propagation of event
+     * selector - optional attribute to select sibling of event target on which listener should be invoked
+
 The listener element event callbacks will be executed on the closest available dataContext.
 
 NB. Elements needs to have a closing tag otherwise event propagation will not work
+
+
 
      <div is="oig-context" data-view-model="main">
        <!-- listener -->
@@ -105,14 +132,6 @@ NB. Elements needs to have a closing tag otherwise event propagation will not wo
        <button>Hello world</button>
      </div>
 
-
-- Setting event target
-
-- Using event selectors
-
-- Stopping propagation
-
-- Prevent default actions
 
 ------------------------------------------------------------------------------------------------------------------------
 

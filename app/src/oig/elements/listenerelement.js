@@ -87,7 +87,6 @@ var oig;
      * prevent-default - optional attribute to prevent default event action
      * stop-progagation - optional attribute to stop propagation of event
      * selector - optional attribute to select sibling of event target on which listener should be invoked
-     * if - optional attribute to determine if event should be listened to
      *
      * @type {HTMLElement}
      * @lends {HTMLElement.prototype}
