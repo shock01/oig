@@ -2,8 +2,11 @@
 
 DISCLAIMER: Documentation is really not finished yet!!! 
 
+Meanwhile......just look at the demo. (Chrome latest or any updated evergreen webkit like browser)
+[Demo](http://shock01.github.io/oig/index.html)
+
 > A simple MVVM based implementation using evergreen features like Custom Elements, DOM Level 4 
-(Work in Chrome, Opera latest also works, Firefox might work).
+(Work in Chrome, Opera latest also works).
 > Run it like: 
   1) npm install 
   2) gulp serve
