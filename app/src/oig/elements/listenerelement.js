@@ -1,0 +1,135 @@
+var oig;
+(function (oig) {
+  'use strict';
+  var elements;
+  (function (elements) {
+
+    /**
+     * @param {String} value
+     * @returns {boolean}
+     */
+    function attributeTruthy(value) {
+      return typeof value === 'string' && (value === 'true' || value === '');
+    }
+
+    /**
+     *
+     * Parses all attributes and returns attributes starting with on
+     * @param {HTMLElement} element
+     * @returns {Array.<Attr>}
+     */
+    function eventAttributes(element) {
+      return Array.prototype.filter.call(element.attributes, function (/**Attr*/attribute) {
+        return attribute.name.substring(0, 2) === 'on';
+      });
+    }
+
+    /**
+     * EventListener that will parse attributes on element and execute callback method
+     * @param {Event} event
+     * @param {ListenerElement} element
+     * @this {ListenerElement}
+     */
+    function eventListener(event, element) {
+      var eventTarget = event.target,
+        dataContext = element.dataContext,
+        preventDefaultAttr = element.getAttribute('prevent-default'),
+        stopPropagationAttr = element.getAttribute('stop-propagation'),
+        onAttrValue = element.getAttribute('on' + event.type),
+        selectorAttrValue = element.getAttribute('selector');
+
+      if (!selectorAttrValue ||
+        (eventTarget.webkitMatchesSelector && eventTarget.webkitMatchesSelector(selectorAttrValue)) ||
+        (eventTarget.matchesSelector && eventTarget.matchesSelector(selectorAttrValue))) {
+
+        oig.evaluate(dataContext, onAttrValue, {event: event});
+
+        if (attributeTruthy(stopPropagationAttr)) {
+          if (event.stopPropagation) {
+            event.stopPropagation();
+          }
+          if (event.cancelBubble !== null) {
+            event.cancelBubble = true;
+          }
+        }
+        if (attributeTruthy(preventDefaultAttr)) {
+          event.preventDefault();
+        }
+      }
+    }
+
+    /**
+     * adds an eventlistener and parses the attribute to determine the click behaviour
+     * depends on oig.DataContextProvider to get the current dataContext
+     *
+     * @param {ListenerElement} element
+     * @param {String} eventType
+     */
+    function addListener(element, eventType) {
+      var targetAttrValue = element.getAttribute('target'),
+        parentElement = element.parentElement,
+        targetElement = (targetAttrValue) ? element.ownerDocument.getElementById(targetAttrValue) : parentElement;
+
+      if (!targetElement) {
+        throw 'No event target element found';
+      }
+      targetElement.addEventListener(eventType, function (event) {
+        eventListener(event, element);
+      }, false);
+    }
+
+    /**
+     *
+     * <oig-listener onclick>
+     * Attributes
+     * on<eventType> - required attribute value is parsed and executed on current dataContext, multiple events can be specified on a single element
+     * target - optional attribute to specify the domId of the element that should equal the event target
+     * prevent-default - optional attribute to prevent default event action
+     * stop-progagation - optional attribute to stop propagation of event
+     * selector - optional attribute to select sibling of event target on which listener should be invoked
+     * if - optional attribute to determine if event should be listened to
+     *
+     * @type {HTMLElement}
+     * @lends {HTMLElement.prototype}
+     */
+    var ListenerElement = Object.create(HTMLElement.prototype, {
+      dataContext: {
+        /**
+         * returns the data context of the current element
+         * @returns {Object}
+         */
+        get: function () {
+          return oig.dataContext(this);
+        }
+      },
+      /**
+       * when an on attribute is added then add an event listener
+       */
+      attributeChangedCallback: {
+        value: function (/**String*/attrName) {
+          if (attrName.substring(0, 2) === 'on') {
+            addListener(this, attrName.substring(2));
+          }
+        }
+      },
+      /**
+       * attach all listeners when added to the dom
+       */
+      attachedCallback: {
+        value: function () {
+          var element = this;
+          eventAttributes(this).forEach(function (/**Attr*/attribute) {
+            addListener(element, attribute.name.substring(2));
+          });
+        }
+      }
+    });
+
+    /**
+     * registration
+     */
+    elements.ListenerElement = document.registerElement('oig-listener', {
+      prototype: ListenerElement
+    });
+  })(elements = oig.elements || (oig.elements = {}));
+})(oig || (oig = {}));

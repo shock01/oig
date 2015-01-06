@@ -1,0 +1,42 @@
+<div xmlns="http://www.w3.org/1999/xhtml">
+  <script type="text/javascript">
+    (function () {
+      var viewModel = {
+        clickCountA: 0,
+        clickCountB: 0,
+
+        methodA: function () {
+          this.clickCountA++;
+        },
+        methodB: function () {
+          this.clickCountB++;
+        }
+      };
+      Object.defineProperty(oig.viewModels, 'listenerExample', {
+        get: function () {
+          return viewModel;
+        }
+      });
+    }())
+  </script>
+  <div is="oig-context" data-view-model="listenerExample">
+    <oig-listener onclick="methodA()" selector="button > span:first-child" prevent-default></oig-listener>
+    <oig-listener target="my-button2" onclick="methodB();" stop-propagation></oig-listener>
+
+    <button id="my-button" class="btn btn-default">
+      <span>Clickable</span>
+      <span>Not clickable</span>
+      <span>Increment A</span>
+    </button>
+    <button id="my-button2" class="btn btn-default">Increment B</button>
+
+    <p>Clicked A:
+      <oig-binding>clickCountA</oig-binding>
+      times
+    </p>
+    <p>Clicked B:
+      <oig-binding>clickCountB</oig-binding>
+      times
+    </p>
+  </div>
+</div>

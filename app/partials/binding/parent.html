@@ -1,0 +1,18 @@
+<div>
+  <script type="text/javascript">
+    (function () {
+      var viewModel = {
+        name: 'Daffy Duck',
+        color: 'red'
+      };
+      Object.defineProperty(oig.viewModels, 'parentBinding', {
+        get: function () {
+          return viewModel;
+        }
+      });
+    }())
+  </script>
+  <div class="form-group" is="oig-context" data-view-model="parentBinding">
+    My name is:<span><oig-binding style="'color:' + color">name</oig-binding></span>
+  </div>
+</div>

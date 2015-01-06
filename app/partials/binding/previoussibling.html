@@ -1,0 +1,19 @@
+<div>
+  <script type="text/javascript">
+    (function () {
+      var viewModel = {
+        width: 400,
+        img: 'assets/images/daffyduck.png'
+      };
+      Object.defineProperty(oig.viewModels, 'previousSiblingBinding', {
+        get: function () {
+          return viewModel;
+        }
+      });
+    }())
+  </script>
+  <div is="oig-context" data-view-model="previousSiblingBinding">
+    <img border="0"/>
+    <oig-binding src="img" data-oig-target="previousSibling" width="width / 2"></oig-binding>
+  </div>
+</div>

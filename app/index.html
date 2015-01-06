@@ -1,0 +1,217 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:oig="http://www.stefhock.nl/ns/oig" oig:test="123"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+  <title>oig</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+
+<script src="src/oig/appcontext.js"></script>
+<script src="src/oig/datacontext.js"></script>
+<script src="src/oig/resource.js"></script>
+<script src="src/oig/elements/bindingelement.js"></script>
+<script src="src/oig/elements/contextelement.js"></script>
+<script src="src/oig/elements/includeelement.js"></script>
+<script src="src/oig/elements/listenerelement.js"></script>
+
+<script src="src/oig/oig.js"></script>
+
+<div class="container">
+  <h1>OIG</h1>
+  <blockquote>
+    A little but of XUL, XForms, XMLEvents, XInclude and MVVM for the evergreen browsers (Chrome and Opera tested,
+    WebKit).
+    Just to keep up to date with latest technologies before I get too old.
+  </blockquote>
+  <div class="alert alert-danger" role="alert">
+    Really not ready to be used. Still need to add a lot of unit tests, improve code coverage.
+    Add more features to data binding. Continue on resource loader .......
+    <strong>But i needed to commit this before i loose it</strong>
+  </div>
+  <p>
+    No routing , iOC or things like that. Just pure MVVM Pattern explained with use of some custom html elements.
+    iOC and routing can easily be added by pluging in other libraries.
+  </p>
+
+  <p>
+  <dl class="dl-horizontal">
+    <dt>binding element</dt>
+    <dd>data binding supporting one-way(default), two-way and once binding</dd>
+    <dt>context element</dt>
+    <dd>Like in XAML... adds a ViewModel to the view</dd>
+    <dt>include element</dt>
+    <dd>include text,html or xml content inspired by XInclude. Used to build up this page with code and examples</dd>
+    <dt>listener element</dt>
+    <dd>event listening based on XForms, XMLEvents and XUL Listeners.</dd>
+  </dl>
+  </p>
+  <div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>binding element
+          <small>basic text (parent) binding</small>
+        </h2>
+      </div>
+      <div class="panel-body">
+        <p>
+          All attributes defined on the oig-binding element will be set on the bound element.
+          Bindings are namespace aware. Meaning that Attr.namespaceURI and prefix will be preserved and
+          setAttributeNS will be called on bound element.
+        </p>
+
+        <p>
+          Attribute bindings will be evaluated as javascript expressions.
+          <code>
+            <pre>oig-binding style="'color:' + color"</pre>
+          </code>
+        </p>
+        <span class="label label-primary">example</span>
+        <oig-include href="partials/binding/parent.html"></oig-include>
+        <span class="label label-info">code</span>
+        <code>
+          <pre class="pre-scrollable">
+            <oig-include href="partials/binding/parent.html" parse="text"></oig-include>
+          </pre>
+        </code>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>binding element
+          <small>manual 2-way binding</small>
+        </h2>
+      </div>
+      <div class="panel-body">
+        <blockquote>
+          Manual two way binding can be done using oig-listeners. Normally changes occur in the view after a user
+          interaction
+          which means that listening to change is a good way to detect changes.
+        </blockquote>
+        <div class="alert alert-info" role="alert">Type text in the input or pick a different color</div>
+        <span class="label label-primary">example</span>
+        <oig-include href="partials/binding/twoway-manual.html"></oig-include>
+        <span class="label label-info">code</span>
+        <code>
+          <pre class="pre-scrollable">
+            <oig-include href="partials/binding/twoway-manual.html" parse="text"></oig-include></pre>
+        </code>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>binding element
+          <small>next sibling with manual 2-way binding</small>
+        </h2>
+      </div>
+      <div class="panel-body">
+        <span class="label label-primary">example</span>
+        <oig-include href="partials/binding/twoway-nextsibling.html"></oig-include>
+        <span class="label label-info">code</span>
+        <code>
+          <pre class="pre-scrollable">
+            <oig-include href="partials/binding/twoway-nextsibling.html" parse="text"></oig-include>
+          </pre>
+        </code>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>binding element
+          <small>previous sibling</small>
+        </h2>
+      </div>
+      <div class="panel-body">
+        <span class="label label-primary">example</span>
+        <oig-include href="partials/binding/previoussibling.html"></oig-include>
+        <span class="label label-info">code</span>
+        <code>
+          <pre class="pre-scrollable">
+            <oig-include href="partials/binding/previoussibling.html" parse="text"></oig-include>
+          </pre>
+        </code>
+      </div>
+    </div>
+
+    <hr>
+
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>Context element</h2>
+      </div>
+      <div class="panel-body">
+        <p>Binding elements are used to provide 'context' to the view. This means that a viewModel will
+          be attached to a HTMLDivElement so that all it's children can use this viewModel for data binding</p>
+        <p>In the example below a basic viewModel is constructed by defining a new property on the oig.viewModels object</p>
+        <p>When a <strong>ViewModel</strong> is used in a View(Component) than it will be referred to as <strong>'dataContext'</strong></p>
+        <div class="alert alert-warning" role="alert">
+          <p>Only HTMLDivElements can be used for contextelement.</p>
+          <small>HTMLDivElements are 'sections' so it's a semantic choice to allow DIV only</small>
+        </div>
+        <span class="label label-info">code</span>
+        <code>
+          <pre class="pre-scrollable"><oig-include href="partials/context/example.txt" parse="text"></oig-include></pre>
+        </code>
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>include element
+          <small>basic inclusion</small>
+        </h2>
+      </div>
+      <div class="panel-body">
+        <span class="label label-primary">example</span>
+
+        <div style="width:200px">
+          <oig-include href="partials/include/star.svg" parse="xml"></oig-include>
+        </div>
+        <span class="label label-info">code</span>
+        <code>
+          <pre class="pre-scrollable">NA</pre>
+        </code>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>listener element
+          <small></small>
+        </h2>
+      </div>
+      <div class="panel-body">
+        <span class="label label-primary">example</span>
+        <oig-include href="partials/listener/example.html"></oig-include>
+        <span class="label label-info">code</span>
+        <code>
+          <pre class="pre-scrollable">
+            <oig-include href="partials/listener/example.html" parse="text"></oig-include>
+          </pre>
+        </code>
+      </div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
