@@ -131,10 +131,14 @@ var oig;
           if (dataContext) {
             Object.unobserve(dataContext, observerMap.get(this));
           }
-          observerMap.delete(this);
+          if (observerMap.has(this)) {
+            observerMap.delete(this);
+          }
 
-          mutationObserverMap.get(this).disconnect();
-          mutationObserverMap.delete(this);
+          if (mutationObserverMap.has(this)) {
+            mutationObserverMap.get(this).disconnect();
+            mutationObserverMap.delete(this);
+          }
         }
       },
       /**

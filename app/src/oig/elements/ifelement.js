@@ -92,17 +92,13 @@ var oig;
         value: function () {
           var test = this.getAttribute('test'),
             flag = oig.evaluate(this.dataContext, test),
-            html = this.innerHTML;
+            template = this.querySelector('template');
 
           if (flag) {
-            html = uncommentContent(COMMENT_PREFIX, html);
+            this.insertAdjacentHTML('afterBegin', template.innerHTML);
           } else {
-            html = commentContent(COMMENT_PREFIX, html);
+            this.innerHTML = template.outerHTML;
           }
-
-          this.innerHTML = html;
-
-          ///this.appendChild(frag);
         }
       },
       /**

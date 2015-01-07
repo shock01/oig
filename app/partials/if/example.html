@@ -17,8 +17,16 @@
   <div is="oig-context" data-view-model="ifBinding">
     <div class="alert alert-info">
       <p>
-        <oig-if test="flag">I am displayed because the flag is <oig-binding>flag</oig-binding></oig-if>
-        <oig-if test="!flag">......and I am displayed because the flag is <oig-binding>flag</oig-binding></oig-if>
+        <oig-if test="flag">
+          <template>I am displayed because the flag is
+            <oig-binding>flag</oig-binding>
+          </template>
+        </oig-if>
+        <oig-if test="!flag">
+          <template>......and I am displayed because the flag is
+            <oig-binding>flag</oig-binding>
+          </template>
+        </oig-if>
       </p>
     </div>
     <p>

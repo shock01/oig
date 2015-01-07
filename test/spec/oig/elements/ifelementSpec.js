@@ -46,7 +46,7 @@ describe('ifelement', function () {
     var content;
 
     beforeEach(function () {
-      content = 'hello world';
+      content = '<template>hello world</template>';
       element.innerHTML = content;
     });
 
@@ -58,7 +58,7 @@ describe('ifelement', function () {
       });
 
       it('should show the content', function () {
-        expect(element.innerHTML).to.equal(content);
+        expect(element.innerHTML).to.equal('hello world' + template);
       });
     });
 
@@ -68,46 +68,11 @@ describe('ifelement', function () {
         document.body.appendChild(parent);
       });
 
-      it('should show the content as comment', function () {
-        expect(element.innerHTML).to.equal('<!--OIG-IF=' + content + '-->');
-      });
-    });
-
-  });
-
-  describe('dom content', function () {
-
-    var content;
-
-    beforeEach(function () {
-      content = 'hello <em>world</em>';
-      element.innerHTML = content;
-    });
-
-    describe('when evaluated true', function () {
-
-      beforeEach(function () {
-        element.setAttribute('test', 'flag');
-        document.body.appendChild(parent);
-      });
-
-      it('should show the content', function () {
+      it('should show the content as template', function () {
         expect(element.innerHTML).to.equal(content);
       });
     });
-
-    describe('when evaluated false', function () {
-      beforeEach(function () {
-        element.setAttribute('test', '!flag');
-        document.body.appendChild(parent);
-      });
-
-      it('should show the content as comment', function () {
-        expect(element.innerHTML).to.equal('<!--OIG-IF=' + content + '-->');
-      });
-    });
   });
-
 
 
   describe('when evaluated false', function () {
@@ -115,7 +80,7 @@ describe('ifelement', function () {
     var content;
 
     beforeEach(function () {
-      content = 'test';
+      content = '<template>test</template>';
       element.innerHTML = content;
       element.setAttribute('test', '!flag');
       document.body.appendChild(parent);
@@ -128,7 +93,7 @@ describe('ifelement', function () {
       });
 
       it('should show the content', function () {
-        expect(element.innerHTML).to.equal(content);
+        expect(element.innerHTML).to.equal('test' + content);
       });
     });
 
@@ -145,7 +110,7 @@ describe('ifelement', function () {
       });
 
       it('should show the content', function () {
-        expect(element.innerHTML).to.equal(content);
+        expect(element.innerHTML).to.equal('test' + content);
       });
     });
   });
