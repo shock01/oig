@@ -4,21 +4,6 @@ var oig;
   var elements;
   (function (elements) {
     /**
-     *
-     * @const {string}
-     */
-    var COMMENT_START = '<!--'
-    /**
-     *
-     * @const {string}
-     */
-    var COMMENT_END = '-->';
-    /**
-     * @const {string}
-     */
-    var COMMENT_PREFIX = 'OIG-IF=';
-
-    /**
      * WeakMap for storing ObjectObservers
      * weak lookup map that can be garbage collected
      */
@@ -37,28 +22,6 @@ var oig;
       var observer = element.update.bind(element);
       Object.observe(element.dataContext, observer);
       observerMap.set(element, observer);
-    }
-
-    /**
-     *
-     * @param {String} prefix
-     * @param {String} html
-     */
-    function commentContent(prefix, html) {
-      return COMMENT_START + (prefix + html) + COMMENT_END;
-    }
-
-    /**
-     *
-     * @param {String} prefix
-     * @param {String} html
-     */
-    function uncommentContent(prefix, content) {
-      if (content.substr(COMMENT_START.length, prefix.length) === prefix) {
-        return content.substring(COMMENT_START.length + prefix.length, content.length - COMMENT_END.length);
-      } else {
-        return content;
-      }
     }
 
     /**
