@@ -87,6 +87,22 @@ When onunload is defined on viewModel then onunload method is called before disp
 
 ------------------------------------------------------------------------------------------------------------------------
 
+## If Element
+
+------------------------------------------------------------------------------------------------------------------------
+
+Elements can be conditionally rendered using oig-if element. When an element is not rendered it will be wrapped in a comment
+
+- attributes
+     * test - expression that will be evaluated. When result is thruthy evaluate as true, when falsly evaluate as false
+
+      <oig-if test="flag">Show me when true</oig-if>
+
+   
+
+
+------------------------------------------------------------------------------------------------------------------------
+
 ## Include Element
 
 ------------------------------------------------------------------------------------------------------------------------
