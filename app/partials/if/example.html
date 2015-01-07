@@ -1,0 +1,30 @@
+<div xmlns="http://www.w3.org/1999/xhtml">
+  <script type="text/javascript">
+    (function () {
+      var viewModel = {
+        flag: true,
+        toggle: function () {
+          this.flag = !this.flag;
+        }
+      };
+      Object.defineProperty(oig.viewModels, 'ifBinding', {
+        get: function () {
+          return viewModel;
+        }
+      });
+    }())
+  </script>
+  <div is="oig-context" data-view-model="ifBinding">
+    <div class="alert alert-info">
+      <p>
+        <oig-if test="flag">I am displayed because the flag is <oig-binding>flag</oig-binding></oig-if>
+        <oig-if test="!flag">......and I am displayed because the flag is <oig-binding>flag</oig-binding></oig-if>
+      </p>
+    </div>
+    <p>
+      <button class="btn btn-default">Toggle
+        <oig-listener onclick="toggle()"/>
+      </button>
+    </p>
+  </div>
+</div>

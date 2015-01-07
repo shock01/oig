@@ -91,7 +91,7 @@ var oig;
       update: {
         value: function () {
           var targetElement = this.targetElement,
-              dataContext = this.dataContext;
+            dataContext = this.dataContext;
 
           // bind all attributes not starting with data-oig
           for (var i = 0, attribute; (attribute = this.attributes[i++]);) {
@@ -127,7 +127,10 @@ var oig;
       detachedCallback: {
         value: function () {
 
-          Object.unobserve(this.dataContext, observerMap.get(this));
+          var dataContext = this.dataContext;
+          if (dataContext) {
+            Object.unobserve(dataContext, observerMap.get(this));
+          }
           observerMap.delete(this);
 
           mutationObserverMap.get(this).disconnect();
