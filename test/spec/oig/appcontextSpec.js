@@ -1,4 +1,7 @@
 describe('appcontext', function () {
+
+  // @todo use promises as in ifelementSpec
+
   'use strict';
   var dataContext;
 
@@ -23,6 +26,7 @@ describe('appcontext', function () {
     });
 
     it('should not notify on same value', function (done) {
+
       var change;
       Object.observe(dataContext, function (changes) {
         change = changes[0];

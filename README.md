@@ -163,9 +163,6 @@ By default databinding is one-way. To use bidirectional binding please look at t
 Binding expression are evaluated as regular javascript expressions. This means that strings needs to be enclosed with quotes.
 Eg. style="color:red" will not work and needs be written as style="'color:red'"
 
-Attribute binding is also namespace aware so any attributes added to the binding element will update the bound element
-with the proper namespace.
-Eg. <oig-binding xlink:href=""> will use the xlink namespace declared in the owner document.
 
 ### Two way databinding. ()
 Seen as an anti-pattern by some. (One way data flow as described by eg. ReactJS) 

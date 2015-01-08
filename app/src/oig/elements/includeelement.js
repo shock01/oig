@@ -71,7 +71,7 @@ var oig;
             throw '[oig:include] xpointer cannot be used when parse is text';
           }
 
-          url = typeof href === 'string' ? href : document.URL;
+          url = typeof href === 'string' ? href : this.ownerDocument.documentURI;
           var resource = oig.resource(url);
 
           resource.load()

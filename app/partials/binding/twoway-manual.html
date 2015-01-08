@@ -17,6 +17,10 @@
       <oig-listener onchange="color = event.target.value"></oig-listener>
       <label>Change text color</label>
       <input class="form-control" type="color"/>
+
+      <div>I am bound only once!!! color:<oig-binding once>color</oig-binding></div>
+      <div>I am bound forever!!! color:<oig-binding>color</oig-binding></div>
+
     </div>
     <div class="form-group">
       <oig-listener oninput="name = event.target.value"></oig-listener>

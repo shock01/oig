@@ -58,7 +58,7 @@ describe('ifelement', function () {
       });
 
       it('should show the content', function () {
-        expect(element.innerHTML).to.equal('hello world' + template);
+        expect(element.innerHTML).to.equal('hello world' + content);
       });
     });
 

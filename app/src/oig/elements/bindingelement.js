@@ -3,6 +3,18 @@ var oig;
   'use strict';
   var elements;
   (function (elements) {
+
+    /**
+     * @todo make sure it can be reused
+     * @see listenerelement.js
+     *
+     * @param {String} value
+     * @returns {boolean}
+     */
+    function attributeTruthy(value) {
+      return typeof value === 'string' && (value === 'true' || value === '');
+    }
+
     /**
      * WeakMap for storing MutationObservers
      * weak lookup map that can be garbage collected
@@ -52,7 +64,7 @@ var oig;
      * @type {HTMLElement}
      * @lends {HTMLScriptElement.prototype}
      */
-    var BindingElement = Object.create(HTMLScriptElement.prototype, {
+    var BindingElement = {
 
       dataContext: {
         /**
@@ -87,16 +99,22 @@ var oig;
           return targetElement;
         }
       },
-
+      /**
+       * will update attributes
+       * In an HTML5 document the attribute has to be accessed with test:foo since namespaces are not supported.
+       */
       update: {
         value: function () {
           var targetElement = this.targetElement,
             dataContext = this.dataContext;
-
           // bind all attributes not starting with data-oig
           for (var i = 0, attribute; (attribute = this.attributes[i++]);) {
             if (attribute.name.substring(0, 8) !== 'data-oig') {
-              targetElement.setAttribute(attribute.name, oig.evaluate(dataContext, attribute.value));
+              if (!attribute.namespaceURI) {
+                targetElement.setAttribute(attribute.name, oig.evaluate(dataContext, attribute.value));
+              } else {
+                targetElement.setAttributeNS(attribute.namespaceURI, attribute.name, oig.evaluate(dataContext, attribute.value));
+              }
             }
           }
           // update the textContent
@@ -109,15 +127,18 @@ var oig;
       /**
        * when attached creates a shadowRoot that will contain the evaluated binding
        * as textContent
-       * Will add observers to the dataContext and the DOM to update the view
+       * When attribute 'once' is false or absent will add observers to the dataContext and the DOM to update the view
        */
       attachedCallback: {
         value: function () {
+
           this.createShadowRoot();
           this.update();
 
-          observeDataContext(this);
-          observeDOM(this);
+          if (!attributeTruthy(this.getAttribute('once'))) {
+            observeDataContext(this);
+            observeDOM(this);
+          }
         }
       },
       /**
@@ -128,10 +149,11 @@ var oig;
         value: function () {
 
           var dataContext = this.dataContext;
-          if (dataContext) {
-            Object.unobserve(dataContext, observerMap.get(this));
-          }
+
           if (observerMap.has(this)) {
+            if (dataContext) {
+              Object.unobserve(dataContext, observerMap.get(this));
+            }
             observerMap.delete(this);
           }
 
@@ -147,15 +169,17 @@ var oig;
        */
       attributeChangedCallback: {
         value: function () {
-          this.update();
+          if (!attributeTruthy(this.getAttribute('once'))) {
+            this.update();
+          }
         }
       }
-    });
+    };
     /**
      * registration
      */
     elements.BindingElement = document.registerElement('oig-binding', {
-      prototype: BindingElement
+      prototype: Object.create(HTMLScriptElement.prototype, BindingElement)
     });
   })(elements = oig.elements || (oig.elements = {}));
 })(oig || (oig = {}));
