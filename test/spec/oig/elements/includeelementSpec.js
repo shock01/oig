@@ -28,7 +28,7 @@ describe('include element', function () {
     sinon.stub(oig, "resource", function () {
       return resource;
     });
-  })
+  });
 
   beforeEach(function () {
     resource = {
@@ -62,7 +62,7 @@ describe('include element', function () {
 
     beforeEach(function () {
       html = '<div><span id="1">Hello</span><span id="2">World</span></div>';
-      promise = new Promise(function (resolve, reject) {
+      promise = new Promise(function (resolve) {
         resolve('<div><span id="1">Hello</span><span id="2">World</span></div>');
       });
     });
@@ -78,7 +78,6 @@ describe('include element', function () {
       it('should call the resource', function () {
         expect(oig.resource.calledWith(element.getAttribute('href'))).to.be.true;
         expect(resource.load.called).to.be.true;
-
       });
     });
 

@@ -2,6 +2,7 @@ describe('listenerelement', function () {
   'use strict';
 
   // @todo add spec for removeAttribute onclick
+  // @todo refactor me to something nicer
 
   /**
    * @type {HTMLElement}
@@ -10,7 +11,7 @@ describe('listenerelement', function () {
     listener,
     button,
     secondaryButton,
-    dataContext = {};
+    viewModel = {};
 
 
   function dispatch(element, eventType) {
@@ -23,20 +24,24 @@ describe('listenerelement', function () {
   /**
    * setup
    */
-  before(function (done) {
-    oig.dataContext = function () {
-    };
-    done();
+  before(function () {
+    Object.defineProperty(oig.viewModels, 'listenerelement', {
+      configurable: true,
+      get: function () {
+        return viewModel;
+      }
+    });
+    viewModel = {};
   });
 
-  beforeEach(function (done) {
-    dataContext.clickedCallback = sinon.spy();
-    done();
+  beforeEach(function () {
+    viewModel.clickedCallback = sinon.spy();
   });
 
 
-  beforeEach(function (done) {
-    node = document.createElement('div');
+  beforeEach(function () {
+    node = document.createElement('div', 'oig-context');
+    node.setAttribute('data-view-model', 'listenerelement');
     listener = document.createElement('oig-listener');
     button = document.createElement('button');
     button.setAttribute('id', 'primaryButton');
@@ -46,71 +51,57 @@ describe('listenerelement', function () {
     node.appendChild(button);
     node.appendChild(secondaryButton);
     document.body.appendChild(node);
-    done();
   });
 
   afterEach(function () {
-    document.body.removeChild(node);
+    node.parentNode && node.parentNode.removeChild(node);
   });
 
   it('should call the dataContext clickedCallback on click', function () {
-    oig.dataContext = sinon.stub().returns(dataContext);
     listener.setAttribute('onclick', 'clickedCallback()');
     dispatch(button, 'click');
     // assert
-    assert(dataContext.clickedCallback.called, 'clickedCallback not called');
-    // verify
-    assert(oig.dataContext.calledWith(listener));
+    assert(viewModel.clickedCallback.called, 'clickedCallback not called');
   });
 
   it('should call the dataContext clickedCallback on click using selector', function () {
-    oig.dataContext = sinon.stub().returns(dataContext);
     listener.setAttribute('selector', 'span');
     listener.setAttribute('onclick', 'clickedCallback()');
 
     // assert
     dispatch(button, 'click'); // dispatch on non-target
-    assert(!dataContext.clickedCallback.called, 'clickedCallback should not be called on non-selector');
+    assert(!viewModel.clickedCallback.called, 'clickedCallback should not be called on non-selector');
 
     listener.setAttribute('selector', 'button');
     dispatch(secondaryButton, 'click'); // dispatch on non-target
-    assert(dataContext.clickedCallback.called, 'clickedCallback not called on selector');
+    assert(viewModel.clickedCallback.called, 'clickedCallback not called on selector');
 
-    // verify
-    assert(oig.dataContext.calledWith(listener));
   });
 
   it('should call the dataContext clickedCallback on click target', function () {
-    oig.dataContext = sinon.stub().returns(dataContext);
     listener.setAttribute('target', 'secondaryButton');
     listener.setAttribute('onclick', 'clickedCallback()');
 
     // assert
     dispatch(button, 'click'); // dispatch on non-target
-    assert(!dataContext.clickedCallback.called, 'clickedCallback should not be called on non-target');
+    assert(!viewModel.clickedCallback.called, 'clickedCallback should not be called on non-target');
 
     dispatch(secondaryButton, 'click'); // dispatch on non-target
-    assert(dataContext.clickedCallback.called, 'clickedCallback should not be called on target');
+    assert(viewModel.clickedCallback.called, 'clickedCallback should not be called on target');
 
-    // verify
-    assert(oig.dataContext.calledWith(listener));
   });
 
   it('should call the dataContext clickedCallback on click with parameters', function () {
-    dataContext.name = 'test';
-    oig.dataContext = sinon.stub().returns(dataContext);
+    viewModel.name = 'test';
     listener.setAttribute('onclick', 'clickedCallback(name)');
     dispatch(button, 'click');
     // assert
-    assert(dataContext.clickedCallback.calledWith(dataContext.name), 'clickedCallback not called with argument name');
-    // verify
-    assert(oig.dataContext.calledWith(listener));
+    assert(viewModel.clickedCallback.calledWith(viewModel.name), 'clickedCallback not called with argument name');
   });
 
   it('should prevent default', function () {
 
     var event;
-    oig.dataContext = sinon.stub().returns(dataContext);
     listener.setAttribute('onclick', 'clickedCallback(name)');
     event = dispatch(button, 'click');
     assert(!event.defaultPrevented, 'by default should initially not be prevented');
@@ -135,7 +126,6 @@ describe('listenerelement', function () {
   it('should stop propagation/bubbling', function () {
 
     var event;
-    oig.dataContext = sinon.stub().returns(dataContext);
     listener.setAttribute('onclick', 'clickedCallback(name)');
     event = dispatch(button, 'click');
     assert(!event.cancelBubble, 'by default should not stop propagation');

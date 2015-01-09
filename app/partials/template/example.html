@@ -1,0 +1,54 @@
+<div>
+  <script type="text/javascript">
+    (function () {
+      var viewModel = {
+        name: 'I am a templated viewModel',
+        items: [{id: 0, name: "John Doe"}, {id: 1, name: "Jane Doe"}]
+      };
+      Object.defineProperty(oig.viewModels, 'template', {
+        get: function () {
+          return viewModel;
+        }
+      });
+    }())
+  </script>
+  <div is="oig-context" data-view-model="template">
+    <script>
+      Object.defineProperty(oig.templateEngines, 'handlebars', {
+        configurable: true,
+        get: function () {
+          return {
+            compile: function (template, dataContext) {
+              return Handlebars.compile(template)(dataContext);
+            }
+          }
+        }
+      });
+      console.dir(oig.templateEngines);
+    </script>
+    <div class="alert alert-info">
+        <div is="oig-template">
+          <template>
+              <h4>Using default templating</h4>
+              <dl>
+              <% for(var i = 0, ii = items.length; i < ii; i++) { %>
+                <dt><%=items[i].id%></dt>
+                <dd><%=items[i].name%></dd>
+              <% } %>
+              </dl>
+          </template>
+          <div is="oig-template" data-oig-templateengine="handlebars">
+            <template>
+              <h4>Using handlebars templating</h4>
+              <div>{{name}}</div>
+              <dl>
+                {{#each items}}
+                <dt>{{id}}</dt>
+                <dd>{{name}}</dd>
+                {{/each}}
+              </dl>
+            </template>
+        </div>
+    </div>
+  </div>
+</div>

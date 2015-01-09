@@ -11,14 +11,20 @@
 </head>
 <body>
 
+<!-- OIG scripts -->
 <script src="src/oig/appcontext.js"></script>
 <script src="src/oig/datacontext.js"></script>
 <script src="src/oig/resource.js"></script>
+<script src="src/oig/templateengines.js"></script>
 <script src="src/oig/elements/bindingelement.js"></script>
 <script src="src/oig/elements/contextelement.js"></script>
 <script src="src/oig/elements/ifelement.js"></script>
 <script src="src/oig/elements/includeelement.js"></script>
 <script src="src/oig/elements/listenerelement.js"></script>
+<script src="src/oig/elements/templateelement.js"></script>
+<!-- VENDOR SCRIPTS -->
+<script src="src/vendor/microtemplates.js"></script>
+
 
 <script src="src/oig/oig.js"></script>
 <a href="https://github.com/shock01/oig"><img style="position: absolute; top: 0; right: 0; border: 0;"
@@ -244,7 +250,28 @@
       </div>
     </div>
 
+    <hr/>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>Template element
+          <small></small>
+        </h2>
+      </div>
+      <div class="panel-body">
+        <span class="label label-primary">example</span>
+        <oig-include href="partials/template/example.html"></oig-include>
+        <span class="label label-info">code</span>
+        <code>
+          <pre class="pre-scrollable">
+            <oig-include href="partials/template/example.html" parse="text"></oig-include>
+          </pre>
+        </code>
+      </div>
+    </div>
+
   </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
 </body>
 </html>
