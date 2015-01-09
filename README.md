@@ -205,6 +205,62 @@ Updating the binding expression used for setting the textContent on the shadowRo
       document.querySelector('oig-binding').setAttribute("style", "'color:blue'")
 
 
+------------------------------------------------------------------------------------------------------------------------
+
+## Template Element
+
+------------------------------------------------------------------------------------------------------------------------
+The template element provides a way to use templating. By default microtemplates will be used (underscore).
+Specifying the data-oig-templateengine you can use different template engines
+
+Template element extends DIV element and only allows a single template element as first element child.
+
+### Default template engine
+        <div is="oig-template">
+          <template>
+              <h4>Using default templating</h4>
+              <dl>
+              <% for(var i = 0, ii = items.length; i < ii; i++) { %>
+                <dt><%=items[i].id%></dt>
+                <dd><%=items[i].name%></dd>
+              <% } %>
+              </dl>
+          </template>
+         </div>
+
+### Custom template engine
+
+First register the template engine
+
+        (function () {
+          var viewModel = {
+            name: 'I am a templated viewModel',
+            items: [{id: 0, name: "John Doe"}, {id: 1, name: "Jane Doe"}]
+          };
+          Object.defineProperty(oig.viewModels, 'template', {
+            get: function () {
+              return viewModel;
+            }
+          });
+        }())
+
+HTML Markup
+
+      <div is="oig-template" data-oig-templateengine="handlebars">
+            <template>
+              <h4>Using handlebars templating</h4>
+              <div>{{name}}</div>
+              <dl>
+                {{#each items}}
+                <dt>{{id}}</dt>
+                <dd>{{name}}</dd>
+                {{/each}}
+              </dl>
+            </template>
+        </div>
+
+
+
 The MIT License
 ===============
 
