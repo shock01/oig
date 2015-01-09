@@ -127,7 +127,7 @@ var oig;
     if (typeof dataContext === 'object') {
       for (var i in dataContext) {
         args.push(i);
-        if(typeof dataContext[i] === 'function') {
+        if (typeof dataContext[i] === 'function') {
           parameters.push(dataContext[i].bind(dataContext));
         } else {
           parameters.push(dataContext[i]);
@@ -156,4 +156,5 @@ var oig;
     /*jshint evil: false */
   };
 
-}(oig || (oig = {})));
+}/* jshint ignore:start */(oig || (oig = {}))/* jshint ignore:end */);
+

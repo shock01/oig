@@ -27,6 +27,5 @@ var oig;
     }
   });
 
-})
-(oig || (oig = {}));
+})/* jshint ignore:start */(oig || (oig = {})/* jshint ignore:end */);
 /* global microtemplate:false */

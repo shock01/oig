@@ -5,9 +5,6 @@ var oig;
   (function (elements) {
 
     /**
-     * @todo make sure this can be reused
-     * @see bindingelement.js
-     *
      * @param {String} value
      * @returns {boolean}
      */

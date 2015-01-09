@@ -70,5 +70,5 @@ var oig;
       prototype:  Object.create(HTMLDivElement.prototype, TemplateElement),
       extends : 'div'
     });
-  })(elements = oig.elements || (oig.elements = {}));
-})(oig || (oig = {}));
+  })/* jshint ignore:start */(elements = oig.elements || (oig.elements = {})/* jshint ignore:end */);
+})/* jshint ignore:start*/(oig || (oig = {})/* jshint ignore:end */);

@@ -100,20 +100,13 @@ var oig;
                 }
                 element.parentNode.replaceChild(node, element);
               } catch (e) {
-                console.error(e)
+                console.error(e);
                 throw e;
               }
             },
             function () {
 
             });
-        }
-      },
-      /**
-       * called when removed from the DOM
-       */
-      detachedCallback: {
-        value: function () {
         }
       }
     });
@@ -123,5 +116,5 @@ var oig;
     elements.IncludeElement = document.registerElement('oig-include', {
       prototype: IncludeElement
     });
-  })(elements = oig.elements || (oig.elements = {}));
-})(oig || (oig = {}));
+  })/* jshint ignore:start */(elements = oig.elements || (oig.elements = {})/* jshint ignore:end */);
+})/* jshint ignore:start */(oig || (oig = {})/* jshint ignore:end */);

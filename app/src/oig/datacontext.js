@@ -14,7 +14,7 @@ var oig;
    * OIG-context element will have a dataContext property which will be added
    * to the dataContextMap for quick reference
    *
-   * @param {HTMLElement}
+   * @param {HTMLElement} element
    * @returns {Object}
    */
   function dataContextResolver(element) {
@@ -37,5 +37,4 @@ var oig;
     return dataContext;
   }
   oig.dataContext = dataContextResolver;
-})
-(oig || (oig = {}));
+})/* jshint ignore:start */(oig || (oig = {})/* jshint ignore:end */);

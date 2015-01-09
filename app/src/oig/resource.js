@@ -13,11 +13,10 @@ var oig;
           xhr.open('GET', url, true);
           xhr.onload = function () {
             resolve(xhr.responseText);
-          }
+          };
           xhr.send(null);
         });
       }
     };
   };
-})
-(oig || (oig = {}));
+})/* jshint ignore:start */(oig || (oig = {})/* jshint ignore:end */);

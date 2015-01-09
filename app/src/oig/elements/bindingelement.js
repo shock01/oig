@@ -38,24 +38,6 @@ var oig;
     }
 
     /**
-     * WeakMap for storing ObjectObservers
-     * weak lookup map that can be garbage collected
-     */
-    var observerMap = new WeakMap();
-
-    /**
-     * observes the datacontext and registers the element in the
-     * observerMap
-     * @param {BindingElement} element
-     */
-    function observeDataContext(element) {
-      // watch dataContext changes
-      var observer = element.update.bind(element);
-      Object.observe(element.dataContext, observer);
-      observerMap.set(element, observer);
-    }
-
-    /**
      *
      * Will bind all attributes that do not start with data- to the parentNode
      * or when specified the oig-target
@@ -65,17 +47,6 @@ var oig;
      * @lends {HTMLScriptElement.prototype}
      */
     var BindingElement = {
-
-      dataContext: {
-        /**
-         * returns the data context of the current element
-         * @returns {Object}
-         */
-        get: function () {
-          return oig.dataContext(this);
-        }
-      },
-
       /**
        * returns the binding target element set as data-oig-target
        * possible values: nextSibling, previousSibling
@@ -119,6 +90,9 @@ var oig;
           }
           // update the textContent
           if (typeof this.textContent === 'string') {
+            if (!this.shadowRoot) {
+              this.createShadowRoot();
+            }
             this.shadowRoot.textContent = oig.evaluate(dataContext, this.textContent);
           }
         }
@@ -131,12 +105,8 @@ var oig;
        */
       attachedCallback: {
         value: function () {
-
-          this.createShadowRoot();
-          this.update();
-
+          oig.ContextElement.prototype.attachedCallback.call(this);
           if (!attributeTruthy(this.getAttribute('once'))) {
-            observeDataContext(this);
             observeDOM(this);
           }
         }
@@ -148,14 +118,7 @@ var oig;
       detachedCallback: {
         value: function () {
 
-          var dataContext = this.dataContext;
-
-          if (observerMap.has(this)) {
-            if (dataContext) {
-              Object.unobserve(dataContext, observerMap.get(this));
-            }
-            observerMap.delete(this);
-          }
+          oig.ContextElement.prototype.detachedCallback.call(this);
 
           if (mutationObserverMap.has(this)) {
             mutationObserverMap.get(this).disconnect();
@@ -179,7 +142,7 @@ var oig;
      * registration
      */
     elements.BindingElement = document.registerElement('oig-binding', {
-      prototype: Object.create(HTMLScriptElement.prototype, BindingElement)
+      prototype: Object.create(oig.ContextElement.prototype, BindingElement)
     });
-  })(elements = oig.elements || (oig.elements = {}));
-})(oig || (oig = {}));
+  })/* jshint ignore:start */(elements = oig.elements || (oig.elements = {})/* jshint ignore:end */);
+})/* jshint ignore:start */(oig || (oig = {})/* jshint ignore:end */);
