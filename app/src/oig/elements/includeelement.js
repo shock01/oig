@@ -33,7 +33,7 @@ var oig;
      *
      *
      * Fallback element
-     *  The fallback element appears as a child of an xi:include element.
+     *  The fallback element appears as a child of an include element.
      *  It provides a mechanism for recovering from missing resources.
      *  When a resource error is encountered, the include element is replaced with the contents of the xi:fallback element.
      *  If the fallback element is empty, the include element is removed from the result.
@@ -46,7 +46,6 @@ var oig;
      * Inclusion of SVG content need to make sure to set the namespace on the SVGSVGElement (http://www.w3.org/2000/svg)
      *
      * @type {HTMLElement}
-     * @lends {HTMLElement.prototype}
      */
     var IncludeElement = Object.create(HTMLDivElement.prototype, {
       /**
@@ -54,6 +53,7 @@ var oig;
       attachedCallback: {
         value: function () {
           var element = this,
+            fallback = element.firstElementChild,
             href = this.getAttribute('href'),
             parse = this.getAttribute('parse') || 'html',
             xpointer = this.getAttribute('xpointer'),
@@ -100,12 +100,15 @@ var oig;
                 }
                 element.parentNode.replaceChild(node, element);
               } catch (e) {
-                console.error(e);
                 throw e;
               }
             },
-            function () {
-
+            function (/**Error*/error) {
+              if (fallback instanceof HTMLTemplateElement) {
+                element.parentNode.replaceChild(element.ownerDocument.importNode(fallback.content, true), element);
+              } else {
+                throw error;
+              }
             });
         }
       }

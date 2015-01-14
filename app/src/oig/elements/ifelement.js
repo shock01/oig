@@ -4,14 +4,14 @@ var oig;
   var elements;
   (function (elements) {
     /**
-     * @lends {HTMLElement.prototype}
+     * @type {HTMLElement}
      */
     var IfElement = {
       update: {
         value: function () {
           var test = this.getAttribute('test'),
             flag = oig.evaluate(this.dataContext, test),
-            template = this.querySelector('template');
+            template = this.firstElementChild;
 
           if (flag) {
             this.insertAdjacentHTML('afterBegin', template.innerHTML);

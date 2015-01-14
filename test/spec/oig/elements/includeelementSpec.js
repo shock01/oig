@@ -138,4 +138,43 @@ describe('include element', function () {
     });
 
   });
+
+
+  describe('error on loading include', function () {
+
+    beforeEach(function () {
+      promise = new Promise(function (resolve, reject) {
+        reject('404');
+      });
+    })
+
+    function append() {
+      element.setAttribute("href", "test.xml");
+      parent.appendChild(element);
+    }
+
+    describe('with fallback', function () {
+
+      var fallback;
+
+      beforeEach(function () {
+        fallback = document.createElement('template');
+        fallback.content.appendChild(document.createTextNode('error'));
+        element.appendChild(fallback);
+      });
+
+
+      it('should have used the fallback on error', function (done) {
+
+        append();
+
+        promise.then(function () {
+        }, function () {
+          expect(parent.innerHTML).to.equal('error');
+          done();
+        });
+      });
+    });
+  });
+
 });

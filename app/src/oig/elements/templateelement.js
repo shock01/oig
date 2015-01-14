@@ -20,7 +20,6 @@ var oig;
     /**
      *
      * @type {HTMLElement}
-     * @lends {HTMLDivElement.prototype}
      */
     var TemplateElement = {
 
@@ -67,7 +66,7 @@ var oig;
      * registration
      */
     elements.TemplateElement = document.registerElement('oig-template', {
-      prototype:  Object.create(HTMLDivElement.prototype, TemplateElement),
+      prototype: Object.create(oig.Element.prototype, TemplateElement),
       extends : 'div'
     });
   })/* jshint ignore:start */(elements = oig.elements || (oig.elements = {})/* jshint ignore:end */);

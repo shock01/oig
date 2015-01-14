@@ -44,7 +44,6 @@ var oig;
      * <oig-binding data-oig-target="previousSibling|nextSibling"/>
      *
      * @type {HTMLElement}
-     * @lends {HTMLScriptElement.prototype}
      */
     var BindingElement = {
       /**

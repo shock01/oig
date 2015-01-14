@@ -30,7 +30,6 @@ var oig;
      * <div is="oig-context" data-view-model="">
      *
      * @type {HTMLElement}
-     * @lends {HTMLDivElement.prototype}
      */
     var ContextElement = Object.create(HTMLDivElement.prototype, {
 

@@ -89,18 +89,8 @@ var oig;
      * selector - optional attribute to select sibling of event target on which listener should be invoked
      *
      * @type {HTMLElement}
-     * @lends {HTMLElement.prototype}
      */
-    var ListenerElement = Object.create(HTMLElement.prototype, {
-      dataContext: {
-        /**
-         * returns the data context of the current element
-         * @returns {Object}
-         */
-        get: function () {
-          return oig.dataContext(this);
-        }
-      },
+    var ListenerElement = {
       /**
        * when an on attribute is added then add an event listener
        */
@@ -122,13 +112,13 @@ var oig;
           });
         }
       }
-    });
+    };
 
     /**
      * registration
      */
     elements.ListenerElement = document.registerElement('oig-listener', {
-      prototype: ListenerElement
+      prototype: Object.create(oig.Element.prototype, ListenerElement)
     });
   })(elements = oig.elements || (oig.elements = {}));
 })(oig || (oig = {}));

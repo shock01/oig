@@ -112,6 +112,8 @@ Elements can be conditionally rendered using oig-if element. When an element is 
 The include element can be used to include partial views. 
 Content can be included as html,text or xml. By default content will be included as html.
 
+Only allowed child is one HTMLTemplate element which is used as fallback
+
 XPointer attribute can be used for including specific content. 
 When attribute parse is text it will throw exception.
 
@@ -119,6 +121,12 @@ Alternate content can be included to show up when an error occurs including the 
 
       <oig-include href="myfile.html" xpointer="//div" parse="html"/>
       <oig-include href="myfile.html" parse="text"/>
+
+### Fallback content
+A fallback can be added to the oig-include. The fallback will replace the oig-include element on failure.
+When no fallback element is present and an inclusion error occurs then an error will be thrown
+
+      <oig-include href="404link"><template><div>I am displayed as fallback element</div></template></oig-include>
 
 
 ------------------------------------------------------------------------------------------------------------------------
