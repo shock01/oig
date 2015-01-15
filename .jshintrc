@@ -14,8 +14,6 @@
   "undef": true,
   "unused": true,
   "strict": true,
-  "oig": true,
-  "sinon": true,
   "mocha": true,
   "globals": {
     "it": true,
@@ -25,6 +23,11 @@
     "after": true,
     "afterEach": true,
     "describe": true,
-    "define": true
+    "define": true,
+    "HTMLTemplateElement": true,
+    "Promise": true,
+    "WeakMap": true,
+    "oig": true
+
   }
 }

@@ -87,8 +87,6 @@ var oig;
      * prevent-default - optional attribute to prevent default event action
      * stop-progagation - optional attribute to stop propagation of event
      * selector - optional attribute to select sibling of event target on which listener should be invoked
-     *
-     * @type {HTMLElement}
      */
     var ListenerElement = {
       /**
@@ -120,5 +118,5 @@ var oig;
     elements.ListenerElement = document.registerElement('oig-listener', {
       prototype: Object.create(oig.Element.prototype, ListenerElement)
     });
-  })(elements = oig.elements || (oig.elements = {}));
-})(oig || (oig = {}));
+  })/* jshint ignore:start */(elements = oig.elements || (oig.elements = {})/* jshint ignore:end */);
+})/* jshint ignore:start */(oig || (oig = {})/* jshint ignore:end */);

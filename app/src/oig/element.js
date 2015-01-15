@@ -22,7 +22,7 @@ var oig;
    * observes the datacontext and registers the element in the
    *
    * observerMap
-   * @param {IfElement} element
+   * @param {ContextElement} element
    */
   function observeDataContext(element) {
     // watch dataContext changes

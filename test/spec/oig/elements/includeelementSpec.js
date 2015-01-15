@@ -136,9 +136,7 @@ describe('include element', function () {
         expect(parent.textContent).to.equal(html);
       });
     });
-
   });
-
 
   describe('error on loading include', function () {
 
@@ -168,10 +166,12 @@ describe('include element', function () {
 
         append();
 
-        promise.then(function () {
-        }, function () {
-          expect(parent.innerHTML).to.equal('error');
-          done();
+        promise.catch(function () {
+          // we have to wait until catch is handled by include element
+          setTimeout(function () {
+            expect(parent.innerHTML).to.equal('error');
+            done();
+          }, 0);
         });
       });
     });

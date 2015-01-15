@@ -3,9 +3,7 @@ var oig;
   'use strict';
   var elements;
   (function (elements) {
-    /**
-     * @type {HTMLElement}
-     */
+
     var IfElement = {
       update: {
         value: function () {

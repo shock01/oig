@@ -2,16 +2,28 @@
 'use strict';
 // generated on 2014-12-11 using generator-gulp-webapp 0.2.0
 var gulp = require('gulp');
-var $ = require('gulp-load-plugins')();
+var livereload = require('gulp-livereload');
+var concat = require('gulp-concat-util');
+var jshint = require('gulp-jshint');
+var rename = require('gulp-rename');
+var uglify = require('gulp-uglify');
+
 
 gulp.task('jshint', function () {
   return gulp.src('app/src/oig/**/*.js')
-    .pipe($.jshint())
-    .pipe($.jshint.reporter('jshint-stylish'))
-    .pipe($.jshint.reporter('fail'));
+    .pipe(jshint())
+    .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('clean', require('del').bind(null, ['.tmp', 'dist', 'target']));
+gulp.task('concat', function () {
+  gulp.src('app/src/oig/**/*.js')
+    .pipe(concat('oig.js'))
+    .pipe(concat.header('(function () {\n'))
+    .pipe(concat.footer('\n}());\n'))
+    .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('clean', require('del').bind(null, ['dist']));
 
 gulp.task('connect', function () {
   var serveStatic = require('serve-static');
@@ -32,29 +44,20 @@ gulp.task('serve', ['connect', 'watch'], function () {
 
 });
 
-// inject bower components
-gulp.task('wiredep', function () {
-  var wiredep = require('wiredep').stream;
-
-  gulp.src('app/*.html')
-    .pipe(wiredep())
-    .pipe(gulp.dest('app'));
-});
-
 gulp.task('watch', ['connect'], function () {
-  $.livereload.listen();
+  livereload.listen();
 
   // watch for changes
   gulp.watch([
     'app/*.html',
     'app/scripts/**/*.js',
     'src/**/*.js'
-  ]).on('change', $.livereload.changed);
+  ]).on('change', livereload.changed);
 
-  gulp.watch('bower.json', ['wiredep']);
+  gulp.watch('bower.json');
 });
 
-gulp.task('build', ['jshint'], function () {
+gulp.task('build', ['jshint', 'concat'], function () {
 });
 
 gulp.task('default', ['clean'], function () {

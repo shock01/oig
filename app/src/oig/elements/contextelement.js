@@ -28,8 +28,6 @@ var oig;
      * before dispatching the viewunload event
      *
      * <div is="oig-context" data-view-model="">
-     *
-     * @type {HTMLElement}
      */
     var ContextElement = Object.create(HTMLDivElement.prototype, {
 
