@@ -58,7 +58,7 @@ describe('ifelement', function () {
       });
 
       it('should show the content', function () {
-        expect(element.innerHTML).to.equal('hello world' + content);
+        expect(element.innerHTML).to.equal(content + 'hello world');
       });
     });
 
@@ -93,7 +93,7 @@ describe('ifelement', function () {
       });
 
       it('should show the content', function () {
-        expect(element.innerHTML).to.equal('test' + content);
+        expect(element.innerHTML).to.equal(content + 'test');
       });
     });
 
@@ -110,7 +110,7 @@ describe('ifelement', function () {
       });
 
       it('should show the content', function () {
-        expect(element.innerHTML).to.equal('test' + content);
+        expect(element.innerHTML).to.equal(content + 'test');
       });
     });
   });

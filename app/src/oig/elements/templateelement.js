@@ -51,7 +51,7 @@ var oig;
           }
 
           // @todo add a method to unescape entities
-          template = decodeHtml(templateElement.innerHTML);
+          template = decodeHtml(new XMLSerializer().serializeToString(templateElement.content, 'text/html'));
           html = templateEngine.compile(template, dataContext);
 
           this.insertAdjacentHTML('beforeend', html);

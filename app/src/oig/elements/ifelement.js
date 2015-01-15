@@ -22,9 +22,11 @@ var oig;
             template = this.firstElementChild;
 
           if (flag) {
-            this.insertAdjacentHTML('afterBegin', template.innerHTML);
+            this.insertBefore(this.ownerDocument.importNode(template.content, true), template.nextElementSibling);
           } else {
-            this.innerHTML = template.outerHTML;
+            while(template.nextSibling) {
+              this.removeChild(template.nextSibling);
+            }
           }
         }
       },
