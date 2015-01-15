@@ -107,6 +107,7 @@ var oig;
           if (!attributeTruthy(this.getAttribute('once'))) {
             observeDOM(this);
           }
+          this.update();
         }
       },
       /**

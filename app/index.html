@@ -6,8 +6,33 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
   <title>oig</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="styles/main.css">
+
+  <script type="text/javascript" src="bower_components/react/JSXTransformer.js"></script>
+  <script type="text/javascript" src="bower_components/react/react.js"></script>
+
+  <script type="text/jsx">
+    /** @jsx React.DOM */
+
+    (function () {
+
+      'use strict';
+
+      var OIGC = React.createClass({
+        displayName: 'OIGC',
+        /**
+         * @method render
+         * @return {XML}
+         */
+        render: function render() {
+          return (<div>React says: Clicked { this.state.count } times!!!</div>);
+        }
+      });
+
+      window.OIGC = OIGC;
+    })();
+  </script>
 </head>
 <body>
 
@@ -23,6 +48,7 @@
 <script src="src/oig/elements/ifelement.js"></script>
 <script src="src/oig/elements/includeelement.js"></script>
 <script src="src/oig/elements/listenerelement.js"></script>
+<script src="src/oig/elements/reactelement.js"></script>
 <script src="src/oig/elements/templateelement.js"></script>
 <!-- VENDOR SCRIPTS -->
 <script src="src/vendor/microtemplates.js"></script>
@@ -65,6 +91,8 @@
     <dd>include text,html or xml content inspired by XInclude. Used to build up this page with code and examples</dd>
     <dt>listener element</dt>
     <dd>event listening based on XForms, XMLEvents and XUL Listeners.</dd>
+  <dt>react element</dt>
+  <dd>Integrate ReactJS</dd>
     <dt>template element</dt>
     <dd>Use microtemplates (underscore) by default. Pluggable custom template engines like handlebars in example</dd>
   </dl>
@@ -249,6 +277,26 @@
         <code>
           <pre class="pre-scrollable">
             <oig-include href="partials/listener/example.html" parse="text"></oig-include>
+          </pre>
+        </code>
+      </div>
+    </div>
+
+    <hr/>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>React element
+          <small>Using JSX Components</small>
+        </h2>
+      </div>
+      <div class="panel-body">
+        <span class="label label-primary">example</span>
+        <oig-include href="partials/react/example.html"></oig-include>
+        <span class="label label-info">code</span>
+        <code>
+          <pre class="pre-scrollable">
+            <oig-include href="partials/react/example.html" parse="text"></oig-include>
           </pre>
         </code>
       </div>

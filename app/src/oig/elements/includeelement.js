@@ -74,9 +74,6 @@ var oig;
 
           resource.load()
             .then(function (text) {
-
-              console.log('Loaded', text)
-
               var /**@type Node*/node,
                 /**@type DOMDocument*/doc;
               try {

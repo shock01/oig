@@ -70,7 +70,6 @@ var oig;
      */
     attachedCallback: {
       value: function () {
-        this.update();
         if (!attributeTruthy(this.getAttribute('once'))) {
           observeDataContext(this);
         }

@@ -215,6 +215,21 @@ Updating the binding expression used for setting the textContent on the shadowRo
 
 ------------------------------------------------------------------------------------------------------------------------
 
+## React Element
+
+------------------------------------------------------------------------------------------------------------------------
+
+The React element provides an integration with ReactJS. When the viewModel updates the ReactJSComponent will be rerendered
+
+      <oig-react component="MyComponent" context=""></oig-react>
+      
+Attributes:
+ - component: required Name of JSX Component
+ - context: optional Selector of viewModel property needs to be of type object on viewModel
+
+
+------------------------------------------------------------------------------------------------------------------------
+
 ## Template Element
 
 ------------------------------------------------------------------------------------------------------------------------
