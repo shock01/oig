@@ -1,0 +1,51 @@
+<div xmlns="http://www.w3.org/1999/xhtml">
+  <script>
+    /** @jsx React.DOM */
+
+    (function () {
+
+      'use strict';
+
+      var OIGC = React.createClass({
+        displayName: 'OIGC',
+        /**
+         * @method render
+         * @return {XML}
+         */
+        render: function render() {
+          return (React.createElement("div", null, "React says: Clicked ",  this.state ? this.state.count : 0, " times!!!"));
+        }
+      });
+
+      window.OIGC = OIGC;
+    })();
+
+  </script>
+  <script type="text/javascript">
+    (function () {
+      var viewModel = {
+        count: 0,
+        increment: function () {
+          this.count++;
+        }
+      };
+      Object.defineProperty(oig.viewModels, 'reactBinding', {
+        get: function () {
+          return viewModel;
+        }
+      });
+    }())
+  </script>
+  <p>
+    JSX Components will be rerendered when dataContext/viewModel changes
+  </p>
+
+  <div is="oig-context" data-view-model="reactBinding">
+      <oig-react component="OIGC"></oig-react>
+      <button>
+        <oig-listener onclick="increment()"></oig-listener>
+        <span>Increment!!!</span>
+      </button>
+    </div>
+  </div>
+</div>
