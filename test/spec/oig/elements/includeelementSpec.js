@@ -20,14 +20,23 @@ describe('include element', function () {
    */
   var resource;
   /**
+   * @type {Object}
+   */
+  var mock;
+
+  /**
    * @type {Promise}
    */
   var promise;
 
   before(function () {
-    sinon.stub(oig, "resource", function () {
-      return resource;
-    });
+
+    mock = sinon.mock(oig);
+    mock.expects('resource').atLeast(0).returns(resource);
+  });
+
+  after(function () {
+    mock.restore();
   });
 
   beforeEach(function () {
