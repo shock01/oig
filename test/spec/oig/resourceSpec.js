@@ -77,7 +77,7 @@ describe('resource', function () {
         resource.load().then(function () {
           resolved++;
         });
-        resource.load().then(function () {
+        oig.resource('/path').load().then(function () {
           resolved++;
         });
         requests[0].respond(200, {'Content-Type': "text/plain"}, 'response');
