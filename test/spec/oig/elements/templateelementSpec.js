@@ -12,7 +12,7 @@ describe('template element', function () {
   /**
    * @type {HTMLTemplateElement}
    */
-  var template
+  var template;
   /**
    * @type {Object}
    */
@@ -20,7 +20,6 @@ describe('template element', function () {
 
   var defaultTemplateEngine;
   var customTemplateEngine;
-  var templateExecutor;
 
   before(function () {
     Object.defineProperty(oig.viewModels, 'templateelement', {
@@ -29,25 +28,22 @@ describe('template element', function () {
         return viewModel;
       }
     });
-    templateExecutor = sinon.spy();
-    defaultTemplateEngine = sinon.mock(oig.templateEngines.default);
-
     customTemplateEngine = {
       compile: sinon.stub()
     };
-
-    beforeEach(function () {
-      Object.defineProperty(oig.templateEngines, 'custom', {
-        configurable: true,
-        get: function () {
-          return customTemplateEngine;
-        }
-      });
   });
 
   after(function () {
     delete oig.viewModels.template;
-    defaultTemplateEngine.restore();
+  });
+
+  beforeEach(function () {
+    Object.defineProperty(oig.templateEngines, 'custom', {
+      configurable: true,
+      get: function () {
+        return customTemplateEngine;
+      }
+    });
   });
 
   beforeEach(function () {
@@ -58,7 +54,17 @@ describe('template element', function () {
     template.innerHTML = '<%=name%>';
     parent.setAttribute('data-view-model', 'templateelement');
     parent.appendChild(element);
-    viewModel = {};
+    viewModel = {
+      count: 0
+    };
+  });
+
+  beforeEach(function () {
+    defaultTemplateEngine = sinon.mock(oig.templateEngines.default);
+  });
+
+  afterEach(function () {
+    defaultTemplateEngine.restore();
   });
 
   afterEach(function () {
@@ -77,9 +83,7 @@ describe('template element', function () {
 
     beforeEach(function () {
       element.appendChild(template);
-      defaultTemplateEngine.expects('compile').withArgs('<%=name%>', viewModel).once().returns(function () {
-        return '<div></div>';
-      });
+      defaultTemplateEngine.expects('compile').withArgs('<%=name%>', viewModel).once().returns('<div></div>');
     });
 
     afterEach(function () {
@@ -89,12 +93,37 @@ describe('template element', function () {
     it('should insert the content at the end', function () {
       append();
       expect(element.lastElementChild.outerHTML).to.be.equal('<div></div>');
+    });
+  });
 
+  describe('when viewModel changes', function () {
+    beforeEach(function () {
+      element.appendChild(template);
+      defaultTemplateEngine.expects('compile').withArgs('<%=name%>', viewModel).twice().returns('<div></div>');
+      append();
+      var promise = new Promise(function (resolve) {
+
+        Object.observe(viewModel, function (changes) {
+          console.log(changes)
+
+          defaultTemplateEngine.verify();
+          resolve();
+        });
+
+        viewModel.count++;
+
+      });
+      return promise;
+    });
+
+    it('should insert the content at the end', function () {
+      expect(template.nextElementSibling).to.equal(element.lastElementChild);
     });
   });
 
   describe('when the element has a template with custom engine', function () {
-      console.dir(oig.templateEngines)
+
+    beforeEach(function () {
       element.setAttribute('data-oig-templateengine', 'custom');
       element.appendChild(template);
     });
@@ -108,4 +137,6 @@ describe('template element', function () {
       expect(oig.templateEngines.custom.compile.calledWith('<%=name%>', viewModel)).to.be.true;
     });
   });
-})
+
+
+});

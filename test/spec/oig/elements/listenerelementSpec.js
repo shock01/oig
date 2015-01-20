@@ -1,4 +1,4 @@
-describe('listenerelement', function () {
+describe('listener element', function () {
   'use strict';
 
   // @todo add spec for removeAttribute onclick

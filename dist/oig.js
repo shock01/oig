@@ -465,7 +465,7 @@ var oig;
      * when an onunload method is defined on the viewModel the onunload will be called
      * before dispatching the viewunload event
      *
-     * <div is="oig-context" data-view-model="">
+     * <div is="oig-context" data-view-models="">
      */
     var ContextElement = Object.create(HTMLDivElement.prototype, {
 
@@ -480,14 +480,14 @@ var oig;
        * calls onload when defined on dataContext
        * dispatches contextload event
        *
-       * @throws 'required attribute data-view-model is missing'
+       * @throws 'required attribute data-view-models is missing'
        */
       attachedCallback: {
         value: function () {
           var viewModel = this.dataset.viewModel,
             dataContext = null;
           if(!viewModel) {
-            throw '[oig:contextelement] required attribute data-view-model is missing';
+            throw '[oig:contextelement] required attribute data-view-models is missing';
           }
           if (oig.viewModels.hasOwnProperty(viewModel)) {
             dataContext = oig.viewModels[viewModel];

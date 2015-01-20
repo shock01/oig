@@ -26,9 +26,16 @@ var oig;
    */
   function observeDataContext(element) {
     // watch dataContext changes
-    var observer = element.update.bind(element);
-    Object.observe(element.dataContext, observer);
-    observerMap.set(element, observer);
+    var dataContext = element.dataContext,
+      observer = element.update.bind(element);
+
+    if (dataContext) {
+      Object.observe(dataContext, observer);
+      observerMap.set(element, observer);
+    } else {
+      throw '[oig:element] cannot observer dataContext for element: ' + element;
+    }
+
   }
 
   /**

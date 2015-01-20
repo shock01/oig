@@ -1,4 +1,4 @@
-describe('contextelement', function () {
+describe('context element', function () {
   'use strict';
 
   /**

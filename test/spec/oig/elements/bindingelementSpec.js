@@ -1,4 +1,4 @@
-describe('bindingelement', function () {
+describe('binding element', function () {
   'use strict';
 
   /**

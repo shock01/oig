@@ -5,3 +5,5 @@ reports
 .idea
 
 app/bower_components
+
+app/demo

@@ -18,41 +18,42 @@ var oig;
     }
 
     var TemplateElement = {
-
-      dataContext: {
-        /**
-         * returns the data context of the current element
-         * @returns {Object}
-         */
-        get: function () {
-          return oig.dataContext(this);
-        }
-      },
       /**
        */
       attachedCallback: {
         value: function () {
+
+          oig.ContextElement.prototype.attachedCallback.call(this);
+          this.update();
+        }
+      },
+      update: {
+        value: function () {
           var templateElement = this.firstElementChild,
+            nextSibling,
             dataContext = this.dataContext,
             templateEngine,
             template,
             html;
-          if(!(templateElement instanceof HTMLTemplateElement)) {
+          if (!(templateElement instanceof HTMLTemplateElement)) {
             throw '[oig:templateelement] first element needs to be a template element';
           }
 
-          if(this.dataset.oigTemplateengine) {
+          if (this.dataset.oigTemplateengine) {
             templateEngine = oig.templateEngines[this.dataset.oigTemplateengine];
           } else {
             templateEngine = oig.templateEngines.default;
           }
-          if(!templateEngine) {
+          if (!templateEngine) {
             throw '[oig:templateelement] no templateengine found';
           }
-
-          // @todo add a method to unescape entities
           template = decodeHtml(new XMLSerializer().serializeToString(templateElement.content, 'text/html'));
           html = templateEngine.compile(template, dataContext);
+
+          // remove any previous rendered content
+          while ((nextSibling = templateElement.nextSibling) !== null) {
+            this.removeChild(templateElement.nextSibling);
+          }
 
           this.insertAdjacentHTML('beforeend', html);
         }
@@ -62,7 +63,7 @@ var oig;
      * registration
      */
     elements.TemplateElement = document.registerElement('oig-template', {
-      prototype: Object.create(oig.Element.prototype, TemplateElement),
+      prototype: Object.create(oig.ContextElement.prototype, TemplateElement),
       extends : 'div'
     });
   })/* jshint ignore:start */(elements = oig.elements || (oig.elements = {})/* jshint ignore:end */);

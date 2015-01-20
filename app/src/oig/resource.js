@@ -1,6 +1,5 @@
 var oig;
 (function (oig) {
-
   'use strict';
 
   /**

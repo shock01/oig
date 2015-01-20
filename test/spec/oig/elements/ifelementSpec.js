@@ -1,4 +1,4 @@
-describe('ifelement', function () {
+describe('if element', function () {
   'use strict';
 
   /**

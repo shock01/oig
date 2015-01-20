@@ -24,31 +24,31 @@
           }
         }
       });
-      console.dir(oig.templateEngines);
     </script>
     <div class="alert alert-info">
-        <div is="oig-template">
-          <template>
-              <h4>Using default templating</h4>
-              <dl>
-              <% for(var i = 0, ii = items.length; i < ii; i++) { %>
-                <dt><%=items[i].id%></dt>
-                <dd><%=items[i].name%></dd>
-              <% } %>
-              </dl>
-          </template>
-          <div is="oig-template" data-oig-templateengine="handlebars">
-            <template>
-              <h4>Using handlebars templating</h4>
-              <div>{{name}}</div>
-              <dl>
-                {{#each items}}
-                <dt>{{id}}</dt>
-                <dd>{{name}}</dd>
-                {{/each}}
-              </dl>
-            </template>
-        </div>
+      <div is="oig-template">
+        <template>
+          <h4>Using default templating</h4>
+          <dl>
+            <% for(var i = 0, ii = items.length; i < ii; i++) { %>
+            <dt><%=items[i].id%></dt>
+            <dd><%=items[i].name%></dd>
+            <% } %>
+          </dl>
+        </template>
+      </div>
+      <div is="oig-template" data-oig-templateengine="handlebars">
+        <template>
+          <h4>Using handlebars templating</h4>
+
+          <div>{{name}}</div>
+          <dl>
+            {{#each items}}
+            <dt>{{id}}</dt>
+            <dd>{{name}}</dd>
+            {{/each}}
+          </dl>
+        </template>
+      </div>
     </div>
   </div>
-</div>
