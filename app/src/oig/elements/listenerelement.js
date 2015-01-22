@@ -16,12 +16,17 @@ var oig;
      *
      * Parses all attributes and returns attributes starting with on
      * @param {HTMLElement} element
-     * @returns {Array.<Attr>}
      */
-    function eventAttributes(element) {
-      return Array.prototype.filter.call(element.attributes, function (/**Attr*/attribute) {
-        return attribute.name.substring(0, 2) === 'on';
-      });
+    function* eventAttributes(element) {
+
+      var attribute,
+        i = 0;
+
+      while ((attribute = element.attributes[i++]) !== undefined) {
+        if (attribute.name.substring(0, 2) === 'on') {
+          yield attribute.name.substring(0, 2);
+        }
+      }
     }
 
     /**
@@ -104,10 +109,9 @@ var oig;
        */
       attachedCallback: {
         value: function () {
-          var element = this;
-          eventAttributes(this).forEach(function (/**Attr*/attribute) {
-            addListener(element, attribute.name.substring(2));
-          });
+          for (var /**String*/event of eventAttributes(this)) {
+            addListener(this, event);
+          }
         }
       }
     };
