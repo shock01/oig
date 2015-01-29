@@ -1,5 +1,7 @@
 ## OIG 
 
+> Currently too busy on other work related projects. Will continue on this shortly :-) Not that anyone is watching this repo...
+
 DISCLAIMER: Documentation is really not finished yet!!! 
 
 Meanwhile......just look at the demo. (Chrome latest or any updated evergreen webkit like browser)
