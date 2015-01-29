@@ -77,6 +77,7 @@ var oig;
           var targetElement = this.targetElement,
             dataContext = this.dataContext;
           // bind all attributes not starting with data-oig
+          // @todo use a generator method to yield
           for (var i = 0, attribute; (attribute = this.attributes[i++]);) {
             if (attribute.name.substring(0, 8) !== 'data-oig') {
               if (!attribute.namespaceURI) {

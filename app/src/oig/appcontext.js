@@ -57,6 +57,7 @@ var oig;
      * which will be executed and parsed to new function
      */
     if (typeof additionalArguments === 'object') {
+      // @todo use for-of loop (for key of Object.keys())
       Object.keys(additionalArguments).forEach(function (/**String*/name) {
         args.push(name);
         parameters.push(additionalArguments[name]);

@@ -29,6 +29,9 @@ var oig;
       },
       update: {
         value: function () {
+
+          console.log('Updating template element', this);
+
           var templateElement = this.firstElementChild,
             nextSibling,
             dataContext = this.dataContext,

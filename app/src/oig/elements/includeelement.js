@@ -87,6 +87,7 @@ var oig;
                       xPathResult = element.ownerDocument.evaluate(xpointer, node, null, XPathResult.ANY_TYPE, null),
                       found = [],
                       next;
+                    // @todo simplify this using iterator generator
                     while (xPathResult && (next = xPathResult.iterateNext())) {
                       found.push(next);
                     }

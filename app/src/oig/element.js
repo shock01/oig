@@ -31,6 +31,13 @@ var oig;
 
     if (dataContext) {
       Object.observe(dataContext, observer);
+
+      if(dataContext.fragments) {
+        Array.observe(dataContext.fragments, function (changes) {
+          console.log('Yeah Yeah Yeah');
+        });
+      }
+
       observerMap.set(element, observer);
     } else {
       throw '[oig:element] cannot observer dataContext for element: ' + element;
