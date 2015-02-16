@@ -17,6 +17,7 @@
   ],
   "devDependencies": {
     "bootstrap": "~3.3.1",
-    "handlebars": "~2.0.0"
+    "handlebars": "~2.0.0",
+    "react": "~0.12.2"
   }
 }
