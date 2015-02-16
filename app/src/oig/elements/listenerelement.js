@@ -24,7 +24,7 @@ var oig;
 
       while ((attribute = element.attributes[i++]) !== undefined) {
         if (attribute.name.substring(0, 2) === 'on') {
-          yield attribute.name.substring(0, 2);
+          yield attribute.name.substring(2);
         }
       }
     }
