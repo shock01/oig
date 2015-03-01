@@ -7,3 +7,5 @@ reports
 app/bower_components
 
 app/demo
+
+dist/index.html
