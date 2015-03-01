@@ -3,10 +3,9 @@
 // generated on 2014-12-11 using generator-gulp-webapp 0.2.0
 var gulp = require('gulp');
 var livereload = require('gulp-livereload');
-var concat = require('gulp-concat-util');
 var jshint = require('gulp-jshint');
-var rename = require('gulp-rename');
-var uglify = require('gulp-uglify');
+var usemin = require('gulp-usemin');
+var wrap = require("gulp-wrap");
 
 
 gulp.task('jshint', function () {
@@ -15,12 +14,12 @@ gulp.task('jshint', function () {
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('concat', function () {
-  gulp.src('app/src/oig/**/*.js')
-    .pipe(concat('oig.js'))
-    .pipe(concat.header('(function () {\n'))
-    .pipe(concat.footer('\n}());\n'))
-    .pipe(gulp.dest('./dist'));
+gulp.task('usemin', function () {
+  return gulp.src('./app/index.html')
+    .pipe(usemin({
+      js: [wrap('(function(exports, module){\n<%= contents %>\n})(window, module);')]
+    }))
+    .pipe(gulp.dest('dist/'));
 });
 
 gulp.task('clean', require('del').bind(null, ['dist']));

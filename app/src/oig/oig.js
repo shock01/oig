@@ -1,8 +1,3 @@
-var oig;
-
-if (typeof define === 'function' && define.amd) {
-  define('oig', [], function () {
-    'use strict';
-    return oig;
-  });
-}
+var oig = {};
+var elements = {};
+oig.elements = elements;
