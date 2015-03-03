@@ -102,10 +102,7 @@ describe('template element', function () {
       defaultTemplateEngine.expects('compile').withArgs('<%=name%>', viewModel).twice().returns('<div></div>');
       append();
       var promise = new Promise(function (resolve) {
-
         Object.observe(viewModel, function (changes) {
-          console.log(changes)
-
           defaultTemplateEngine.verify();
           resolve();
         });

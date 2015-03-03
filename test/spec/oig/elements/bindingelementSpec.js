@@ -74,6 +74,7 @@ describe('binding element', function () {
       document.body.appendChild(parent);
     });
 
+
     beforeEach(function () {
       return new Promise(function (resolve) {
         Object.observe(viewModel, function observer(changes) {
