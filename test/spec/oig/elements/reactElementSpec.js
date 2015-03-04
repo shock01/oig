@@ -8,7 +8,7 @@ describe('react element', function () {
   /**
    * @type {HTMLElement}
    */
-  var element;
+  var reactElement;
   /**
    * @type {Object}
    */
@@ -36,10 +36,10 @@ describe('react element', function () {
 
   beforeEach(function () {
     parent = document.createElement('div', 'oig-context');
-    element = document.createElement('oig-react');
-    element.setAttribute('component', 'MyJSX');
+    reactElement = document.createElement('oig-react');
+    reactElement.setAttribute('component', 'MyJSX');
     parent.setAttribute('data-view-model', 'reactelement');
-    parent.appendChild(element);
+    parent.appendChild(reactElement);
     viewModel = {
       person: {name: "John Doe"}
     };
@@ -75,7 +75,7 @@ describe('react element', function () {
 
   it('should call render', function () {
     append();
-    expect(React.render.calledWith(component, element)).to.be.true;
+    expect(React.render.calledWith(component, reactElement)).to.be.true;
   });
 
   it('should update the state', function () {
@@ -86,7 +86,7 @@ describe('react element', function () {
   describe('when specifying context attribute', function () {
 
     beforeEach(function () {
-      element.setAttribute('context', 'person');
+      reactElement.setAttribute('context', 'person');
     });
 
     it('should update the state', function () {
@@ -102,7 +102,7 @@ describe('react element', function () {
     });
 
     it('should call render', function () {
-      expect(React.render.calledWith(component, element)).to.be.true;
+      expect(React.render.calledWith(component, reactElement)).to.be.true;
     });
 
     it('should update the state', function () {

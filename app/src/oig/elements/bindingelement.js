@@ -4,14 +4,14 @@
  * WeakMap for storing MutationObservers
  * weak lookup map that can be garbage collected
  */
-var mutationObserverMap = new WeakMap();
+var bindingElementMutationMap = new WeakMap();
 
 /**
  * observes mutation in childList of element
- * and registers the element in the mutationObserverMap
+ * and registers the element in the bindingElementMutationMap
  * @param {BindingElement} element
  */
-function observeDOM(element) {
+function bindingElementObserveDOM(element) {
   // watch changes of textContent / DOM
   var mutationObserver = new MutationObserver(element.update.bind(element));
   mutationObserver.observe(element, {
@@ -19,7 +19,7 @@ function observeDOM(element) {
     childList: true,
     characterData: false
   });
-  mutationObserverMap.set(element, mutationObserver);
+  bindingElementMutationMap.set(element, mutationObserver);
 }
 
 /**
@@ -90,8 +90,8 @@ var BindingElement = {
   attachedCallback: {
     value: function () {
       oig.Element.prototype.attachedCallback.call(this);
-      if (!attributeTruthy(this.getAttribute('once'))) {
-        observeDOM(this);
+      if (!elementAttributeTruthy(this.getAttribute('once'))) {
+        bindingElementObserveDOM(this);
       }
       this.update();
     }
@@ -105,9 +105,9 @@ var BindingElement = {
 
       oig.Element.prototype.detachedCallback.call(this);
 
-      if (mutationObserverMap.has(this)) {
-        mutationObserverMap.get(this).disconnect();
-        mutationObserverMap.delete(this);
+      if (bindingElementMutationMap.has(this)) {
+        bindingElementMutationMap.get(this).disconnect();
+        bindingElementMutationMap.delete(this);
       }
     }
   },
@@ -117,7 +117,7 @@ var BindingElement = {
    */
   attributeChangedCallback: {
     value: function () {
-      if (!attributeTruthy(this.getAttribute('once'))) {
+      if (!elementAttributeTruthy(this.getAttribute('once'))) {
         this.update();
       }
     }
