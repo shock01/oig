@@ -8,7 +8,7 @@ describe('template element', function () {
   /**
    * @type {HTMLElement}
    */
-  var element;
+  var templateElement;
   /**
    * @type {HTMLTemplateElement}
    */
@@ -48,12 +48,12 @@ describe('template element', function () {
 
   beforeEach(function () {
     parent = document.createElement('div', 'oig-context');
-    element = document.createElement('div', 'oig-template');
+    templateElement = document.createElement('div', 'oig-template');
     template = document.createElement('template');
 
     template.innerHTML = '<%=name%>';
     parent.setAttribute('data-view-model', 'templateelement');
-    parent.appendChild(element);
+    parent.appendChild(templateElement);
     viewModel = {
       count: 0
     };
@@ -82,7 +82,7 @@ describe('template element', function () {
   describe('when the element has a template', function () {
 
     beforeEach(function () {
-      element.appendChild(template);
+      templateElement.appendChild(template);
       defaultTemplateEngine.expects('compile').withArgs('<%=name%>', viewModel).once().returns('<div></div>');
     });
 
@@ -92,13 +92,13 @@ describe('template element', function () {
 
     it('should insert the content at the end', function () {
       append();
-      expect(element.lastElementChild.outerHTML).to.be.equal('<div></div>');
+      expect(templateElement.lastElementChild.outerHTML).to.be.equal('<div></div>');
     });
   });
 
   describe('when viewModel changes', function () {
     beforeEach(function () {
-      element.appendChild(template);
+      templateElement.appendChild(template);
       defaultTemplateEngine.expects('compile').withArgs('<%=name%>', viewModel).twice().returns('<div></div>');
       append();
       var promise = new Promise(function (resolve) {
@@ -114,15 +114,15 @@ describe('template element', function () {
     });
 
     it('should insert the content at the end', function () {
-      expect(template.nextElementSibling).to.equal(element.lastElementChild);
+      expect(template.nextElementSibling).to.equal(templateElement.lastElementChild);
     });
   });
 
   describe('when the element has a template with custom engine', function () {
 
     beforeEach(function () {
-      element.setAttribute('data-oig-templateengine', 'custom');
-      element.appendChild(template);
+      templateElement.setAttribute('data-oig-templateengine', 'custom');
+      templateElement.appendChild(template);
     });
 
     afterEach(function () {

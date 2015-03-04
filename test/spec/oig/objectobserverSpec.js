@@ -1,8 +1,21 @@
 describe('objectobserver', function () {
 
+  'use strict';
+  /**
+   * @type {ObjectObserver}
+   */
   var objectObserver;
+  /**
+   * @type {Function}
+   */
   var observer;
+  /**
+   * @type {Object}
+   */
   var dataContext = {};
+  /**
+   * @type {Object}
+   */
   var nested;
 
   beforeEach(function () {
@@ -19,14 +32,14 @@ describe('objectobserver', function () {
   it('should call the observer when changing simple property', function () {
     objectObserver.observe(observer);
     dataContext.name = 'test';
-    Object.deliverChangeRecords(objectObserver.objectCallback);
+    objectObserver.notifyAll();
     expect(observer.called).to.be.true;
   });
 
   it('should call the observer when adding nested property', function () {
     objectObserver.observe(observer);
     nested.key = 'test';
-    Object.deliverChangeRecords(objectObserver.objectCallback);
+    objectObserver.notifyAll();
     expect(observer.called).to.be.true;
   });
 
@@ -34,7 +47,7 @@ describe('objectobserver', function () {
     delete dataContext.nested;
     objectObserver.observe(observer);
     nested.key = 'test';
-    Object.deliverChangeRecords(objectObserver.objectCallback);
+    objectObserver.notifyAll();
     expect(observer.called).not.to.be.true;
   });
 
@@ -42,9 +55,9 @@ describe('objectobserver', function () {
   it('should call the observer twice after adding and updating nested property', function () {
     objectObserver.observe(observer);
     dataContext.nested2 = {};
-    Object.deliverChangeRecords(objectObserver.objectCallback);
+    objectObserver.notifyAll();
     dataContext.nested2.name = 'whatever';
-    Object.deliverChangeRecords(objectObserver.objectCallback);
+    objectObserver.notifyAll();
     expect(observer.callCount).to.equal(2);
   });
 
@@ -60,30 +73,31 @@ describe('objectobserver', function () {
 
     it('should call the observer when changing length', function () {
       dataContext.array.length = 1;
-      Object.deliverChangeRecords(objectObserver.arrayCallback);
+      objectObserver.notifyAll();
       expect(observer.called).to.be.true;
     });
+
     it('should call the observer when pushing', function () {
       dataContext.array.push(2);
-      Object.deliverChangeRecords(objectObserver.arrayCallback);
+      objectObserver.notifyAll();
       expect(observer.called).to.be.true;
     });
+
     it('should call the observer when changing array item contents', function () {
       dataContext.array.push(nested);
-      Object.deliverChangeRecords(objectObserver.arrayCallback);
+      objectObserver.notifyAll();
       nested.key = 'value';
-      Object.deliverChangeRecords(objectObserver.objectCallback);
+      objectObserver.notifyAll();
       expect(observer.callCount).to.equal(2);
     });
 
-
     it('should not call the observer on reference removing nested property', function () {
       dataContext.array.push(nested);
-      Object.deliverChangeRecords(objectObserver.arrayCallback);
+      objectObserver.notifyAll();
       dataContext.array.length = 0;
-      Object.deliverChangeRecords(objectObserver.arrayCallback);
+      objectObserver.notifyAll();
       nested.key = 'test';
-      Object.deliverChangeRecords(objectObserver.objectCallback);
+      objectObserver.notifyAll();
       expect(observer.callCount).to.equal(2);
     });
   });

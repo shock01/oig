@@ -6,7 +6,7 @@
  * Parses all attributes and returns attributes starting with on
  * @param {HTMLElement} element
  */
-function* eventAttributes(element) {
+function* listenerElementEventAttributes(element) {
 
   var attribute,
     i = 0;
@@ -38,7 +38,7 @@ function eventListener(event, element) {
 
     oig.evaluate(dataContext, onAttrValue, {event: event});
 
-    if (attributeTruthy(stopPropagationAttr)) {
+    if (elementAttributeTruthy(stopPropagationAttr)) {
       if (event.stopPropagation) {
         event.stopPropagation();
       }
@@ -46,7 +46,7 @@ function eventListener(event, element) {
         event.cancelBubble = true;
       }
     }
-    if (attributeTruthy(preventDefaultAttr)) {
+    if (elementAttributeTruthy(preventDefaultAttr)) {
       event.preventDefault();
     }
   }
@@ -98,7 +98,7 @@ var ListenerElement = {
    */
   attachedCallback: {
     value: function () {
-      for (var /**String*/event of eventAttributes(this)) {
+      for (var /**String*/event of listenerElementEventAttributes(this)) {
         addListener(this, event);
       }
     }

@@ -18,6 +18,11 @@ describe('binding element', function () {
    */
   var viewModel;
 
+  /**
+   *
+   */
+  var objectObserver;
+
   before(function () {
 
     Object.defineProperty(oig.viewModels, 'binding', {
@@ -76,13 +81,8 @@ describe('binding element', function () {
 
 
     beforeEach(function () {
-      return new Promise(function (resolve) {
-        Object.observe(viewModel, function observer(changes) {
-          Object.unobserve(viewModel, observer);
-          resolve();
-        });
-        viewModel.name = 'test';
-      });
+      viewModel.name = 'test';
+      elementObserverMap.get(bindingElement).objectObserver.notifyAll();
     });
 
     afterEach(function () {

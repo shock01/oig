@@ -1,8 +1,19 @@
 describe('template engines', function () {
 
-  var executor,
-    template = '<%=TEMPLATE%>',
-    data = {};
+  'use strict';
+
+  /**
+   * @type {Spy}
+   */
+  var executor;
+  /**
+   * @type {String}
+   */
+  var template = '<%=TEMPLATE%>';
+  /**
+   * @type {Object}
+   */
+  var data = {};
 
 
   before(function () {
@@ -11,10 +22,10 @@ describe('template engines', function () {
   });
 
   describe('default template engine', function () {
-      it('should call microtemplating', function () {
-        oig.templateEngines.default.compile(template, data);
-        assert(window.microtemplate.calledWith(template),  'should call microtemplates with template arg');
-        assert(executor.calledWith(data),  'should call executor with data');
-      });
+    it('should call microtemplating', function () {
+      oig.templateEngines.default.compile(template, data);
+      assert(window.microtemplate.calledWith(template), 'should call microtemplates with template arg');
+      assert(executor.calledWith(data), 'should call executor with data');
+    });
   });
-})
+});

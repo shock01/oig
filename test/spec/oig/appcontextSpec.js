@@ -3,6 +3,9 @@ describe('appcontext', function () {
   // @todo use promises as in ifelementSpec
 
   'use strict';
+  /**
+   * @type {Object}
+   */
   var dataContext;
 
   beforeEach(function () {

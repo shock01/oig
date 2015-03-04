@@ -24,6 +24,15 @@ function ObjectObserver(observable) {
   }
 
   /**
+   * will push changes to the observers.
+   * Object.observe is async but can be 'flushed'
+   */
+  function notifyAll() {
+    Object.deliverChangeRecords(objectCallback);
+    Object.deliverChangeRecords(arrayCallback);
+  }
+
+  /**
    *
    * @param {Object} observable
    * removes observers
@@ -100,20 +109,23 @@ function ObjectObserver(observable) {
    * @param {Function} observer
    */
   function unObserve(observer) {
-    var index = observers.indexOf(observer);
-    if (index > -1) {
+    var index;
+    if ((index = observers.indexOf(observer)) > -1) {
       observers.splice(index, 1);
+      if (typeof observable === 'object' && typeof observer === 'function') {
+        try {
+          Object.unobserve(observable, observer);
+        } catch (e) {
+          // make sure that unobserve does not thrown. gracefully
+        }
+      }
     }
   }
 
   return {
     observe: observe,
     unObserve: unObserve,
-    /**
-     * publicly exposed for unit testing to make sure we can call deliverChangeRecords for easier TDD
-     */
-    objectCallback: objectCallback,
-    arrayCallback: arrayCallback
+    notifyAll: notifyAll
   };
 }
 
