@@ -17,7 +17,7 @@ gulp.task('jshint', function () {
 gulp.task('usemin', function () {
   return gulp.src('./app/index.html')
     .pipe(usemin({
-      js: [wrap('(function(exports, module){\n<%= contents %>\n})(window, module);')]
+      js: [wrap('(function(exports, module){\n<%= contents %>\n})(window);')]
     }))
     .pipe(gulp.dest('dist/'));
 });

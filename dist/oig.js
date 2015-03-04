@@ -1195,4 +1195,4 @@ if (typeof exports !== 'undefined') {
   exports.oig = oig;
 }
 
-})(window, module);
+})(window);
