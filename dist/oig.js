@@ -17,11 +17,11 @@ oig.elements = elements;
    * }
  */
 // @todo move me to a better place please
-var viewModels = {};
+  var appContextViewModels = {};
 
 Object.defineProperty(oig, 'viewModels', {
   get: function () {
-    return viewModels;
+    return appContextViewModels;
   },
   set: function () {
     throw '[oig:appcontext] viewModels property cannot be set directly';
@@ -34,7 +34,7 @@ Object.defineProperty(oig, 'viewModels', {
  * @param {String }body
  * @returns {string}
  */
-function buildMethodBody(body) {
+function appContext_buildMethodBody(body) {
   return 'try {with(dataContext) { return ' + body + '}} catch(e) {console.error(\'[oig-evaluate error]\', e)}';
 }
 
@@ -68,7 +68,7 @@ oig.evaluate = function (dataContext, methodBody, additionalArguments) {
   }
 
   /*jshint evil: true */
-  return new Function(args.join(','), buildMethodBody(methodBody)).apply(this, parameters);
+  return new Function(args.join(','), appContext_buildMethodBody(methodBody)).apply(this, parameters);
   /*jshint evil: false */
 };
 
@@ -91,7 +91,7 @@ var dataContextMap = new WeakMap();
  * @param {HTMLElement} element
  * @returns {Object}
  */
-function dataContextResolver(element) {
+function dataContext_resolver(element) {
   var parent = element,
     dataContext;
 
@@ -110,15 +110,149 @@ function dataContextResolver(element) {
   }
   return dataContext;
 }
-oig.dataContext = dataContextResolver;
+
+  oig.dataContext = dataContext_resolver;
 
 'use strict';
 
 /**
  *
+ * @param {Object} observable
+ * @constructor
+ */
+function ObjectObserver(observable) {
+
+  /**
+   * list of observers to notify on change
+   * @type {Array<Function>}
+   */
+  var observers = [];
+
+  /**
+   * notifies all observers.
+   * no data is passed to the observer because at the time of writing it's not needed (yet)
+   */
+  function notify() {
+    observers.forEach(function (observer) {
+      observer();
+    });
+  }
+
+  /**
+   * will push changes to the observers.
+   * Object.observe is async but can be 'flushed'
+   */
+  function notifyAll() {
+    Object.deliverChangeRecords(objectCallback);
+    Object.deliverChangeRecords(arrayCallback);
+  }
+
+  /**
+   *
+   * @param {Object} observable
+   * removes observers
+   */
+  function unobserve(observable) {
+    if (observable === Object(observable)) {
+      if (Array.isArray(observable)) {
+        Array.unobserve(observable, arrayCallback);
+      } else {
+        Object.unobserve(observable, objectCallback);
+      }
+    }
+  }
+
+  /**
+   * verify changes and calls notify
+   * @param {Array.<>} changes
+   */
+  function objectCallback(changes) {
+    changes.forEach(function (change) {
+      if (change.type === 'delete') {
+        unobserve(change.oldValue);
+      } else if (change.type === 'add') {
+        deepObserve(change.object[change.name]);
+      }
+    });
+    notify();
+  }
+
+  /**
+   * verify changes and calls notify
+   * @param {Array.<>} changes
+   */
+  function arrayCallback(changes) {
+    changes.forEach(function (change) {
+      change.removed.forEach(function (item) {
+        unobserve(item);
+      });
+    });
+    notify();
+  }
+
+  /**
+   *
+   * @param {Object} observable
+   */
+  function deepObserve(observable) {
+    if (observable === Object(observable)) {
+      if (Array.isArray(observable)) {
+        Array.observe(observable, arrayCallback);
+        observable.forEach(function (value) {
+          deepObserve(value);
+        });
+      } else {
+        Object.observe(observable, objectCallback);
+        Object.keys(observable).forEach(function (key) {
+          deepObserve(observable[key]);
+        });
+      }
+    }
+  }
+
+  /**
+   *
+   * @param {Function} observer
+   */
+  function observe(observer) {
+    observers.push(observer);
+    deepObserve(observable);
+  }
+
+  /**
+   *
+   * @param {Function} observer
+   */
+  function unObserve(observer) {
+    var index;
+    if ((index = observers.indexOf(observer)) > -1) {
+      observers.splice(index, 1);
+      if (typeof observable === 'object' && typeof observer === 'function') {
+        try {
+          Object.unobserve(observable, observer);
+        } catch (e) {
+          // make sure that unobserve does not thrown. gracefully
+        }
+      }
+    }
+  }
+
+  return {
+    observe: observe,
+    unObserve: unObserve,
+    notifyAll: notifyAll
+  };
+}
+
+  oig.ObjectObserver = ObjectObserver;
+
+  'use strict';
+
+  /**
+   *
  * @type {Object<String, Promise>}
  */
-var requestMap = {};
+  var resource_requestMap = {};
 
 
 /**
@@ -133,15 +267,15 @@ oig.resource = function (url) {
      * removes all loaded resources
      */
     clear: function () {
-      requestMap = {};
+      resource_requestMap = {};
     },
     /**
-     * when no promise is created it will put a new promise in requestMap.
+     * when no promise is created it will put a new promise in resource_requestMap.
      * @returns {Promise}
      */
     load: function () {
-      if (!(url in requestMap)) {
-        requestMap[url] = new Promise(function (resolve, reject) {
+      if (!(url in resource_requestMap)) {
+        resource_requestMap[url] = new Promise(function (resolve, reject) {
           var xhr = new XMLHttpRequest();
           xhr.open('GET', url, true);
           xhr.onload = function () {
@@ -154,7 +288,7 @@ oig.resource = function (url) {
           xhr.send(null);
         });
       }
-      return requestMap[url];
+      return resource_requestMap[url];
     }
   };
 };
@@ -196,7 +330,7 @@ Object.defineProperty(oig.templateEngines, 'default', {
  * @param {String} value
  * @returns {boolean}
  */
-function attributeTruthy(value) {
+function elementAttributeTruthy(value) {
   return typeof value === 'string' && (value === 'true' || value === '');
 }
 
@@ -204,26 +338,43 @@ function attributeTruthy(value) {
  * WeakMap for storing ObjectObservers
  * weak lookup map that can be garbage collected
  */
-var observerMap = new WeakMap();
+var elementObserverMap = new WeakMap();
 
 /**
  * observes the datacontext and registers the element in the
  *
- * observerMap
- * @param {ContextElement} element
+ * elementObserverMap
+ * @param {Element} element
  */
-function observeDataContext(element) {
+function element_observeDataContext(element) {
   // watch dataContext changes
   var dataContext = element.dataContext,
+    objectObserver,
     observer = element.update.bind(element);
 
   if (dataContext) {
-    Object.observe(dataContext, observer);
-    observerMap.set(element, observer);
+    objectObserver = new ObjectObserver(dataContext);
+    objectObserver.observe(observer);
+    elementObserverMap.set(element, {
+      objectObserver: objectObserver,
+      observer: observer
+    });
   } else {
     throw '[oig:element] cannot observer dataContext for element: ' + element;
   }
+}
 
+  /**
+   *
+   * @param {Element} element
+   */
+  function element_unObserveDataContext(element) {
+    var observerContext;
+    if (elementObserverMap.has(element)) {
+      observerContext = elementObserverMap.get(element);
+      observerContext.objectObserver.unObserve(observerContext.observer);
+      elementObserverMap.delete(element);
+    }
 }
 
 /**
@@ -235,6 +386,13 @@ function Element() {
 }
 
 Element.prototype = Object.create(HTMLElement.prototype, {
+  /**
+   * @type {ObjectObserver}
+   */
+  objectObserver: {
+    value: null,
+    writable: true
+  },
   /**
    * returns the data context of the current element
    * @returns {Object}
@@ -254,8 +412,8 @@ Element.prototype = Object.create(HTMLElement.prototype, {
    */
   attachedCallback: {
     value: function () {
-      if (!attributeTruthy(this.getAttribute('once'))) {
-        observeDataContext(this);
+      if (!elementAttributeTruthy(this.getAttribute('once'))) {
+        element_observeDataContext(this);
       }
     }
   },
@@ -264,13 +422,7 @@ Element.prototype = Object.create(HTMLElement.prototype, {
    */
   detachedCallback: {
     value: function () {
-      var dataContext = this.dataContext;
-      if (observerMap.has(this)) {
-        if (dataContext) {
-          Object.unobserve(dataContext, observerMap.get(this));
-        }
-        observerMap.delete(this);
-      }
+      element_unObserveDataContext(this);
     }
   },
   /**
@@ -293,14 +445,14 @@ oig.Element = Element;
  * WeakMap for storing MutationObservers
  * weak lookup map that can be garbage collected
  */
-var mutationObserverMap = new WeakMap();
+var bindingElementMutationMap = new WeakMap();
 
 /**
  * observes mutation in childList of element
- * and registers the element in the mutationObserverMap
+ * and registers the element in the bindingElementMutationMap
  * @param {BindingElement} element
  */
-function observeDOM(element) {
+function bindingElementObserveDOM(element) {
   // watch changes of textContent / DOM
   var mutationObserver = new MutationObserver(element.update.bind(element));
   mutationObserver.observe(element, {
@@ -308,7 +460,7 @@ function observeDOM(element) {
     childList: true,
     characterData: false
   });
-  mutationObserverMap.set(element, mutationObserver);
+  bindingElementMutationMap.set(element, mutationObserver);
 }
 
 /**
@@ -379,8 +531,8 @@ var BindingElement = {
   attachedCallback: {
     value: function () {
       oig.Element.prototype.attachedCallback.call(this);
-      if (!attributeTruthy(this.getAttribute('once'))) {
-        observeDOM(this);
+      if (!elementAttributeTruthy(this.getAttribute('once'))) {
+        bindingElementObserveDOM(this);
       }
       this.update();
     }
@@ -394,9 +546,9 @@ var BindingElement = {
 
       oig.Element.prototype.detachedCallback.call(this);
 
-      if (mutationObserverMap.has(this)) {
-        mutationObserverMap.get(this).disconnect();
-        mutationObserverMap.delete(this);
+      if (bindingElementMutationMap.has(this)) {
+        bindingElementMutationMap.get(this).disconnect();
+        bindingElementMutationMap.delete(this);
       }
     }
   },
@@ -406,7 +558,7 @@ var BindingElement = {
    */
   attributeChangedCallback: {
     value: function () {
-      if (!attributeTruthy(this.getAttribute('once'))) {
+      if (!elementAttributeTruthy(this.getAttribute('once'))) {
         this.update();
       }
     }
@@ -677,7 +829,7 @@ elements.IncludeElement = document.registerElement('oig-include', {
  * Parses all attributes and returns attributes starting with on
  * @param {HTMLElement} element
  */
-function* eventAttributes(element) {
+function* listenerElementEventAttributes(element) {
 
   var attribute,
     i = 0;
@@ -709,7 +861,7 @@ function eventListener(event, element) {
 
     oig.evaluate(dataContext, onAttrValue, {event: event});
 
-    if (attributeTruthy(stopPropagationAttr)) {
+    if (elementAttributeTruthy(stopPropagationAttr)) {
       if (event.stopPropagation) {
         event.stopPropagation();
       }
@@ -717,7 +869,7 @@ function eventListener(event, element) {
         event.cancelBubble = true;
       }
     }
-    if (attributeTruthy(preventDefaultAttr)) {
+    if (elementAttributeTruthy(preventDefaultAttr)) {
       event.preventDefault();
     }
   }
@@ -769,7 +921,7 @@ var ListenerElement = {
    */
   attachedCallback: {
     value: function () {
-      for (var /**String*/event of eventAttributes(this)) {
+      for (var /**String*/event of listenerElementEventAttributes(this)) {
         addListener(this, event);
       }
     }
@@ -853,7 +1005,7 @@ elements.ReactElement = document.registerElement('oig-react', {
  * @param {String} html
  * @returns {String}
  */
-function decodeHtml(html) {
+function templateElementDecodeHtml(html) {
   var txt = document.createElement('textarea');
   txt.innerHTML = html;
   return txt.value;
@@ -871,8 +1023,6 @@ var TemplateElement = {
   },
   update: {
     value: function () {
-
-      console.log('Updating template element', this);
 
       var templateElement = this.firstElementChild,
         nextSibling,
@@ -892,7 +1042,7 @@ var TemplateElement = {
       if (!templateEngine) {
         throw '[oig:templateelement] no templateengine found';
       }
-      template = decodeHtml(new XMLSerializer().serializeToString(templateElement.content, 'text/html'));
+      template = templateElementDecodeHtml(new XMLSerializer().serializeToString(templateElement.content, 'text/html'));
       html = templateEngine.compile(template, dataContext);
 
       // remove any previous rendered content

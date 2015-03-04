@@ -25,11 +25,15 @@
         }
       });
     </script>
+    <button class="btn btn-default">
+      <oig-listener onclick="items.push({id: Date.now(), name: 'Item_' + (items.length+1)})"></oig-listener>
+      <span>Add a new Entry</span>
+    </button>
     <div class="alert alert-info">
       <div is="oig-template">
         <template>
           <h4>Using default templating</h4>
-          <dl>
+          <dl class="dl-horizontal">
             <% for(var i = 0, ii = items.length; i < ii; i++) { %>
             <dt><%=items[i].id%></dt>
             <dd><%=items[i].name%></dd>
@@ -42,7 +46,7 @@
           <h4>Using handlebars templating</h4>
 
           <div>{{name}}</div>
-          <dl>
+          <dl class="dl-horizontal">
             {{#each items}}
             <dt>{{id}}</dt>
             <dd>{{name}}</dd>

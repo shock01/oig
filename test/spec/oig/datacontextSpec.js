@@ -1,9 +1,19 @@
 describe('datacontext', function () {
   'use strict';
 
-  var /**HTMLElement*/node,
-    /**HTMLElement*/child,
-    /**HTMLElement*/viewModel;
+  /**
+   * @type {HTMLElement}
+   */
+  var node;
+  /**
+   * @type {HTMLElement}
+   */
+  var child;
+
+  /**
+   * @type {Objecgt}
+   */
+  var viewModel;
 
 
   beforeEach(function (done) {

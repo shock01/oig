@@ -10,7 +10,7 @@ describe('include element', function () {
   /**
    * @type {HTMLElement}
    */
-  var element;
+  var includeElement;
   /**
    * @type {HTMLElement}
    */
@@ -51,7 +51,7 @@ describe('include element', function () {
 
   beforeEach(function () {
     parent = document.createElement('div');
-    element = document.createElement('oig-include');
+    includeElement = document.createElement('oig-include');
     document.body.appendChild(parent);
   });
 
@@ -60,7 +60,7 @@ describe('include element', function () {
   });
 
   it('should have an element defined', function () {
-    assert(element instanceof HTMLElement, 'Element should be defined');
+    assert(includeElement instanceof HTMLElement, 'Element should be defined');
   });
 
   describe('attaching to DOM', function () {
@@ -79,8 +79,8 @@ describe('include element', function () {
 
       beforeEach(function () {
         mock.expects('resource').withArgs('test.xml').once().returns(resource);
-        element.setAttribute("href", "test.xml");
-        parent.appendChild(element);
+        includeElement.setAttribute("href", "test.xml");
+        parent.appendChild(includeElement);
         return promise;
       });
 
@@ -97,8 +97,8 @@ describe('include element', function () {
 
       beforeEach(function () {
         mock.expects('resource').withArgs(document.URL).once().returns(resource);
-        element.setAttribute("xpointer", "//div");
-        parent.appendChild(element);
+        includeElement.setAttribute("xpointer", "//div");
+        parent.appendChild(includeElement);
         return promise;
       });
 
@@ -117,9 +117,9 @@ describe('include element', function () {
 
         mock.expects('resource').withArgs('test.xml').once().returns(resource);
 
-        element.setAttribute('href', 'test.xml');
-        element.setAttribute('xpointer', '//*[@id=1]');
-        parent.appendChild(element);
+        includeElement.setAttribute('href', 'test.xml');
+        includeElement.setAttribute('xpointer', '//*[@id=1]');
+        parent.appendChild(includeElement);
         return promise;
       });
 
@@ -138,9 +138,9 @@ describe('include element', function () {
 
         mock.expects('resource').withArgs('test.xml').once().returns(resource);
 
-        element.setAttribute('href', 'test.xml');
-        element.setAttribute('parse', 'xml');
-        parent.appendChild(element);
+        includeElement.setAttribute('href', 'test.xml');
+        includeElement.setAttribute('parse', 'xml');
+        parent.appendChild(includeElement);
         return promise;
       });
 
@@ -157,9 +157,9 @@ describe('include element', function () {
 
       beforeEach(function () {
         mock.expects('resource').withArgs('test.xml').once().returns(resource);
-        element.setAttribute('href', 'test.xml');
-        element.setAttribute('parse', 'text');
-        parent.appendChild(element);
+        includeElement.setAttribute('href', 'test.xml');
+        includeElement.setAttribute('parse', 'text');
+        parent.appendChild(includeElement);
         return promise;
       });
 
@@ -187,8 +187,8 @@ describe('include element', function () {
     });
 
     function append() {
-      element.setAttribute("href", "test.xml");
-      parent.appendChild(element);
+      includeElement.setAttribute("href", "test.xml");
+      parent.appendChild(includeElement);
     }
 
     describe('with fallback', function () {
@@ -198,7 +198,7 @@ describe('include element', function () {
       beforeEach(function () {
         fallback = document.createElement('template');
         fallback.content.appendChild(document.createTextNode('error'));
-        element.appendChild(fallback);
+        includeElement.appendChild(fallback);
       });
 
 

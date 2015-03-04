@@ -1,5 +1,13 @@
 describe('resource', function () {
-  var xhr, requests;
+  'use strict';
+  /**
+   * @type {XMLHttpRequest}
+   */
+  var xhr;
+  /**
+   * @type {Array.<Object>}
+   */
+  var requests;
 
   beforeEach(function () {
     xhr = sinon.useFakeXMLHttpRequest();

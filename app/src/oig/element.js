@@ -6,7 +6,7 @@
  * @param {String} value
  * @returns {boolean}
  */
-function attributeTruthy(value) {
+function elementAttributeTruthy(value) {
   return typeof value === 'string' && (value === 'true' || value === '');
 }
 
@@ -14,26 +14,43 @@ function attributeTruthy(value) {
  * WeakMap for storing ObjectObservers
  * weak lookup map that can be garbage collected
  */
-var observerMap = new WeakMap();
+var elementObserverMap = new WeakMap();
 
 /**
  * observes the datacontext and registers the element in the
  *
- * observerMap
- * @param {ContextElement} element
+ * elementObserverMap
+ * @param {Element} element
  */
-function observeDataContext(element) {
+function element_observeDataContext(element) {
   // watch dataContext changes
   var dataContext = element.dataContext,
+    objectObserver,
     observer = element.update.bind(element);
 
   if (dataContext) {
-    Object.observe(dataContext, observer);
-    observerMap.set(element, observer);
+    objectObserver = new ObjectObserver(dataContext);
+    objectObserver.observe(observer);
+    elementObserverMap.set(element, {
+      objectObserver: objectObserver,
+      observer: observer
+    });
   } else {
     throw '[oig:element] cannot observer dataContext for element: ' + element;
   }
+}
 
+/**
+ *
+ * @param {Element} element
+ */
+function element_unObserveDataContext(element) {
+  var observerContext;
+  if (elementObserverMap.has(element)) {
+    observerContext = elementObserverMap.get(element);
+    observerContext.objectObserver.unObserve(observerContext.observer);
+    elementObserverMap.delete(element);
+  }
 }
 
 /**
@@ -45,6 +62,13 @@ function Element() {
 }
 
 Element.prototype = Object.create(HTMLElement.prototype, {
+  /**
+   * @type {ObjectObserver}
+   */
+  objectObserver: {
+    value: null,
+    writable: true
+  },
   /**
    * returns the data context of the current element
    * @returns {Object}
@@ -64,8 +88,8 @@ Element.prototype = Object.create(HTMLElement.prototype, {
    */
   attachedCallback: {
     value: function () {
-      if (!attributeTruthy(this.getAttribute('once'))) {
-        observeDataContext(this);
+      if (!elementAttributeTruthy(this.getAttribute('once'))) {
+        element_observeDataContext(this);
       }
     }
   },
@@ -74,13 +98,7 @@ Element.prototype = Object.create(HTMLElement.prototype, {
    */
   detachedCallback: {
     value: function () {
-      var dataContext = this.dataContext;
-      if (observerMap.has(this)) {
-        if (dataContext) {
-          Object.unobserve(dataContext, observerMap.get(this));
-        }
-        observerMap.delete(this);
-      }
+      element_unObserveDataContext(this);
     }
   },
   /**

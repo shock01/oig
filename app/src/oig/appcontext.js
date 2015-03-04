@@ -12,11 +12,11 @@
    * }
  */
 // @todo move me to a better place please
-var viewModels = {};
+var appContextViewModels = {};
 
 Object.defineProperty(oig, 'viewModels', {
   get: function () {
-    return viewModels;
+    return appContextViewModels;
   },
   set: function () {
     throw '[oig:appcontext] viewModels property cannot be set directly';
@@ -29,7 +29,7 @@ Object.defineProperty(oig, 'viewModels', {
  * @param {String }body
  * @returns {string}
  */
-function buildMethodBody(body) {
+function appContext_buildMethodBody(body) {
   return 'try {with(dataContext) { return ' + body + '}} catch(e) {console.error(\'[oig-evaluate error]\', e)}';
 }
 
@@ -63,7 +63,7 @@ oig.evaluate = function (dataContext, methodBody, additionalArguments) {
   }
 
   /*jshint evil: true */
-  return new Function(args.join(','), buildMethodBody(methodBody)).apply(this, parameters);
+  return new Function(args.join(','), appContext_buildMethodBody(methodBody)).apply(this, parameters);
   /*jshint evil: false */
 };
 

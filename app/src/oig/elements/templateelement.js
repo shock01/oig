@@ -7,7 +7,7 @@
  * @param {String} html
  * @returns {String}
  */
-function decodeHtml(html) {
+function templateElementDecodeHtml(html) {
   var txt = document.createElement('textarea');
   txt.innerHTML = html;
   return txt.value;
@@ -25,8 +25,6 @@ var TemplateElement = {
   },
   update: {
     value: function () {
-
-      console.log('Updating template element', this);
 
       var templateElement = this.firstElementChild,
         nextSibling,
@@ -46,7 +44,7 @@ var TemplateElement = {
       if (!templateEngine) {
         throw '[oig:templateelement] no templateengine found';
       }
-      template = decodeHtml(new XMLSerializer().serializeToString(templateElement.content, 'text/html'));
+      template = templateElementDecodeHtml(new XMLSerializer().serializeToString(templateElement.content, 'text/html'));
       html = templateEngine.compile(template, dataContext);
 
       // remove any previous rendered content
