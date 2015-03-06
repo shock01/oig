@@ -4,7 +4,7 @@
  *
  * @type {Object<String, Promise>}
  */
-var resource_requestMap = {};
+var resourceRequestMap = {};
 
 
 /**
@@ -13,21 +13,21 @@ var resource_requestMap = {};
  * @param url
  * @returns {{clear: Function, load: Function}}
  */
-oig.resource = function (url) {
+function oigResource(url) {
   return {
     /**
      * removes all loaded resources
      */
     clear: function () {
-      resource_requestMap = {};
+      resourceRequestMap = {};
     },
     /**
-     * when no promise is created it will put a new promise in resource_requestMap.
+     * when no promise is created it will put a new promise in resourceRequestMap.
      * @returns {Promise}
      */
     load: function () {
-      if (!(url in resource_requestMap)) {
-        resource_requestMap[url] = new Promise(function (resolve, reject) {
+      if (!(url in resourceRequestMap)) {
+        resourceRequestMap[url] = new Promise(function (resolve, reject) {
           var xhr = new XMLHttpRequest();
           xhr.open('GET', url, true);
           xhr.onload = function () {
@@ -40,7 +40,7 @@ oig.resource = function (url) {
           xhr.send(null);
         });
       }
-      return resource_requestMap[url];
+      return resourceRequestMap[url];
     }
   };
 };

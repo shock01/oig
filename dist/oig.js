@@ -34,7 +34,7 @@ Object.defineProperty(oig, 'viewModels', {
  * @param {String }body
  * @returns {string}
  */
-function appContext_buildMethodBody(body) {
+function appContextBuildMethodBody(body) {
   return 'try {with(dataContext) { return ' + body + '}} catch(e) {console.error(\'[oig-evaluate error]\', e)}';
 }
 
@@ -68,7 +68,7 @@ oig.evaluate = function (dataContext, methodBody, additionalArguments) {
   }
 
   /*jshint evil: true */
-  return new Function(args.join(','), appContext_buildMethodBody(methodBody)).apply(this, parameters);
+  return new Function(args.join(','), appContextBuildMethodBody(methodBody)).apply(this, parameters);
   /*jshint evil: false */
 };
 
@@ -91,7 +91,7 @@ var dataContextMap = new WeakMap();
  * @param {HTMLElement} element
  * @returns {Object}
  */
-function dataContext_resolver(element) {
+function dataContextResolver(element) {
   var parent = element,
     dataContext;
 
@@ -111,16 +111,17 @@ function dataContext_resolver(element) {
   return dataContext;
 }
 
-  oig.dataContext = dataContext_resolver;
+  oig.dataContext = dataContextResolver;
 
 'use strict';
 
 /**
  *
  * @param {Object} observable
+ * @param {ObserverContext} observerProvider
  * @constructor
  */
-function ObjectObserver(observable) {
+function ObjectObserver(observable, observerProvider) {
 
   /**
    * list of observers to notify on change
@@ -193,19 +194,22 @@ function ObjectObserver(observable) {
   /**
    *
    * @param {Object} observable
+   * will call observerProvider to verify if object should be observed or not
    */
   function deepObserve(observable) {
     if (observable === Object(observable)) {
-      if (Array.isArray(observable)) {
-        Array.observe(observable, arrayCallback);
-        observable.forEach(function (value) {
-          deepObserve(value);
-        });
-      } else {
-        Object.observe(observable, objectCallback);
-        Object.keys(observable).forEach(function (key) {
-          deepObserve(observable[key]);
-        });
+      if (!observerProvider || observerProvider.canObserve(observable)) {
+        if (Array.isArray(observable)) {
+          Array.observe(observable, arrayCallback);
+          observable.forEach(function (value) {
+            deepObserve(value);
+          });
+        } else {
+          Object.observe(observable, objectCallback);
+          Object.keys(observable).forEach(function (key) {
+            deepObserve(observable[key]);
+          });
+        }
       }
     }
   }
@@ -244,7 +248,21 @@ function ObjectObserver(observable) {
   };
 }
 
-  oig.ObjectObserver = ObjectObserver;
+  'use strict';
+  function ObserverContext() {
+
+  }
+
+  ObserverContext.prototype = {
+  /**
+   *
+   * @param {Object} object
+   * @returns boolean
+   */
+  canObserve: function (object) {
+    return object === Object(object) && !Object.isFrozen(object);
+  }
+  };
 
   'use strict';
 
@@ -252,7 +270,7 @@ function ObjectObserver(observable) {
    *
  * @type {Object<String, Promise>}
  */
-  var resource_requestMap = {};
+  var resourceRequestMap = {};
 
 
 /**
@@ -261,21 +279,21 @@ function ObjectObserver(observable) {
  * @param url
  * @returns {{clear: Function, load: Function}}
  */
-oig.resource = function (url) {
+function oigResource(url) {
   return {
     /**
      * removes all loaded resources
      */
     clear: function () {
-      resource_requestMap = {};
+      resourceRequestMap = {};
     },
     /**
-     * when no promise is created it will put a new promise in resource_requestMap.
+     * when no promise is created it will put a new promise in resourceRequestMap.
      * @returns {Promise}
      */
     load: function () {
-      if (!(url in resource_requestMap)) {
-        resource_requestMap[url] = new Promise(function (resolve, reject) {
+      if (!(url in resourceRequestMap)) {
+        resourceRequestMap[url] = new Promise(function (resolve, reject) {
           var xhr = new XMLHttpRequest();
           xhr.open('GET', url, true);
           xhr.onload = function () {
@@ -288,7 +306,7 @@ oig.resource = function (url) {
           xhr.send(null);
         });
       }
-      return resource_requestMap[url];
+      return resourceRequestMap[url];
     }
   };
 };
@@ -346,14 +364,14 @@ var elementObserverMap = new WeakMap();
  * elementObserverMap
  * @param {Element} element
  */
-function element_observeDataContext(element) {
+function elementObserveDataContext(element) {
   // watch dataContext changes
   var dataContext = element.dataContext,
     objectObserver,
     observer = element.update.bind(element);
 
   if (dataContext) {
-    objectObserver = new ObjectObserver(dataContext);
+    objectObserver = new oig.ObjectObserver(dataContext, oig.ObjectProvider);
     objectObserver.observe(observer);
     elementObserverMap.set(element, {
       objectObserver: objectObserver,
@@ -368,7 +386,7 @@ function element_observeDataContext(element) {
    *
    * @param {Element} element
    */
-  function element_unObserveDataContext(element) {
+  function elementUnObserveDataContext(element) {
     var observerContext;
     if (elementObserverMap.has(element)) {
       observerContext = elementObserverMap.get(element);
@@ -413,7 +431,7 @@ Element.prototype = Object.create(HTMLElement.prototype, {
   attachedCallback: {
     value: function () {
       if (!elementAttributeTruthy(this.getAttribute('once'))) {
-        element_observeDataContext(this);
+        elementObserveDataContext(this);
       }
     }
   },
@@ -422,7 +440,7 @@ Element.prototype = Object.create(HTMLElement.prototype, {
    */
   detachedCallback: {
     value: function () {
-      element_unObserveDataContext(this);
+      elementUnObserveDataContext(this);
     }
   },
   /**
@@ -773,7 +791,7 @@ var IncludeElement = Object.create(HTMLDivElement.prototype, {
       }
 
       url = typeof href === 'string' ? href : this.ownerDocument.documentURI;
-      var resource = oig.resource(url);
+      var resource = oigResource(url);
 
       resource.load()
         .then(function (text) {
@@ -1184,6 +1202,24 @@ elements.TemplateElement = document.registerElement('oig-template', {
     globals.microtemplate = tmpl; // <script>
   }
 })(this);
+
+  Object.defineProperty(oig, 'resource', {
+    get: function () {
+      return oigResource;
+    }
+  });
+
+  Object.defineProperty(oig, 'ObjectObserver', {
+    get: function () {
+      return ObjectObserver;
+    }
+  });
+
+  Object.defineProperty(oig, 'ObserverContext', {
+    get: function () {
+      return ObserverContext;
+    }
+  });
 
 if (typeof define === 'function' && define.amd) {
   define('oig', [], function () {

@@ -24,7 +24,7 @@ describe('resource', function () {
   var resource;
 
   beforeEach(function () {
-    resource = oig.resource('/path');
+    resource = oigResource('/path');
   });
 
   it('should make a request to the API', function () {
@@ -85,7 +85,7 @@ describe('resource', function () {
         resource.load().then(function () {
           resolved++;
         });
-        oig.resource('/path').load().then(function () {
+        oigResource('/path').load().then(function () {
           resolved++;
         });
         requests[0].respond(200, {'Content-Type': "text/plain"}, 'response');

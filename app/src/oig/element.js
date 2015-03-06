@@ -22,14 +22,14 @@ var elementObserverMap = new WeakMap();
  * elementObserverMap
  * @param {Element} element
  */
-function element_observeDataContext(element) {
+function elementObserveDataContext(element) {
   // watch dataContext changes
   var dataContext = element.dataContext,
     objectObserver,
     observer = element.update.bind(element);
 
   if (dataContext) {
-    objectObserver = new ObjectObserver(dataContext);
+    objectObserver = new oig.ObjectObserver(dataContext, oig.ObjectProvider);
     objectObserver.observe(observer);
     elementObserverMap.set(element, {
       objectObserver: objectObserver,
@@ -44,7 +44,7 @@ function element_observeDataContext(element) {
  *
  * @param {Element} element
  */
-function element_unObserveDataContext(element) {
+function elementUnObserveDataContext(element) {
   var observerContext;
   if (elementObserverMap.has(element)) {
     observerContext = elementObserverMap.get(element);
@@ -89,7 +89,7 @@ Element.prototype = Object.create(HTMLElement.prototype, {
   attachedCallback: {
     value: function () {
       if (!elementAttributeTruthy(this.getAttribute('once'))) {
-        element_observeDataContext(this);
+        elementObserveDataContext(this);
       }
     }
   },
@@ -98,7 +98,7 @@ Element.prototype = Object.create(HTMLElement.prototype, {
    */
   detachedCallback: {
     value: function () {
-      element_unObserveDataContext(this);
+      elementUnObserveDataContext(this);
     }
   },
   /**

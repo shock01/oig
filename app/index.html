@@ -12,7 +12,6 @@
   <script type="text/javascript" src="bower_components/react/JSXTransformer.js"></script>
   <script type="text/javascript" src="bower_components/react/react.js"></script>
   <script type="text/javascript" src="bower_components/handlebars/handlebars.min.js"></script>
-
   <script type="text/jsx">
     /** @jsx React.DOM */
 
@@ -43,6 +42,7 @@
 <script src="src/oig/appcontext.js"></script>
 <script src="src/oig/datacontext.js"></script>
 <script src="src/oig/objectobserver.js"></script>
+<script src="src/oig/observercontext.js"></script>
 <script src="src/oig/resource.js"></script>
 <script src="src/oig/templateengines.js"></script>
 <script src="src/oig/element.js"></script>
@@ -83,6 +83,8 @@
 
   <p>
   <dl class="dl-horizontal">
+  <dt>observer context</dt>
+  <dd>example on how to freeze objects (immutable)</dd>
     <dt>binding element</dt>
     <dd>data binding supporting one-way(default), two-way and once binding</dd>
     <dt>context element</dt>
@@ -100,6 +102,30 @@
   </dl>
   </p>
   <div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2>observer context
+          <small>Using Object.freeze :-)</small>
+        </h2>
+      </div>
+      <div class="panel-body">
+        <p>
+          Objects on the viewModel that are frozen (Object.freeze) will not be databound.
+          Also works on Arrays, items in arrays etc....just freeze what needs to be frozen.
+        </p>
+        <span class="label label-primary">example</span>
+        <oig-include href="partials/observercontext/example.html"></oig-include>
+        <span class="label label-info">code</span>
+        <code>
+          <pre class="pre-scrollable">
+            <oig-include href="partials/observercontext/example.html" parse="text"></oig-include>
+          </pre>
+        </code>
+      </div>
+    </div>
+
+    <hr/>
 
     <div class="panel panel-default">
       <div class="panel-heading">

@@ -1,0 +1,45 @@
+<div>
+  <script type="text/javascript">
+    (function () {
+      var viewModel = {
+        frozen: {
+          name: 'Daffy Duck'
+        },
+        hot: {
+          name: 'Garfield'
+        }
+      };
+
+      Object.freeze(viewModel.frozen);
+
+      Object.defineProperty(oig.viewModels, 'observerContext', {
+        get: function () {
+          return viewModel;
+        }
+      });
+    }())
+  </script>
+  <div class="form-group" is="oig-context" data-view-model="observerContext">
+    <div class="form-group">
+      <div>
+        <h4>Frozen</h4>
+        <oig-listener oninput="frozen.name = event.target.value"></oig-listener>
+        <label for="twowaymanual-input">Change name (but it will not work :-)</label>
+        <input class="form-control" type="text" id="twowaymanual-input"/>
+        <oig-binding value="frozen.name" data-oig-target="previousSibling"></oig-binding>
+        <span>
+          Result: <oig-binding>frozen.name</oig-binding>
+        </span>
+      </div>
+      <div>
+        <h4>Hot</h4>
+        <oig-listener oninput="hot.name = event.target.value"></oig-listener>
+        <label for="twowaymanual-input">Change name</label>
+        <input class="form-control" type="text" id="twowaymanual-input"/>
+        <oig-binding value="hot.name" data-oig-target="previousSibling"></oig-binding>
+        <span>
+          Result: <oig-binding>hot.name</oig-binding>
+        </span>
+      </div>
+    </div>
+  </div>

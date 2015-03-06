@@ -2,6 +2,11 @@ describe('include element', function () {
 
 
   /**
+   * I hate this file, if it's hard to test it's hard to read, it's hard to maintain.....
+   * so i really need to refactor this one.
+   */
+
+  /**
    * depends on oig.resource
    */
 
@@ -30,7 +35,7 @@ describe('include element', function () {
   var promise;
 
   beforeEach(function () {
-    mock = sinon.mock(oig);
+    mock = sinon.mock(window);
   });
 
   afterEach(function () {
@@ -78,7 +83,7 @@ describe('include element', function () {
     describe('href attribute', function () {
 
       beforeEach(function () {
-        mock.expects('resource').withArgs('test.xml').once().returns(resource);
+        mock.expects('oigResource').withArgs('test.xml').once().returns(resource);
         includeElement.setAttribute("href", "test.xml");
         parent.appendChild(includeElement);
         return promise;
@@ -96,7 +101,7 @@ describe('include element', function () {
     describe('no href attribute with xpointer', function () {
 
       beforeEach(function () {
-        mock.expects('resource').withArgs(document.URL).once().returns(resource);
+        mock.expects('oigResource').withArgs(document.URL).once().returns(resource);
         includeElement.setAttribute("xpointer", "//div");
         parent.appendChild(includeElement);
         return promise;
@@ -115,7 +120,7 @@ describe('include element', function () {
 
       beforeEach(function () {
 
-        mock.expects('resource').withArgs('test.xml').once().returns(resource);
+        mock.expects('oigResource').withArgs('test.xml').once().returns(resource);
 
         includeElement.setAttribute('href', 'test.xml');
         includeElement.setAttribute('xpointer', '//*[@id=1]');
@@ -136,7 +141,7 @@ describe('include element', function () {
 
       beforeEach(function () {
 
-        mock.expects('resource').withArgs('test.xml').once().returns(resource);
+        mock.expects('oigResource').withArgs('test.xml').once().returns(resource);
 
         includeElement.setAttribute('href', 'test.xml');
         includeElement.setAttribute('parse', 'xml');
@@ -156,7 +161,7 @@ describe('include element', function () {
     describe('parse as text', function () {
 
       beforeEach(function () {
-        mock.expects('resource').withArgs('test.xml').once().returns(resource);
+        mock.expects('oigResource').withArgs('test.xml').once().returns(resource);
         includeElement.setAttribute('href', 'test.xml');
         includeElement.setAttribute('parse', 'text');
         parent.appendChild(includeElement);
@@ -176,7 +181,7 @@ describe('include element', function () {
   describe('error on loading include', function () {
 
     beforeEach(function () {
-      mock.expects('resource').withArgs('test.xml').once().returns(resource);
+      mock.expects('oigResource').withArgs('test.xml').once().returns(resource);
       promise = new Promise(function (resolve, reject) {
         reject('404');
       });

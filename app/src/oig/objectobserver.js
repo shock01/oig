@@ -3,9 +3,10 @@
 /**
  *
  * @param {Object} observable
+ * @param {ObserverContext} observerProvider
  * @constructor
  */
-function ObjectObserver(observable) {
+function ObjectObserver(observable, observerProvider) {
 
   /**
    * list of observers to notify on change
@@ -78,19 +79,22 @@ function ObjectObserver(observable) {
   /**
    *
    * @param {Object} observable
+   * will call observerProvider to verify if object should be observed or not
    */
   function deepObserve(observable) {
     if (observable === Object(observable)) {
-      if (Array.isArray(observable)) {
-        Array.observe(observable, arrayCallback);
-        observable.forEach(function (value) {
-          deepObserve(value);
-        });
-      } else {
-        Object.observe(observable, objectCallback);
-        Object.keys(observable).forEach(function (key) {
-          deepObserve(observable[key]);
-        });
+      if (!observerProvider || observerProvider.canObserve(observable)) {
+        if (Array.isArray(observable)) {
+          Array.observe(observable, arrayCallback);
+          observable.forEach(function (value) {
+            deepObserve(value);
+          });
+        } else {
+          Object.observe(observable, objectCallback);
+          Object.keys(observable).forEach(function (key) {
+            deepObserve(observable[key]);
+          });
+        }
       }
     }
   }
@@ -128,5 +132,3 @@ function ObjectObserver(observable) {
     notifyAll: notifyAll
   };
 }
-
-oig.ObjectObserver = ObjectObserver;

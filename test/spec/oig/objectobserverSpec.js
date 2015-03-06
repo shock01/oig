@@ -18,6 +18,11 @@ describe('objectobserver', function () {
    */
   var nested;
 
+  /**
+   * @type {ObserverContext}
+   */
+  var observerProvider;
+
   beforeEach(function () {
     observer = sinon.spy();
     nested = {};
@@ -25,7 +30,9 @@ describe('objectobserver', function () {
       array: [],
       nested: nested
     };
-    objectObserver = new ObjectObserver(dataContext);
+    observerProvider = new ObserverContext();
+    objectObserver = new ObjectObserver(dataContext, observerProvider);
+    objectObserver.canObserve = sinon.stub().returns(true);
   });
 
 

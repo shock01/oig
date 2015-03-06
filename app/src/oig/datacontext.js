@@ -15,7 +15,7 @@ var dataContextMap = new WeakMap();
  * @param {HTMLElement} element
  * @returns {Object}
  */
-function dataContext_resolver(element) {
+function dataContextResolver(element) {
   var parent = element,
     dataContext;
 
@@ -34,4 +34,4 @@ function dataContext_resolver(element) {
   }
   return dataContext;
 }
-oig.dataContext = dataContext_resolver;
+oig.dataContext = dataContextResolver;
