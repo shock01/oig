@@ -1,12 +1,16 @@
+// @todo change to class/prototype and use serviceLocator
 'use strict';
 
 /**
  *
+ * @todo change the observable argument so that DI can be used
+ * observable should be set as property or passed as argument to observe
+ *
  * @param {Object} observable
- * @param {ObserverContext} observerProvider
+ * @param {ObserverContext} observerContext
  * @constructor
  */
-function ObjectObserver(observable, observerProvider) {
+function ObjectObserver(observable, observerContext) {
 
   /**
    * list of observers to notify on change
@@ -79,11 +83,11 @@ function ObjectObserver(observable, observerProvider) {
   /**
    *
    * @param {Object} observable
-   * will call observerProvider to verify if object should be observed or not
+   * will call observerContext to verify if object should be observed or not
    */
   function deepObserve(observable) {
     if (observable === Object(observable)) {
-      if (!observerProvider || observerProvider.canObserve(observable)) {
+      if (!observerContext || observerContext.canObserve(observable)) {
         if (Array.isArray(observable)) {
           Array.observe(observable, arrayCallback);
           observable.forEach(function (value) {

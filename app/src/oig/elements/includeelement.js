@@ -66,7 +66,7 @@ var IncludeElement = Object.create(HTMLDivElement.prototype, {
       }
 
       url = typeof href === 'string' ? href : this.ownerDocument.documentURI;
-      var resource = oigResource(url);
+      var resource = oigLocator.resolve('oig.resource')(url);
 
       resource.load()
         .then(function (text) {

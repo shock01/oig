@@ -11,7 +11,6 @@
    *  }
    * }
  */
-// @todo move me to a better place please
 var appContextViewModels = {};
 
 Object.defineProperty(oig, 'viewModels', {

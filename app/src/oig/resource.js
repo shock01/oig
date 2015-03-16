@@ -1,3 +1,4 @@
+// @todo change to class/prototype and use serviceLocator
 'use strict';
 
 /**

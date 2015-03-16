@@ -28,7 +28,8 @@
     "HTMLTemplateElement": true,
     "Promise": true,
     "WeakMap": true,
-    "oig": true
+    "oig": true,
+    "oigLocator": true
 
   }
 }

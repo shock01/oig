@@ -34,4 +34,4 @@ function dataContextResolver(element) {
   }
   return dataContext;
 }
-oig.dataContext = dataContextResolver;
+

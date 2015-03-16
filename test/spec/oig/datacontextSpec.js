@@ -38,6 +38,6 @@ describe('datacontext', function () {
   });
 
   it('should resolve the context', function () {
-    assert(oig.dataContext(child) === viewModel, 'Cannot resolve dataContext');
+    assert(dataContextResolver(child) === viewModel, 'Cannot resolve dataContext');
   });
 });

@@ -79,7 +79,7 @@ Element.prototype = Object.create(HTMLElement.prototype, {
      * @returns {Object}
      */
     get: function () {
-      return oig.dataContext(this);
+      return dataContextResolver(this);
     }
   },
   /**
@@ -107,7 +107,7 @@ Element.prototype = Object.create(HTMLElement.prototype, {
    */
   update: {
     value: function () {
-      console.warn('[oig:element] not implemented (update)', this);
+
     }
   }
 });
