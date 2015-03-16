@@ -21,16 +21,14 @@ function dataContextResolver(element) {
 
   if (dataContextMap.has(element)) {
     dataContext = dataContextMap.get(element);
-  } else {
-    if (element.ownerDocument.contains(element)) {
-      do {
-        // DOMLevel 4 parentElement used instead of parentNode
-        if (parent instanceof oig.elements.ContextElement) {
-          dataContext = parent.dataContext;
-          dataContextMap.set(element, dataContext);
-        }
-      } while (!dataContext && parent.parentElement && (parent = parent.parentElement));
-    }
+  } else if (element.ownerDocument.contains(element)) {
+    do {
+      // DOMLevel 4 parentElement used instead of parentNode
+      if (parent instanceof oig.elements.ContextElement) {
+        dataContext = parent.dataContext;
+        dataContextMap.set(element, dataContext);
+      }
+    } while (!dataContext && parent.parentElement && (parent = parent.parentElement));
   }
   return dataContext;
 }
