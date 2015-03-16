@@ -29,7 +29,7 @@ function elementObserveDataContext(element) {
     observer = element.update.bind(element);
 
   if (dataContext) {
-    objectObserver = new oig.ObjectObserver(dataContext, oig.ObjectProvider);
+    objectObserver = new oig.ObjectObserver(dataContext, new oig.ObserverContext());
     objectObserver.observe(observer);
     elementObserverMap.set(element, {
       objectObserver: objectObserver,

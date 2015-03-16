@@ -3,10 +3,10 @@
 /**
  *
  * @param {Object} observable
- * @param {ObserverContext} observerProvider
+ * @param {ObserverContext} observerContext
  * @constructor
  */
-function ObjectObserver(observable, observerProvider) {
+function ObjectObserver(observable, observerContext) {
 
   /**
    * list of observers to notify on change
@@ -83,7 +83,7 @@ function ObjectObserver(observable, observerProvider) {
    */
   function deepObserve(observable) {
     if (observable === Object(observable)) {
-      if (!observerProvider || observerProvider.canObserve(observable)) {
+      if (!observerContext || observerContext.canObserve(observable)) {
         if (Array.isArray(observable)) {
           Array.observe(observable, arrayCallback);
           observable.forEach(function (value) {

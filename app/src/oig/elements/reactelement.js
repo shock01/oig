@@ -41,12 +41,12 @@ var ReactElement = {
     }
   },
   /**
-   * when the test attribute changes make sure to update only when element
+   * make sure to update only when element
    * is attached to the document
    */
   attributeChangedCallback: {
     value: function (/**String*/attrName) {
-      if (this.ownerDocument.contains(this) && attrName === 'test') {
+      if (this.ownerDocument.contains(this)) {
         this.update();
       }
     }
