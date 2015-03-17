@@ -33,6 +33,8 @@
     "oig": true,
     "oigLocator": true,
     "OigElement": true,
+    "OigObserver": true,
+    "OigObserverContext": true,
     "elementAttributeTruthy": true
   }
 }

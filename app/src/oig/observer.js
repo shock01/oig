@@ -1,4 +1,5 @@
 // @todo change to class/prototype and use serviceLocator
+/* jshint unused: false */
 'use strict';
 
 /**

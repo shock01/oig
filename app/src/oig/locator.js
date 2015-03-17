@@ -1,3 +1,4 @@
+/* jshint unused: false */
 /**
  * Service Locator pattern used to register/resolve.
  * DI can use a DI Aware resolvable

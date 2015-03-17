@@ -1,3 +1,4 @@
+/* jshint unused: false */
 'use strict';
 /**
  * weak lookup map that can be garbage collected
