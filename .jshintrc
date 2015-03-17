@@ -28,8 +28,11 @@
     "HTMLTemplateElement": true,
     "Promise": true,
     "WeakMap": true,
+    "define": true,
+    "exports": true,
     "oig": true,
-    "oigLocator": true
-
+    "oigLocator": true,
+    "OigElement": true,
+    "elementAttributeTruthy": true
   }
 }

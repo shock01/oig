@@ -1,3 +1,4 @@
+/* jshint unused: false */
 'use strict';
 /**
  *
@@ -25,62 +26,58 @@
  *
  * <div is="oig-context" data-view-model="">
  */
-var ContextElementProto = Object.create(HTMLDivElement.prototype, {
-
-  dataContext: {
-    value: null,
-    writable: true
-  },
-  /**
-   * when attached to the DOM will verify that a dataContext
-   * can be set based on configured viewModels
-   *
-   * calls onload when defined on dataContext
-   * dispatches contextload event
-   *
-   * @throws 'required attribute data-view-model is missing'
-   */
-  attachedCallback: {
-    value: function () {
-      var viewModel = this.dataset.viewModel,
-        dataContext = null;
-      if (!viewModel) {
-        throw '[oig:contextelement] required attribute data-view-model is missing';
-      }
-      if (oig.viewModels.hasOwnProperty(viewModel)) {
-        dataContext = oig.viewModels[viewModel];
-      }
-      if (!dataContext) {
-        throw '[oig:contextelement] no data context found for:' + viewModel;
-      }
-      this.dataContext = dataContext;
-      this.viewModel = viewModel;
-      if (typeof dataContext.onload === 'function') {
-        dataContext.onload();
-      }
-      this.dispatchEvent(new CustomEvent('contextload'));
-    }
-  },
-  /**
-   * called when removed from the DOM
-   *
-   * calls onunload when defined on dataContext
-   * dispatches contextunload event
-   */
-  detachedCallback: {
-    value: function () {
-      var dataContext = this.dataContext;
-      if (typeof dataContext.onunload === 'function') {
-        dataContext.onunload();
-      }
-      this.dispatchEvent(new CustomEvent('contextunload'));
-    }
-  }
-});
-/**
- * registration
- */
 var OigContextElement = document.registerElement('oig-context', {
-  prototype: ContextElementProto,
-  extends: 'div'
+  extends: 'div',
+  prototype: Object.create(HTMLDivElement.prototype, {
+
+    dataContext: {
+      value: null,
+      writable: true
+    },
+    /**
+     * when attached to the DOM will verify that a dataContext
+     * can be set based on configured viewModels
+     *
+     * calls onload when defined on dataContext
+     * dispatches contextload event
+     *
+     * @throws 'required attribute data-view-model is missing'
+     */
+    attachedCallback: {
+      value: function () {
+        var viewModel = this.dataset.viewModel,
+          dataContext = null;
+        if (!viewModel) {
+          throw '[oig:contextelement] required attribute data-view-model is missing';
+        }
+        if (oig.viewModels.hasOwnProperty(viewModel)) {
+          dataContext = oig.viewModels[viewModel];
+        }
+        if (!dataContext) {
+          throw '[oig:contextelement] no data context found for:' + viewModel;
+        }
+        this.dataContext = dataContext;
+        this.viewModel = viewModel;
+        if (typeof dataContext.onload === 'function') {
+          dataContext.onload();
+        }
+        this.dispatchEvent(new CustomEvent('contextload'));
+      }
+    },
+    /**
+     * called when removed from the DOM
+     *
+     * calls onunload when defined on dataContext
+     * dispatches contextunload event
+     */
+    detachedCallback: {
+      value: function () {
+        var dataContext = this.dataContext;
+        if (typeof dataContext.onunload === 'function') {
+          dataContext.onunload();
+        }
+        this.dispatchEvent(new CustomEvent('contextunload'));
+      }
+    }
+  })
 });

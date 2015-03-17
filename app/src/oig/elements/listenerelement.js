@@ -1,5 +1,5 @@
+/* jshint unused: false */
 'use strict';
-
 
 /**
  *
@@ -82,32 +82,27 @@ function addListener(element, eventType) {
  * stop-progagation - optional attribute to stop propagation of event
  * selector - optional attribute to select sibling of event target on which listener should be invoked
  */
-var OigListenerElementProto = {
-  /**
-   * when an on attribute is added then add an event listener
-   */
-  attributeChangedCallback: {
-    value: function (/**String*/attrName) {
-      if (attrName.substring(0, 2) === 'on') {
-        addListener(this, attrName.substring(2));
-      }
-    }
-  },
-  /**
-   * attach all listeners when added to the dom
-   */
-  attachedCallback: {
-    value: function () {
-      for (var /**String*/event of listenerElementEventAttributes(this)) {
-        addListener(this, event);
-      }
-    }
-  }
-};
-
-/**
- * registration
- */
 var OigListenerElement = document.registerElement('oig-listener', {
-  prototype: Object.create(OigElement.prototype, OigListenerElementProto)
+  prototype: Object.create(OigElement.prototype, {
+    /**
+     * when an on attribute is added then add an event listener
+     */
+    attributeChangedCallback: {
+      value: function (/**String*/attrName) {
+        if (attrName.substring(0, 2) === 'on') {
+          addListener(this, attrName.substring(2));
+        }
+      }
+    },
+    /**
+     * attach all listeners when added to the dom
+     */
+    attachedCallback: {
+      value: function () {
+        for (var /**String*/event of listenerElementEventAttributes(this)) {
+          addListener(this, event);
+        }
+      }
+    }
+  })
 });

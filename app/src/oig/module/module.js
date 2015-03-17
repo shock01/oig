@@ -8,6 +8,14 @@
     return oigResource;
   });
 
+  // export the elements
+  window.OigBindingElement = OigBindingElement;
+  window.OigContextElement = OigContextElement;
+  window.OigIfElement = OigIfElement;
+  window.OigIncludeElement = OigIncludeElement;
+  window.OigReactElement = OigReactElement;
+  window.OigTemplateElement = OigTemplateElement;
+
 }());
 
 
