@@ -25,33 +25,20 @@ describe('include element', function () {
    */
   var resource;
   /**
-   * @type {Object}
-   */
-  var mock;
-
-  /**
    * @type {Promise}
    */
   var promise;
 
+  var sandbox;
+
+  /**
+   *
+   */
+  var oigResource;
+
   beforeEach(function () {
-    mock = sinon.mock(window);
-  });
-
-  afterEach(function () {
-    mock.restore();
-  });
-
-  beforeEach(function () {
-    resource = {
-      load: function () {
-      },
-      cancel: sinon.stub()
-    };
-
-    sinon.stub(resource, 'load', function () {
-      return promise;
-    });
+    oigResource = oigLocator.resolve('oigResource');
+    sandbox = sinon.sandbox.create();
   });
 
   beforeEach(function () {
@@ -61,6 +48,7 @@ describe('include element', function () {
   });
 
   afterEach(function () {
+    sandbox.restore();
     parent.parentNode && parent.parentNode.removeChild(parent);
   });
 
@@ -73,66 +61,54 @@ describe('include element', function () {
     var html;
 
     beforeEach(function () {
-
       html = '<div><span id="1">Hello</span><span id="2">World</span></div>';
       promise = new Promise(function (resolve) {
         resolve('<div><span id="1">Hello</span><span id="2">World</span></div>');
       });
+      sandbox.stub(oigResource, 'load').returns(promise);
+    });
+
+    afterEach(function () {
+      oigResource.load.reset();
     });
 
     describe('href attribute', function () {
 
       beforeEach(function () {
-        mock.expects('oigResource').withArgs('test.xml').once().returns(resource);
-        includeElement.setAttribute("href", "test.xml");
+        includeElement.setAttribute('href', 'test.xml');
         parent.appendChild(includeElement);
         return promise;
       });
 
-      afterEach(function () {
-        mock.verify();
-      });
-
       it('should call the resource', function () {
-        expect(resource.load.called).to.be.true;
+        expect(oigResource.load.calledWith('test.xml')).to.be.true;
       });
     });
 
     describe('no href attribute with xpointer', function () {
 
       beforeEach(function () {
-        mock.expects('oigResource').withArgs(document.URL).once().returns(resource);
         includeElement.setAttribute("xpointer", "//div");
         parent.appendChild(includeElement);
         return promise;
       });
 
-      afterEach(function () {
-        mock.verify();
-      });
-
       it('should call the resource', function () {
-        expect(resource.load.called).to.be.true;
+        expect(oigResource.load.calledWith(document.URL)).to.be.true;
       });
     });
 
     describe('href attribute with xpointer', function () {
 
       beforeEach(function () {
-
-        mock.expects('oigResource').withArgs('test.xml').once().returns(resource);
-
         includeElement.setAttribute('href', 'test.xml');
         includeElement.setAttribute('xpointer', '//*[@id=1]');
         parent.appendChild(includeElement);
         return promise;
       });
 
-      afterEach(function () {
-        mock.verify();
-      });
-
       it('should change the element with the new contents', function () {
+        expect(oigResource.load.calledWith('test.xml')).to.be.true;
         expect(parent.innerHTML).to.equal('<span id="1">Hello</span>');
       });
     });
@@ -140,20 +116,14 @@ describe('include element', function () {
     describe('parse as xml', function () {
 
       beforeEach(function () {
-
-        mock.expects('oigResource').withArgs('test.xml').once().returns(resource);
-
         includeElement.setAttribute('href', 'test.xml');
         includeElement.setAttribute('parse', 'xml');
         parent.appendChild(includeElement);
         return promise;
       });
 
-      afterEach(function () {
-        mock.verify();
-      });
-
       it('should change the element with the new contents', function () {
+        expect(oigResource.load.calledWith('test.xml')).to.be.true;
         expect(parent.innerHTML).to.equal(html);
       });
     });
@@ -161,18 +131,14 @@ describe('include element', function () {
     describe('parse as text', function () {
 
       beforeEach(function () {
-        mock.expects('oigResource').withArgs('test.xml').once().returns(resource);
         includeElement.setAttribute('href', 'test.xml');
         includeElement.setAttribute('parse', 'text');
         parent.appendChild(includeElement);
         return promise;
       });
 
-      afterEach(function () {
-        mock.verify();
-      })
-
       it('should change the element with the new contents', function () {
+        expect(oigResource.load.calledWith('test.xml')).to.be.true;
         expect(parent.textContent).to.equal(html);
       });
     });
@@ -181,18 +147,14 @@ describe('include element', function () {
   describe('error on loading include', function () {
 
     beforeEach(function () {
-      mock.expects('oigResource').withArgs('test.xml').once().returns(resource);
       promise = new Promise(function (resolve, reject) {
         reject('404');
       });
+      sandbox.stub(oigResource, 'load').withArgs('text.xml').returns(promise);
     })
 
-    afterEach(function () {
-      mock.verify();
-    });
-
     function append() {
-      includeElement.setAttribute("href", "test.xml");
+      includeElement.setAttribute('href', 'text.xml');
       parent.appendChild(includeElement);
     }
 
@@ -221,5 +183,4 @@ describe('include element', function () {
       });
     });
   });
-
 });

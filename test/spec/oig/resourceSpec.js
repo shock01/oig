@@ -24,11 +24,11 @@ describe('resource', function () {
   var resource;
 
   beforeEach(function () {
-    resource = oigResource('/path');
+    resource = new OigResource();
   });
 
   it('should make a request to the API', function () {
-    resource.load();
+    resource.load('/path');
     expect(requests.length).to.equal(1);
     expect(requests[0].url).to.equal('/path');
   });
@@ -69,7 +69,7 @@ describe('resource', function () {
   describe('prevent multiple requests', function () {
 
     beforeEach(function () {
-      resource.load();
+      resource.load('/multiple');
     })
 
     it('should make a request to the API', function () {
@@ -79,17 +79,16 @@ describe('resource', function () {
     describe('when data returns', function () {
       var resolved;
       beforeEach(function () {
-
         resolved = 0;
 
-        resource.load().then(function () {
+        resource.load('/multiple').then(function () {
           resolved++;
         });
-        oigResource('/path').load().then(function () {
+        resource.load('/multiple').then(function () {
           resolved++;
         });
         requests[0].respond(200, {'Content-Type': "text/plain"}, 'response');
-        return resource.load();
+        return resource.load('/multiple');
       });
 
       it('should call both callbacks', function () {

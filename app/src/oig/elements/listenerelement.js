@@ -21,8 +21,8 @@ function* listenerElementEventAttributes(element) {
 /**
  * EventListener that will parse attributes on element and execute callback method
  * @param {Event} event
- * @param {ListenerElement} element
- * @this {ListenerElement}
+ * @param {OigListenerElementProto} element
+ * @this {OigListenerElementProto}
  */
 function eventListener(event, element) {
   var eventTarget = event.target,
@@ -56,7 +56,7 @@ function eventListener(event, element) {
  * adds an eventlistener and parses the attribute to determine the click behaviour
  * depends on oig.DataContextProvider to get the current dataContext
  *
- * @param {ListenerElement} element
+ * @param {OigListenerElementProto} element
  * @param {String} eventType
  */
 function addListener(element, eventType) {
@@ -82,7 +82,7 @@ function addListener(element, eventType) {
  * stop-progagation - optional attribute to stop propagation of event
  * selector - optional attribute to select sibling of event target on which listener should be invoked
  */
-var ListenerElement = {
+var OigListenerElementProto = {
   /**
    * when an on attribute is added then add an event listener
    */
@@ -108,6 +108,6 @@ var ListenerElement = {
 /**
  * registration
  */
-elements.ListenerElement = document.registerElement('oig-listener', {
-  prototype: Object.create(oig.Element.prototype, ListenerElement)
+var OigListenerElement = document.registerElement('oig-listener', {
+  prototype: Object.create(OigElement.prototype, OigListenerElementProto)
 });

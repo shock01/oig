@@ -13,13 +13,13 @@ function templateElementDecodeHtml(html) {
   return txt.value;
 }
 
-var TemplateElement = {
+var TemplateElementProto = {
   /**
    */
   attachedCallback: {
     value: function () {
 
-      oig.Element.prototype.attachedCallback.call(this);
+      OigElement.prototype.attachedCallback.call(this);
       this.update();
     }
   },
@@ -59,7 +59,7 @@ var TemplateElement = {
 /**
  * registration
  */
-elements.TemplateElement = document.registerElement('oig-template', {
-  prototype: Object.create(oig.Element.prototype, TemplateElement),
+var OigTemplateElement = document.registerElement('oig-template', {
+  prototype: Object.create(OigElement.prototype, TemplateElementProto),
   extends: 'div'
 });

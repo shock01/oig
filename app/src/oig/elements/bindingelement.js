@@ -9,7 +9,7 @@ var bindingElementMutationMap = new WeakMap();
 /**
  * observes mutation in childList of element
  * and registers the element in the bindingElementMutationMap
- * @param {BindingElement} element
+ * @param {OigBindingElementProto} element
  */
 function bindingElementObserveDOM(element) {
   // watch changes of textContent / DOM
@@ -29,7 +29,7 @@ function bindingElementObserveDOM(element) {
  * <oig-binding data-oig-target="previousSibling|nextSibling"/>
  *
  */
-var BindingElement = {
+var OigBindingElementProto = {
   /**
    * returns the binding target element set as data-oig-target
    * possible values: nextSibling, previousSibling
@@ -89,7 +89,7 @@ var BindingElement = {
    */
   attachedCallback: {
     value: function () {
-      oig.Element.prototype.attachedCallback.call(this);
+      OigElement.prototype.attachedCallback.call(this);
       if (!elementAttributeTruthy(this.getAttribute('once'))) {
         bindingElementObserveDOM(this);
       }
@@ -103,7 +103,7 @@ var BindingElement = {
   detachedCallback: {
     value: function () {
 
-      oig.Element.prototype.detachedCallback.call(this);
+      OigElement.prototype.detachedCallback.call(this);
 
       if (bindingElementMutationMap.has(this)) {
         bindingElementMutationMap.get(this).disconnect();
@@ -126,6 +126,6 @@ var BindingElement = {
 /**
  * registration
  */
-elements.BindingElement = document.registerElement('oig-binding', {
-  prototype: Object.create(oig.Element.prototype, BindingElement)
+var OigBindingElement = document.registerElement('oig-binding', {
+  prototype: Object.create(OigElement.prototype, OigBindingElementProto)
 });

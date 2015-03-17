@@ -3,14 +3,13 @@
 
 /**
  *
- * @todo change the observable argument so that DI can be used
  * observable should be set as property or passed as argument to observe
  *
  * @param {Object} observable
- * @param {ObserverContext} observerContext
+ * @param {OigObserverContext} observerContext
  * @constructor
  */
-function ObjectObserver(observable, observerContext) {
+function OigObserver(observable, observerContext) {
 
   /**
    * list of observers to notify on change

@@ -25,7 +25,7 @@
  *
  * <div is="oig-context" data-view-model="">
  */
-var ContextElement = Object.create(HTMLDivElement.prototype, {
+var ContextElementProto = Object.create(HTMLDivElement.prototype, {
 
   dataContext: {
     value: null,
@@ -80,7 +80,7 @@ var ContextElement = Object.create(HTMLDivElement.prototype, {
 /**
  * registration
  */
-elements.ContextElement = document.registerElement('oig-context', {
-  prototype: ContextElement,
+var OigContextElement = document.registerElement('oig-context', {
+  prototype: ContextElementProto,
   extends: 'div'
 });

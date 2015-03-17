@@ -4,7 +4,7 @@
  * Element to integrate ReactJS Components with dataContext
  * Will be updated when dataContext/viewModel changes
  */
-var ReactElement = {
+var ReactElementProto = {
   /**
    * when attached to the DOM and attribute once is not thruthy then
    * add observers
@@ -14,7 +14,7 @@ var ReactElement = {
       /*jshint evil: true */
       var jsxComponent = eval(this.getAttribute('component'));
       /*jshint evil: false */
-      oig.Element.prototype.attachedCallback.call(this);
+      OigElement.prototype.attachedCallback.call(this);
       this.reactComponent = React.createElement(jsxComponent, null);
       this.update();
     }
@@ -55,6 +55,6 @@ var ReactElement = {
 /**
  * registration
  */
-elements.ReactElement = document.registerElement('oig-react', {
-  prototype: Object.create(oig.Element.prototype, ReactElement)
+var OigReactElement = document.registerElement('oig-react', {
+  prototype: Object.create(OigElement.prototype, ReactElementProto)
 });

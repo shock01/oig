@@ -10,7 +10,7 @@ describe('binding element', function () {
    */
   var element;
   /**
-   * @type {BindingElement}
+   * @type {OigBindingElementProto}
    */
   var bindingElement;
   /**

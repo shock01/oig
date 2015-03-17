@@ -1,8 +1,8 @@
-describe('objectobserver', function () {
+describe('observer', function () {
 
   'use strict';
   /**
-   * @type {ObjectObserver}
+   * @type {OigObserver}
    */
   var objectObserver;
   /**
@@ -19,7 +19,7 @@ describe('objectobserver', function () {
   var nested;
 
   /**
-   * @type {ObserverContext}
+   * @type {OigObserverContext}
    */
   var observerProvider;
 
@@ -30,8 +30,8 @@ describe('objectobserver', function () {
       array: [],
       nested: nested
     };
-    observerProvider = new ObserverContext();
-    objectObserver = new ObjectObserver(dataContext, observerProvider);
+    observerProvider = new OigObserverContext();
+    objectObserver = new OigObserver(dataContext, observerProvider);
     objectObserver.canObserve = sinon.stub().returns(true);
   });
 

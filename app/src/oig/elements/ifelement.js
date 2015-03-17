@@ -1,13 +1,13 @@
 'use strict';
 
-var IfElement = {
+var OigIfElementProto = {
   /**
    * when attached to the DOM and attribute once is not thruthy then
    * add observers
    */
   attachedCallback: {
     value: function () {
-      oig.Element.prototype.attachedCallback.call(this);
+      OigElement.prototype.attachedCallback.call(this);
       this.update();
     }
   },
@@ -41,6 +41,6 @@ var IfElement = {
 /**
  * registration
  */
-elements.IfElement = document.registerElement('oig-if', {
-  prototype: Object.create(oig.Element.prototype, IfElement)
+var OigIfElement = document.registerElement('oig-if', {
+  prototype: Object.create(OigElement.prototype, OigIfElementProto)
 });

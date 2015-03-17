@@ -118,7 +118,7 @@ function dataContextResolver(element) {
 /**
  *
  * @param {Object} observable
- * @param {ObserverContext} observerProvider
+ * @param {OigObserverContext} observerProvider
  * @constructor
  */
 function ObjectObserver(observable, observerProvider) {
@@ -468,7 +468,7 @@ var bindingElementMutationMap = new WeakMap();
 /**
  * observes mutation in childList of element
  * and registers the element in the bindingElementMutationMap
- * @param {BindingElement} element
+ * @param {OigBindingElementProto} element
  */
 function bindingElementObserveDOM(element) {
   // watch changes of textContent / DOM
@@ -862,8 +862,8 @@ function* listenerElementEventAttributes(element) {
 /**
  * EventListener that will parse attributes on element and execute callback method
  * @param {Event} event
- * @param {ListenerElement} element
- * @this {ListenerElement}
+ * @param {OigListenerElementProto} element
+ * @this {OigListenerElementProto}
  */
 function eventListener(event, element) {
   var eventTarget = event.target,
@@ -897,7 +897,7 @@ function eventListener(event, element) {
  * adds an eventlistener and parses the attribute to determine the click behaviour
  * depends on oig.DataContextProvider to get the current dataContext
  *
- * @param {ListenerElement} element
+ * @param {OigListenerElementProto} element
  * @param {String} eventType
  */
 function addListener(element, eventType) {

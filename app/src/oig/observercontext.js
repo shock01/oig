@@ -1,9 +1,13 @@
 'use strict';
-function ObserverContext() {
+/**
+ *
+ * @constructor
+ */
+function OigObserverContext() {
 
 }
 
-ObserverContext.prototype = {
+OigObserverContext.prototype = {
   /**
    *
    * @param {Object} object

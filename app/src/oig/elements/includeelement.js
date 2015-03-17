@@ -41,7 +41,7 @@
  *
  * Inclusion of SVG content need to make sure to set the namespace on the SVGSVGElement (http://www.w3.org/2000/svg)
  */
-var IncludeElement = Object.create(HTMLDivElement.prototype, {
+var OigIncludeElementProto = Object.create(HTMLDivElement.prototype, {
   /**
    */
   attachedCallback: {
@@ -66,9 +66,8 @@ var IncludeElement = Object.create(HTMLDivElement.prototype, {
       }
 
       url = typeof href === 'string' ? href : this.ownerDocument.documentURI;
-      var resource = oigLocator.resolve('oig.resource')(url);
-
-      resource.load()
+      var resource = oigLocator.resolve('oigResource');
+      resource.load(url)
         .then(function (text) {
           var /**@type Node*/node,
             /**@type DOMDocument*/doc;
@@ -110,6 +109,6 @@ var IncludeElement = Object.create(HTMLDivElement.prototype, {
 /**
  * registration
  */
-elements.IncludeElement = document.registerElement('oig-include', {
-  prototype: IncludeElement
+var OigIncludeElement = document.registerElement('oig-include', {
+  prototype: OigIncludeElementProto
 });

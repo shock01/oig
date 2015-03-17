@@ -25,7 +25,7 @@ describe('datacontext', function () {
       value: viewModel
     });
 
-    node = new oig.elements.ContextElement();
+    node = new OigContextElement();
     node.setAttribute('data-view-model', 'my');
     child = document.createElement('div');
     node.appendChild(child);

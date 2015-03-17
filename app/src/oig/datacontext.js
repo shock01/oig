@@ -24,7 +24,7 @@ function dataContextResolver(element) {
   } else if (element.ownerDocument.contains(element)) {
     do {
       // DOMLevel 4 parentElement used instead of parentNode
-      if (parent instanceof oig.elements.ContextElement) {
+      if (parent instanceof OigContextElement) {
         dataContext = parent.dataContext;
         dataContextMap.set(element, dataContext);
       }
