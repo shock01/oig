@@ -100,7 +100,7 @@ describe('if element', function () {
     describe('and evaluated true after dataContext change', function () {
       beforeEach(function () {
         viewModel.flag = false;
-        elementObserverMap.get(ifElement).objectObserver.notifyAll();
+        ifElement.update();
       });
 
       it('should show the content', function () {

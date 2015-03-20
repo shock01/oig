@@ -1,4 +1,6 @@
+/* jshint unused: false */
 'use strict';
+
 /**
  *
  * Based on http://www.w3.org/TR/xinclude/
@@ -41,75 +43,70 @@
  *
  * Inclusion of SVG content need to make sure to set the namespace on the SVGSVGElement (http://www.w3.org/2000/svg)
  */
-var IncludeElement = Object.create(HTMLDivElement.prototype, {
-  /**
-   */
-  attachedCallback: {
-    value: function () {
-      var element = this,
-        fallback = element.firstElementChild,
-        href = this.getAttribute('href'),
-        parse = this.getAttribute('parse') || 'html',
-        xpointer = this.getAttribute('xpointer'),
-        url;
+var OigIncludeElement = document.registerElement('oig-include', {
+  prototype: Object.create(HTMLDivElement.prototype, {
+    /**
+     */
+    attachedCallback: {
+      value: function () {
+        var element = this,
+          fallback = element.firstElementChild,
+          href = this.getAttribute('href'),
+          parse = this.getAttribute('parse') || 'html',
+          xpointer = this.getAttribute('xpointer'),
+          url;
 
-      if ((href === null || href === '') && (xpointer === null || xpointer === '')) {
-        throw '[oig:include] both href and xpointer attributes are absent';
-      }
+        if ((href === null || href === '') && (xpointer === null || xpointer === '')) {
+          throw '[oig:include] both href and xpointer attributes are absent';
+        }
 
-      if (typeof parse === 'string' && !(parse === 'text' || parse === 'xml' || parse === 'html')) {
-        throw '[oig:include] parse attribute needs to be text or xml';
-      }
+        if (typeof parse === 'string' && !(parse === 'text' || parse === 'xml' || parse === 'html')) {
+          throw '[oig:include] parse attribute needs to be text or xml';
+        }
 
-      if (typeof xpointer === 'string' && parse === 'text') {
-        throw '[oig:include] xpointer cannot be used when parse is text';
-      }
+        if (typeof xpointer === 'string' && parse === 'text') {
+          throw '[oig:include] xpointer cannot be used when parse is text';
+        }
 
-      url = typeof href === 'string' ? href : this.ownerDocument.documentURI;
-      var resource = oigResource(url);
-
-      resource.load()
-        .then(function (text) {
-          var /**@type Node*/node,
-            /**@type DOMDocument*/doc;
-          try {
-            if (parse === 'text') {
-              node = element.ownerDocument.createTextNode(text);
-            } else {
-              doc = new DOMParser().parseFromString(text, 'text/' + parse);
-              node = element.ownerDocument.importNode(parse === 'html' ? doc.body : doc.documentElement, true);
-              if (xpointer) {
-                var frag = element.ownerDocument.createDocumentFragment(),
-                  xPathResult = element.ownerDocument.evaluate(xpointer, node, null, XPathResult.ANY_TYPE, null),
-                  found = [],
-                  next;
-                // @todo simplify this using iterator generator
-                while (xPathResult && (next = xPathResult.iterateNext())) {
-                  found.push(next);
+        url = typeof href === 'string' ? href : this.ownerDocument.documentURI;
+        var resource = oigLocator.resolve('oigResource');
+        resource.load(url)
+          .then(function (text) {
+            var /**@type Node*/node,
+              /**@type DOMDocument*/doc;
+            try {
+              if (parse === 'text') {
+                node = element.ownerDocument.createTextNode(text);
+              } else {
+                doc = new DOMParser().parseFromString(text, 'text/' + parse);
+                node = element.ownerDocument.importNode(parse === 'html' ? doc.body : doc.documentElement, true);
+                if (xpointer) {
+                  var frag = element.ownerDocument.createDocumentFragment(),
+                    xPathResult = element.ownerDocument.evaluate(xpointer, node, null, XPathResult.ANY_TYPE, null),
+                    found = [],
+                    next;
+                  // @todo simplify this using iterator generator
+                  while (xPathResult && (next = xPathResult.iterateNext())) {
+                    found.push(next);
+                  }
+                  found.forEach(function (/**Node*/node) {
+                    frag.appendChild(element.ownerDocument.importNode(node.cloneNode(true), true));
+                  });
+                  node = frag;
                 }
-                found.forEach(function (/**Node*/node) {
-                  frag.appendChild(element.ownerDocument.importNode(node.cloneNode(true), true));
-                });
-                node = frag;
               }
+              element.parentNode.replaceChild(node, element);
+            } catch (e) {
+              throw e;
             }
-            element.parentNode.replaceChild(node, element);
-          } catch (e) {
-            throw e;
-          }
-        }).catch(function (/**Error*/error) {
-          if (fallback instanceof HTMLTemplateElement) {
-            element.parentNode.replaceChild(element.ownerDocument.importNode(fallback.content, true), element);
-          } else {
-            throw error;
-          }
-        });
+          }).catch(function (/**Error*/error) {
+            if (fallback instanceof HTMLTemplateElement) {
+              element.parentNode.replaceChild(element.ownerDocument.importNode(fallback.content, true), element);
+            } else {
+              throw error;
+            }
+          });
+      }
     }
-  }
-});
-/**
- * registration
- */
-elements.IncludeElement = document.registerElement('oig-include', {
-  prototype: IncludeElement
+  })
 });

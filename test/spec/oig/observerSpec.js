@@ -1,8 +1,8 @@
-describe('objectobserver', function () {
+describe('observer', function () {
 
   'use strict';
   /**
-   * @type {ObjectObserver}
+   * @type {OigObserver}
    */
   var objectObserver;
   /**
@@ -19,7 +19,7 @@ describe('objectobserver', function () {
   var nested;
 
   /**
-   * @type {ObserverContext}
+   * @type {OigObserverContext}
    */
   var observerProvider;
 
@@ -30,21 +30,21 @@ describe('objectobserver', function () {
       array: [],
       nested: nested
     };
-    observerProvider = new ObserverContext();
-    objectObserver = new ObjectObserver(dataContext, observerProvider);
+    observerProvider = new OigObserverContext();
+    objectObserver = new OigObserver(observerProvider);
     objectObserver.canObserve = sinon.stub().returns(true);
   });
 
 
   it('should call the observer when changing simple property', function () {
-    objectObserver.observe(observer);
+    objectObserver.observe(dataContext, observer);
     dataContext.name = 'test';
     objectObserver.notifyAll();
     expect(observer.called).to.be.true;
   });
 
   it('should call the observer when adding nested property', function () {
-    objectObserver.observe(observer);
+    objectObserver.observe(dataContext, observer);
     nested.key = 'test';
     objectObserver.notifyAll();
     expect(observer.called).to.be.true;
@@ -52,7 +52,7 @@ describe('objectobserver', function () {
 
   it('should not call the observer on removing nested property ', function () {
     delete dataContext.nested;
-    objectObserver.observe(observer);
+    objectObserver.observe(dataContext, observer);
     nested.key = 'test';
     objectObserver.notifyAll();
     expect(observer.called).not.to.be.true;
@@ -60,7 +60,7 @@ describe('objectobserver', function () {
 
 
   it('should call the observer twice after adding and updating nested property', function () {
-    objectObserver.observe(observer);
+    objectObserver.observe(dataContext, observer);
     dataContext.nested2 = {};
     objectObserver.notifyAll();
     dataContext.nested2.name = 'whatever';
@@ -71,7 +71,7 @@ describe('objectobserver', function () {
   describe('manipulate array', function () {
 
     beforeEach(function () {
-      objectObserver.observe(observer);
+      objectObserver.observe(dataContext, observer);
     })
 
     afterEach(function () {

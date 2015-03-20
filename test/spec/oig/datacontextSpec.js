@@ -25,7 +25,7 @@ describe('datacontext', function () {
       value: viewModel
     });
 
-    node = new oig.elements.ContextElement();
+    node = new OigContextElement();
     node.setAttribute('data-view-model', 'my');
     child = document.createElement('div');
     node.appendChild(child);
@@ -38,6 +38,6 @@ describe('datacontext', function () {
   });
 
   it('should resolve the context', function () {
-    assert(oig.dataContext(child) === viewModel, 'Cannot resolve dataContext');
+    assert(dataContextResolver(child) === viewModel, 'Cannot resolve dataContext');
   });
 });
