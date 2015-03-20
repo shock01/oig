@@ -1,7 +1,7 @@
 (function(exports, module){
+  /* jshint unused: false */
+  'use strict';
 var oig = {};
-var elements = {};
-oig.elements = elements;
 
 'use strict';
 /**
@@ -16,8 +16,7 @@ oig.elements = elements;
    *  }
    * }
  */
-// @todo move me to a better place please
-  var appContextViewModels = {};
+var appContextViewModels = {};
 
 Object.defineProperty(oig, 'viewModels', {
   get: function () {
@@ -73,7 +72,7 @@ oig.evaluate = function (dataContext, methodBody, additionalArguments) {
 };
 
 
-
+  /* jshint unused: false */
 'use strict';
 /**
  * weak lookup map that can be garbage collected
@@ -97,31 +96,79 @@ function dataContextResolver(element) {
 
   if (dataContextMap.has(element)) {
     dataContext = dataContextMap.get(element);
-  } else {
-    if (element.ownerDocument.contains(element)) {
-      do {
-        // DOMLevel 4 parentElement used instead of parentNode
-        if (parent instanceof oig.elements.ContextElement) {
-          dataContext = parent.dataContext;
-          dataContextMap.set(element, dataContext);
-        }
-      } while (!dataContext && parent.parentElement && (parent = parent.parentElement));
-    }
+  } else if (element.ownerDocument.contains(element)) {
+    do {
+      // DOMLevel 4 parentElement used instead of parentNode
+      if (parent instanceof OigContextElement) {
+        dataContext = parent.dataContext;
+        dataContextMap.set(element, dataContext);
+      }
+    } while (!dataContext && parent.parentElement && (parent = parent.parentElement));
   }
   return dataContext;
 }
 
-  oig.dataContext = dataContextResolver;
 
+  /* jshint unused: false */
+  /**
+   * Service Locator pattern used to register/resolve.
+   * DI can use a DI Aware resolvable
+   */
+  var oigLocator = (function () {
+    'use strict';
+
+    /**
+     *
+     * @type {Object<String,Function>}
+     */
+    var services = {};
+
+    /**
+     *
+     * @param {String} name
+     * @param {Function} resolver
+     * @throws [oig:locator] argument resolver should be function
+     */
+    function register(name, resolver) {
+      if (typeof resolver !== 'function') {
+        throw '[oig:locator] argument resolver should be function';
+      }
+      services[name] = resolver;
+    }
+
+    /**
+     *
+     * @param {String} name
+     * @throws [oig:locator unresolvable: $name]
+     * @returns {Object}
+     */
+    function resolve(name) {
+      if (!services.hasOwnProperty(name)) {
+        throw '[oig:locator] unresolvable: ' + name;
+      }
+      return services[name]();
+    }
+
+    return {
+      register: register,
+      resolve: resolve
+    };
+
+  }());
+
+// @todo change to class/prototype and use serviceLocator
+  /* jshint unused: false */
 'use strict';
 
 /**
  *
+ * observable should be set as property or passed as argument to observe
+ *
  * @param {Object} observable
- * @param {OigObserverContext} observerProvider
+ * @param {OigObserverContext} observerContext
  * @constructor
  */
-function ObjectObserver(observable, observerProvider) {
+function OigObserver(observerContext) {
 
   /**
    * list of observers to notify on change
@@ -194,11 +241,11 @@ function ObjectObserver(observable, observerProvider) {
   /**
    *
    * @param {Object} observable
-   * will call observerProvider to verify if object should be observed or not
+   * will call observerContext to verify if object should be observed or not
    */
   function deepObserve(observable) {
     if (observable === Object(observable)) {
-      if (!observerProvider || observerProvider.canObserve(observable)) {
+      if (!observerContext || observerContext.canObserve(observable)) {
         if (Array.isArray(observable)) {
           Array.observe(observable, arrayCallback);
           observable.forEach(function (value) {
@@ -218,7 +265,7 @@ function ObjectObserver(observable, observerProvider) {
    *
    * @param {Function} observer
    */
-  function observe(observer) {
+  function observe(observable, observer) {
     observers.push(observer);
     deepObserve(observable);
   }
@@ -249,11 +296,15 @@ function ObjectObserver(observable, observerProvider) {
 }
 
   'use strict';
-  function ObserverContext() {
+  /**
+   *
+   * @constructor
+   */
+  function OigObserverContext() {
 
   }
 
-  ObserverContext.prototype = {
+  OigObserverContext.prototype = {
   /**
    *
    * @param {Object} object
@@ -266,49 +317,50 @@ function ObjectObserver(observable, observerProvider) {
 
   'use strict';
 
+  function OigResource() {
   /**
    *
- * @type {Object<String, Promise>}
- */
-  var resourceRequestMap = {};
+   * @type {Object<String, Promise>}
+   */
+  this.resourceRequestMap = {};
+  }
 
-
-/**
- * All reource requests should be of http method GET.
- *
- * @param url
- * @returns {{clear: Function, load: Function}}
- */
-function oigResource(url) {
-  return {
+  OigResource.prototype = {
     /**
      * removes all loaded resources
      */
     clear: function () {
-      resourceRequestMap = {};
+      this.resourceRequestMap = {};
     },
     /**
      * when no promise is created it will put a new promise in resourceRequestMap.
      * @returns {Promise}
      */
-    load: function () {
+    load: function (url) {
+      var resourceRequestMap = this.resourceRequestMap,
+        /**
+         * @type {XMLHttpRequest}
+         */
+        xhr;
       if (!(url in resourceRequestMap)) {
         resourceRequestMap[url] = new Promise(function (resolve, reject) {
-          var xhr = new XMLHttpRequest();
+          xhr = new XMLHttpRequest();
           xhr.open('GET', url, true);
           xhr.onload = function () {
             if (xhr.status >= 200 && xhr.status < 300) {
               resolve(xhr.responseText);
             } else {
-              reject(xhr.responseText);
+              reject(xhr.responseText || xhr.statusText);
             }
+          };
+          xhr.onerror = function () {
+            reject('network error');
           };
           xhr.send(null);
         });
-      }
+    }
       return resourceRequestMap[url];
     }
-  };
 };
 
 /* global microtemplate:true */
@@ -367,15 +419,15 @@ var elementObserverMap = new WeakMap();
 function elementObserveDataContext(element) {
   // watch dataContext changes
   var dataContext = element.dataContext,
-    objectObserver,
-    observer = element.update.bind(element);
+    observer,
+    notifier = element.update.bind(element);
 
   if (dataContext) {
-    objectObserver = new oig.ObjectObserver(dataContext, oig.ObjectProvider);
-    objectObserver.observe(observer);
+    observer = oigLocator.resolve('oigObserver');
+    observer.observe(dataContext, notifier);
     elementObserverMap.set(element, {
-      objectObserver: objectObserver,
-      observer: observer
+      objectObserver: observer,
+      observer: notifier
     });
   } else {
     throw '[oig:element] cannot observer dataContext for element: ' + element;
@@ -400,12 +452,12 @@ function elementObserveDataContext(element) {
  * @extends HTMLElement
  * @constructor
  */
-function Element() {
+function OigElement() {
 }
 
-Element.prototype = Object.create(HTMLElement.prototype, {
+  OigElement.prototype = Object.create(HTMLElement.prototype, {
   /**
-   * @type {ObjectObserver}
+   * @type {OigObserver}
    */
   objectObserver: {
     value: null,
@@ -421,7 +473,7 @@ Element.prototype = Object.create(HTMLElement.prototype, {
      * @returns {Object}
      */
     get: function () {
-      return oig.dataContext(this);
+      return dataContextResolver(this);
     }
   },
   /**
@@ -449,15 +501,13 @@ Element.prototype = Object.create(HTMLElement.prototype, {
    */
   update: {
     value: function () {
-      console.warn('[oig:element] not implemented (update)', this);
+
     }
   }
 });
 
-oig.Element = Element;
-
-
 'use strict';
+  /* jshint unused: false */
 
 /**
  * WeakMap for storing MutationObservers
@@ -488,107 +538,104 @@ function bindingElementObserveDOM(element) {
  * <oig-binding data-oig-target="previousSibling|nextSibling"/>
  *
  */
-var BindingElement = {
-  /**
-   * returns the binding target element set as data-oig-target
-   * possible values: nextSibling, previousSibling
-   * Will use the first Node.ELEMENT_NODE based on target provided
-   *
-   */
-  targetElement: {
-    get: function () {
-      // DOM Level 4 parentElement used instead of parentNode
-      var oigTarget = this.dataset.oigTarget,
-        targetElement = this.parentElement;
+var OigBindingElement = document.registerElement('oig-binding', {
+  prototype: Object.create(OigElement.prototype, {
+    /**
+     * returns the binding target element set as data-oig-target
+     * possible values: nextSibling, previousSibling
+     * Will use the first Node.ELEMENT_NODE based on target provided
+     *
+     */
+    targetElement: {
+      get: function () {
+        // DOM Level 4 parentElement used instead of parentNode
+        var oigTarget = this.dataset.oigTarget,
+          targetElement = this.parentElement;
 
-      if (oigTarget === 'nextSibling' || oigTarget === 'previousSibling') {
-        targetElement = this[oigTarget];
-        // @todo use nextElementSibling and previousElementSibling
-        while (targetElement.nodeType !== Node.ELEMENT_NODE) {
-          targetElement = targetElement[oigTarget];
-        }
-      }
-
-      return targetElement;
-    }
-  },
-  /**
-   * will update attributes
-   * In an HTML5 document the attribute has to be accessed with test:foo since namespaces are not supported.
-   */
-  update: {
-    value: function () {
-      var targetElement = this.targetElement,
-        dataContext = this.dataContext;
-      // bind all attributes not starting with data-oig
-      // @todo use a generator method to yield
-      for (var i = 0, attribute; (attribute = this.attributes[i++]);) {
-        if (attribute.name.substring(0, 8) !== 'data-oig') {
-          if (!attribute.namespaceURI) {
-            targetElement.setAttribute(attribute.name, oig.evaluate(dataContext, attribute.value));
-          } else {
-            targetElement.setAttributeNS(attribute.namespaceURI, attribute.name, oig.evaluate(dataContext, attribute.value));
+        if (oigTarget === 'nextSibling' || oigTarget === 'previousSibling') {
+          targetElement = this[oigTarget];
+          // @todo use nextElementSibling and previousElementSibling
+          while (targetElement.nodeType !== Node.ELEMENT_NODE) {
+            targetElement = targetElement[oigTarget];
           }
         }
+
+        return targetElement;
       }
-      // update the textContent
-      if (typeof this.textContent === 'string') {
-        if (!this.shadowRoot) {
-          this.createShadowRoot();
+    },
+    /**
+     * will update attributes
+     * In an HTML5 document the attribute has to be accessed with test:foo since namespaces are not supported.
+     */
+    update: {
+      value: function () {
+        var targetElement = this.targetElement,
+          dataContext = this.dataContext;
+        // bind all attributes not starting with data-oig
+        // @todo use a generator method to yield
+        for (var i = 0, attribute; (attribute = this.attributes[i++]);) {
+          if (attribute.name.substring(0, 8) !== 'data-oig') {
+            if (!attribute.namespaceURI) {
+              targetElement.setAttribute(attribute.name, oig.evaluate(dataContext, attribute.value));
+            } else {
+              targetElement.setAttributeNS(attribute.namespaceURI, attribute.name, oig.evaluate(dataContext, attribute.value));
+            }
+          }
         }
-        this.shadowRoot.textContent = oig.evaluate(dataContext, this.textContent);
+        // update the textContent
+        if (typeof this.textContent === 'string') {
+          if (!this.shadowRoot) {
+            this.createShadowRoot();
+          }
+          this.shadowRoot.textContent = oig.evaluate(dataContext, this.textContent);
+        }
       }
-    }
-  },
+    },
 
-  /**
-   * when attached creates a shadowRoot that will contain the evaluated binding
-   * as textContent
-   * When attribute 'once' is false or absent will add observers to the dataContext and the DOM to update the view
-   */
-  attachedCallback: {
-    value: function () {
-      oig.Element.prototype.attachedCallback.call(this);
-      if (!elementAttributeTruthy(this.getAttribute('once'))) {
-        bindingElementObserveDOM(this);
-      }
-      this.update();
-    }
-  },
-  /**
-   * clean up nicely to make sure we are not firing observers
-   * on non attached DOMElements
-   */
-  detachedCallback: {
-    value: function () {
-
-      oig.Element.prototype.detachedCallback.call(this);
-
-      if (bindingElementMutationMap.has(this)) {
-        bindingElementMutationMap.get(this).disconnect();
-        bindingElementMutationMap.delete(this);
-      }
-    }
-  },
-  /**
-   * when an attribute has changed the binding has changed
-   * and the view needs to be updated
-   */
-  attributeChangedCallback: {
-    value: function () {
-      if (!elementAttributeTruthy(this.getAttribute('once'))) {
+    /**
+     * when attached creates a shadowRoot that will contain the evaluated binding
+     * as textContent
+     * When attribute 'once' is false or absent will add observers to the dataContext and the DOM to update the view
+     */
+    attachedCallback: {
+      value: function () {
+        OigElement.prototype.attachedCallback.call(this);
+        if (!elementAttributeTruthy(this.getAttribute('once'))) {
+          bindingElementObserveDOM(this);
+        }
         this.update();
       }
+    },
+    /**
+     * clean up nicely to make sure we are not firing observers
+     * on non attached DOMElements
+     */
+    detachedCallback: {
+      value: function () {
+
+        OigElement.prototype.detachedCallback.call(this);
+
+        if (bindingElementMutationMap.has(this)) {
+          bindingElementMutationMap.get(this).disconnect();
+          bindingElementMutationMap.delete(this);
+        }
+      }
+    },
+    /**
+     * when an attribute has changed the binding has changed
+     * and the view needs to be updated
+     */
+    attributeChangedCallback: {
+      value: function () {
+        if (!elementAttributeTruthy(this.getAttribute('once'))) {
+          this.update();
+        }
+      }
     }
-  }
-};
-/**
- * registration
- */
-elements.BindingElement = document.registerElement('oig-binding', {
-  prototype: Object.create(oig.Element.prototype, BindingElement)
+  })
 });
 
+  /* jshint unused: false */
 'use strict';
 /**
  *
@@ -616,114 +663,109 @@ elements.BindingElement = document.registerElement('oig-binding', {
  *
  * <div is="oig-context" data-view-model="">
  */
-var ContextElement = Object.create(HTMLDivElement.prototype, {
+var OigContextElement = document.registerElement('oig-context', {
+  extends: 'div',
+  prototype: Object.create(HTMLDivElement.prototype, {
 
-  dataContext: {
-    value: null,
-    writable: true
-  },
-  /**
-   * when attached to the DOM will verify that a dataContext
-   * can be set based on configured viewModels
-   *
-   * calls onload when defined on dataContext
-   * dispatches contextload event
-   *
-   * @throws 'required attribute data-view-model is missing'
-   */
-  attachedCallback: {
-    value: function () {
-      var viewModel = this.dataset.viewModel,
-        dataContext = null;
-      if (!viewModel) {
-        throw '[oig:contextelement] required attribute data-view-model is missing';
+    dataContext: {
+      value: null,
+      writable: true
+    },
+    /**
+     * when attached to the DOM will verify that a dataContext
+     * can be set based on configured viewModels
+     *
+     * calls onload when defined on dataContext
+     * dispatches contextload event
+     *
+     * @throws 'required attribute data-view-model is missing'
+     */
+    attachedCallback: {
+      value: function () {
+        var viewModel = this.dataset.viewModel,
+          dataContext = null;
+        if (!viewModel) {
+          throw '[oig:contextelement] required attribute data-view-model is missing';
+        }
+        if (oig.viewModels.hasOwnProperty(viewModel)) {
+          dataContext = oig.viewModels[viewModel];
+        }
+        if (!dataContext) {
+          throw '[oig:contextelement] no data context found for:' + viewModel;
+        }
+        this.dataContext = dataContext;
+        this.viewModel = viewModel;
+        if (typeof dataContext.onload === 'function') {
+          dataContext.onload();
+        }
+        this.dispatchEvent(new CustomEvent('contextload'));
       }
-      if (oig.viewModels.hasOwnProperty(viewModel)) {
-        dataContext = oig.viewModels[viewModel];
+    },
+    /**
+     * called when removed from the DOM
+     *
+     * calls onunload when defined on dataContext
+     * dispatches contextunload event
+     */
+    detachedCallback: {
+      value: function () {
+        var dataContext = this.dataContext;
+        if (typeof dataContext.onunload === 'function') {
+          dataContext.onunload();
+        }
+        this.dispatchEvent(new CustomEvent('contextunload'));
       }
-      if (!dataContext) {
-        throw '[oig:contextelement] no data context found for:' + viewModel;
-      }
-      this.dataContext = dataContext;
-      this.viewModel = viewModel;
-      if (typeof dataContext.onload === 'function') {
-        dataContext.onload();
-      }
-      this.dispatchEvent(new CustomEvent('contextload'));
     }
-  },
-  /**
-   * called when removed from the DOM
-   *
-   * calls onunload when defined on dataContext
-   * dispatches contextunload event
-   */
-  detachedCallback: {
-    value: function () {
-      var dataContext = this.dataContext;
-      if (typeof dataContext.onunload === 'function') {
-        dataContext.onunload();
-      }
-      this.dispatchEvent(new CustomEvent('contextunload'));
-    }
-  }
-});
-/**
- * registration
- */
-elements.ContextElement = document.registerElement('oig-context', {
-  prototype: ContextElement,
-  extends: 'div'
+  })
 });
 
+  /* jshint unused: false */
 'use strict';
 
-var IfElement = {
-  /**
-   * when attached to the DOM and attribute once is not thruthy then
-   * add observers
-   */
-  attachedCallback: {
-    value: function () {
-      oig.Element.prototype.attachedCallback.call(this);
-      this.update();
-    }
-  },
-  update: {
-    value: function () {
-      var test = this.getAttribute('test'),
-        flag = oig.evaluate(this.dataContext, test),
-        template = this.firstElementChild;
+  var OigIfElement = document.registerElement('oig-if', {
+    prototype: Object.create(OigElement.prototype, {
+      /**
+       * when attached to the DOM and attribute once is not thruthy then
+       * add observers
+       */
+      attachedCallback: {
+        value: function () {
+          OigElement.prototype.attachedCallback.call(this);
+          this.update();
+        }
+      },
+      update: {
+        value: function () {
+          var test = this.getAttribute('test'),
+            flag = oig.evaluate(this.dataContext, test),
+            template = this.firstElementChild;
 
-      if (flag) {
-        this.insertBefore(this.ownerDocument.importNode(template.content, true), template.nextElementSibling);
-      } else {
-        while (template.nextSibling) {
-          this.removeChild(template.nextSibling);
+          if (flag) {
+            this.insertBefore(this.ownerDocument.importNode(template.content, true), template.nextElementSibling);
+          } else {
+            while (template.nextSibling) {
+              this.removeChild(template.nextSibling);
+            }
         }
       }
-    }
-  },
-  /**
-   * when the test attribute changes make sure to update only when element
-   * is attached to the document
-   */
-  attributeChangedCallback: {
-    value: function (/**String*/attrName) {
-      if (this.ownerDocument.contains(this) && attrName === 'test') {
-        this.update();
+      },
+      /**
+       * when the test attribute changes make sure to update only when element
+       * is attached to the document
+       */
+      attributeChangedCallback: {
+        value: function (/**String*/attrName) {
+          if (this.ownerDocument.contains(this) && attrName === 'test') {
+            this.update();
+          }
       }
     }
-  }
-};
-/**
- * registration
- */
-elements.IfElement = document.registerElement('oig-if', {
-  prototype: Object.create(oig.Element.prototype, IfElement)
+    })
 });
 
+  /* jshint unused: false */
 'use strict';
+
 /**
  *
  * Based on http://www.w3.org/TR/xinclude/
@@ -766,81 +808,76 @@ elements.IfElement = document.registerElement('oig-if', {
  *
  * Inclusion of SVG content need to make sure to set the namespace on the SVGSVGElement (http://www.w3.org/2000/svg)
  */
-var IncludeElement = Object.create(HTMLDivElement.prototype, {
-  /**
-   */
-  attachedCallback: {
-    value: function () {
-      var element = this,
-        fallback = element.firstElementChild,
-        href = this.getAttribute('href'),
-        parse = this.getAttribute('parse') || 'html',
-        xpointer = this.getAttribute('xpointer'),
-        url;
+var OigIncludeElement = document.registerElement('oig-include', {
+  prototype: Object.create(HTMLDivElement.prototype, {
+    /**
+     */
+    attachedCallback: {
+      value: function () {
+        var element = this,
+          fallback = element.firstElementChild,
+          href = this.getAttribute('href'),
+          parse = this.getAttribute('parse') || 'html',
+          xpointer = this.getAttribute('xpointer'),
+          url;
 
-      if ((href === null || href === '') && (xpointer === null || xpointer === '')) {
-        throw '[oig:include] both href and xpointer attributes are absent';
-      }
+        if ((href === null || href === '') && (xpointer === null || xpointer === '')) {
+          throw '[oig:include] both href and xpointer attributes are absent';
+        }
 
-      if (typeof parse === 'string' && !(parse === 'text' || parse === 'xml' || parse === 'html')) {
-        throw '[oig:include] parse attribute needs to be text or xml';
-      }
+        if (typeof parse === 'string' && !(parse === 'text' || parse === 'xml' || parse === 'html')) {
+          throw '[oig:include] parse attribute needs to be text or xml';
+        }
 
-      if (typeof xpointer === 'string' && parse === 'text') {
-        throw '[oig:include] xpointer cannot be used when parse is text';
-      }
+        if (typeof xpointer === 'string' && parse === 'text') {
+          throw '[oig:include] xpointer cannot be used when parse is text';
+        }
 
-      url = typeof href === 'string' ? href : this.ownerDocument.documentURI;
-      var resource = oigResource(url);
-
-      resource.load()
-        .then(function (text) {
-          var /**@type Node*/node,
-            /**@type DOMDocument*/doc;
-          try {
-            if (parse === 'text') {
-              node = element.ownerDocument.createTextNode(text);
-            } else {
-              doc = new DOMParser().parseFromString(text, 'text/' + parse);
-              node = element.ownerDocument.importNode(parse === 'html' ? doc.body : doc.documentElement, true);
-              if (xpointer) {
-                var frag = element.ownerDocument.createDocumentFragment(),
-                  xPathResult = element.ownerDocument.evaluate(xpointer, node, null, XPathResult.ANY_TYPE, null),
-                  found = [],
-                  next;
-                // @todo simplify this using iterator generator
-                while (xPathResult && (next = xPathResult.iterateNext())) {
-                  found.push(next);
+        url = typeof href === 'string' ? href : this.ownerDocument.documentURI;
+        var resource = oigLocator.resolve('oigResource');
+        resource.load(url)
+          .then(function (text) {
+            var /**@type Node*/node,
+              /**@type DOMDocument*/doc;
+            try {
+              if (parse === 'text') {
+                node = element.ownerDocument.createTextNode(text);
+              } else {
+                doc = new DOMParser().parseFromString(text, 'text/' + parse);
+                node = element.ownerDocument.importNode(parse === 'html' ? doc.body : doc.documentElement, true);
+                if (xpointer) {
+                  var frag = element.ownerDocument.createDocumentFragment(),
+                    xPathResult = element.ownerDocument.evaluate(xpointer, node, null, XPathResult.ANY_TYPE, null),
+                    found = [],
+                    next;
+                  // @todo simplify this using iterator generator
+                  while (xPathResult && (next = xPathResult.iterateNext())) {
+                    found.push(next);
+                  }
+                  found.forEach(function (/**Node*/node) {
+                    frag.appendChild(element.ownerDocument.importNode(node.cloneNode(true), true));
+                  });
+                  node = frag;
                 }
-                found.forEach(function (/**Node*/node) {
-                  frag.appendChild(element.ownerDocument.importNode(node.cloneNode(true), true));
-                });
-                node = frag;
               }
+              element.parentNode.replaceChild(node, element);
+            } catch (e) {
+              throw e;
             }
-            element.parentNode.replaceChild(node, element);
-          } catch (e) {
-            throw e;
-          }
-        }).catch(function (/**Error*/error) {
-          if (fallback instanceof HTMLTemplateElement) {
-            element.parentNode.replaceChild(element.ownerDocument.importNode(fallback.content, true), element);
-          } else {
-            throw error;
-          }
-        });
+          }).catch(function (/**Error*/error) {
+            if (fallback instanceof HTMLTemplateElement) {
+              element.parentNode.replaceChild(element.ownerDocument.importNode(fallback.content, true), element);
+            } else {
+              throw error;
+            }
+          });
+      }
     }
-  }
-});
-/**
- * registration
- */
-elements.IncludeElement = document.registerElement('oig-include', {
-  prototype: IncludeElement
+  })
 });
 
+  /* jshint unused: false */
 'use strict';
-
 
 /**
  *
@@ -923,97 +960,91 @@ function addListener(element, eventType) {
  * stop-progagation - optional attribute to stop propagation of event
  * selector - optional attribute to select sibling of event target on which listener should be invoked
  */
-var ListenerElement = {
-  /**
-   * when an on attribute is added then add an event listener
-   */
-  attributeChangedCallback: {
-    value: function (/**String*/attrName) {
-      if (attrName.substring(0, 2) === 'on') {
-        addListener(this, attrName.substring(2));
+var OigListenerElement = document.registerElement('oig-listener', {
+  prototype: Object.create(OigElement.prototype, {
+    /**
+     * when an on attribute is added then add an event listener
+     */
+    attributeChangedCallback: {
+      value: function (/**String*/attrName) {
+        if (attrName.substring(0, 2) === 'on') {
+          addListener(this, attrName.substring(2));
+        }
+      }
+    },
+    /**
+     * attach all listeners when added to the dom
+     */
+    attachedCallback: {
+      value: function () {
+        for (var /**String*/event of listenerElementEventAttributes(this)) {
+          addListener(this, event);
+        }
       }
     }
-  },
-  /**
-   * attach all listeners when added to the dom
-   */
-  attachedCallback: {
-    value: function () {
-      for (var /**String*/event of listenerElementEventAttributes(this)) {
-        addListener(this, event);
-      }
-    }
-  }
-};
-
-/**
- * registration
- */
-elements.ListenerElement = document.registerElement('oig-listener', {
-  prototype: Object.create(oig.Element.prototype, ListenerElement)
+  })
 });
 
+  /* jshint unused: false */
+  /* global React */
 'use strict';
 
 /**
  * Element to integrate ReactJS Components with dataContext
  * Will be updated when dataContext/viewModel changes
  */
-var ReactElement = {
-  /**
-   * when attached to the DOM and attribute once is not thruthy then
-   * add observers
-   */
-  attachedCallback: {
-    value: function () {
-      /*jshint evil: true */
-      var jsxComponent = eval(this.getAttribute('component'));
-      /*jshint evil: false */
-      oig.Element.prototype.attachedCallback.call(this);
-      this.reactComponent = React.createElement(jsxComponent, null);
-      this.update();
-    }
-  },
-  /**
-   * will update the props of the JSX Component and renders it
-   * when context attribute is set on element then context will be
-   * evaluated on dataContext
-   */
-  update: {
-    value: function () {
-      var dataContext = this.dataContext,
-        state,
-        reactComponent = this.reactComponent,
-        context = this.getAttribute('context');
-
-      if (typeof context === 'string' && context.trim().length > 0) {
-        state = oig.evaluate(dataContext, context);
-      } else {
-        state = dataContext;
-      }
-
-      React.render(reactComponent, this).setState(state);
-    }
-  },
-  /**
-   * when the test attribute changes make sure to update only when element
-   * is attached to the document
-   */
-  attributeChangedCallback: {
-    value: function (/**String*/attrName) {
-      if (this.ownerDocument.contains(this) && attrName === 'test') {
+var OigReactElement = document.registerElement('oig-react', {
+  prototype: Object.create(OigElement.prototype, {
+    /**
+     * when attached to the DOM and attribute once is not thruthy then
+     * add observers
+     */
+    attachedCallback: {
+      value: function () {
+        /*jshint evil: true */
+        var jsxComponent = eval(this.getAttribute('component'));
+        /*jshint evil: false */
+        OigElement.prototype.attachedCallback.call(this);
+        this.reactComponent = React.createElement(jsxComponent, null);
         this.update();
       }
+    },
+    /**
+     * will update the props of the JSX Component and renders it
+     * when context attribute is set on element then context will be
+     * evaluated on dataContext
+     */
+    update: {
+      value: function () {
+        var dataContext = this.dataContext,
+          state,
+          reactComponent = this.reactComponent,
+          context = this.getAttribute('context');
+
+        if (typeof context === 'string' && context.trim().length > 0) {
+          state = oig.evaluate(dataContext, context);
+        } else {
+          state = dataContext;
+        }
+
+        React.render(reactComponent, this).setState(state);
+      }
+    },
+    /**
+     * make sure to update only when element
+     * is attached to the document
+     */
+    attributeChangedCallback: {
+      value: function (/**String*/attrName) {
+        if (this.ownerDocument.contains(this)) {
+          this.update();
+        }
+      }
     }
-  }
-};
-/**
- * registration
- */
-elements.ReactElement = document.registerElement('oig-react', {
-  prototype: Object.create(oig.Element.prototype, ReactElement)
+  })
 });
 
+  /* jshint unused: false */
 'use strict';
 
 /**
@@ -1029,55 +1060,47 @@ function templateElementDecodeHtml(html) {
   return txt.value;
 }
 
-var TemplateElement = {
-  /**
-   */
-  attachedCallback: {
-    value: function () {
+  var OigTemplateElement = document.registerElement('oig-template', {
+    extends: 'div',
+    prototype: Object.create(OigElement.prototype, {
+      attachedCallback: {
+        value: function () {
+          OigElement.prototype.attachedCallback.call(this);
+          this.update();
+      }
+      },
+      update: {
+        value: function () {
+          var templateElement = this.firstElementChild,
+            nextSibling,
+            dataContext = this.dataContext,
+            templateEngine,
+            template,
+            html;
+          if (!(templateElement instanceof HTMLTemplateElement)) {
+            throw '[oig:templateelement] first element needs to be a template element';
+          }
 
-      oig.Element.prototype.attachedCallback.call(this);
-      this.update();
+          if (this.dataset.oigTemplateengine) {
+            templateEngine = oig.templateEngines[this.dataset.oigTemplateengine];
+          } else {
+            templateEngine = oig.templateEngines.default;
+          }
+          if (!templateEngine) {
+            throw '[oig:templateelement] no templateengine found';
+          }
+          template = templateElementDecodeHtml(new XMLSerializer().serializeToString(templateElement.content, 'text/html'));
+          html = templateEngine.compile(template, dataContext);
+
+          // remove any previous rendered content
+          while ((nextSibling = templateElement.nextSibling) !== null) {
+            this.removeChild(templateElement.nextSibling);
+          }
+
+          this.insertAdjacentHTML('beforeend', html);
+        }
     }
-  },
-  update: {
-    value: function () {
-
-      var templateElement = this.firstElementChild,
-        nextSibling,
-        dataContext = this.dataContext,
-        templateEngine,
-        template,
-        html;
-      if (!(templateElement instanceof HTMLTemplateElement)) {
-        throw '[oig:templateelement] first element needs to be a template element';
-      }
-
-      if (this.dataset.oigTemplateengine) {
-        templateEngine = oig.templateEngines[this.dataset.oigTemplateengine];
-      } else {
-        templateEngine = oig.templateEngines.default;
-      }
-      if (!templateEngine) {
-        throw '[oig:templateelement] no templateengine found';
-      }
-      template = templateElementDecodeHtml(new XMLSerializer().serializeToString(templateElement.content, 'text/html'));
-      html = templateEngine.compile(template, dataContext);
-
-      // remove any previous rendered content
-      while ((nextSibling = templateElement.nextSibling) !== null) {
-        this.removeChild(templateElement.nextSibling);
-      }
-
-      this.insertAdjacentHTML('beforeend', html);
-    }
-  }
-};
-/**
- * registration
- */
-elements.TemplateElement = document.registerElement('oig-template', {
-  prototype: Object.create(oig.Element.prototype, TemplateElement),
-  extends: 'div'
+    })
 });
 
 // Simple JavaScript Templating
@@ -1203,23 +1226,33 @@ elements.TemplateElement = document.registerElement('oig-template', {
   }
 })(this);
 
-  Object.defineProperty(oig, 'resource', {
-    get: function () {
+  (function () {
+
+    // set up the serviceLocator
+
+    var oigResource = new OigResource();
+
+    oigLocator.register('oigResource', function () {
       return oigResource;
-    }
   });
 
-  Object.defineProperty(oig, 'ObjectObserver', {
-    get: function () {
-      return ObjectObserver;
-    }
+    oigLocator.register('oigObserverContext', function () {
+      return new OigObserverContext();
   });
 
-  Object.defineProperty(oig, 'ObserverContext', {
-    get: function () {
-      return ObserverContext;
-    }
+    oigLocator.register('oigObserver', function () {
+      return new OigObserver(oigLocator.resolve('oigObserverContext'));
   });
+
+    // export the elements
+    window.OigBindingElement = OigBindingElement;
+    window.OigContextElement = OigContextElement;
+    window.OigIfElement = OigIfElement;
+    window.OigIncludeElement = OigIncludeElement;
+    window.OigReactElement = OigReactElement;
+    window.OigTemplateElement = OigTemplateElement;
+  }());
+
 
 if (typeof define === 'function' && define.amd) {
   define('oig', [], function () {
