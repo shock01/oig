@@ -1,12 +1,16 @@
+// @todo change to class/prototype and use serviceLocator
+/* jshint unused: false */
 'use strict';
 
 /**
  *
+ * observable should be set as property or passed as argument to observe
+ *
  * @param {Object} observable
- * @param {ObserverContext} observerContext
+ * @param {OigObserverContext} observerContext
  * @constructor
  */
-function ObjectObserver(observable, observerContext) {
+function OigObserver(observerContext) {
 
   /**
    * list of observers to notify on change
@@ -79,7 +83,7 @@ function ObjectObserver(observable, observerContext) {
   /**
    *
    * @param {Object} observable
-   * will call observerProvider to verify if object should be observed or not
+   * will call observerContext to verify if object should be observed or not
    */
   function deepObserve(observable) {
     if (observable === Object(observable)) {
@@ -103,7 +107,7 @@ function ObjectObserver(observable, observerContext) {
    *
    * @param {Function} observer
    */
-  function observe(observer) {
+  function observe(observable, observer) {
     observers.push(observer);
     deepObserve(observable);
   }

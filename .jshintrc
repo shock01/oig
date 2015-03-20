@@ -28,7 +28,13 @@
     "HTMLTemplateElement": true,
     "Promise": true,
     "WeakMap": true,
-    "oig": true
-
+    "define": true,
+    "exports": true,
+    "oig": true,
+    "oigLocator": true,
+    "OigElement": true,
+    "OigObserver": true,
+    "OigObserverContext": true,
+    "elementAttributeTruthy": true
   }
 }

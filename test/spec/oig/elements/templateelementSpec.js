@@ -101,16 +101,8 @@ describe('template element', function () {
       templateElement.appendChild(template);
       defaultTemplateEngine.expects('compile').withArgs('<%=name%>', viewModel).twice().returns('<div></div>');
       append();
-      var promise = new Promise(function (resolve) {
-        Object.observe(viewModel, function (changes) {
-          defaultTemplateEngine.verify();
-          resolve();
-        });
-
-        viewModel.count++;
-
-      });
-      return promise;
+      viewModel.count++;
+      templateElement.update();
     });
 
     it('should insert the content at the end', function () {

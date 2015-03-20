@@ -21,8 +21,9 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'app/src/oig/oig.js',
-      'app/src/oig/element.js',
+      'app/src/oig/*.js',
       {pattern: 'app/src/oig/**/*.js'},
+      'test/mocks.js',
       {pattern: 'test/spec/**/*Spec.js'},
     ],
 

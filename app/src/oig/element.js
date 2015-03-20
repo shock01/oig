@@ -25,15 +25,15 @@ var elementObserverMap = new WeakMap();
 function elementObserveDataContext(element) {
   // watch dataContext changes
   var dataContext = element.dataContext,
-    objectObserver,
-    observer = element.update.bind(element);
+    observer,
+    notifier = element.update.bind(element);
 
   if (dataContext) {
-    objectObserver = new oig.ObjectObserver(dataContext, new oig.ObserverContext());
-    objectObserver.observe(observer);
+    observer = oigLocator.resolve('oigObserver');
+    observer.observe(dataContext, notifier);
     elementObserverMap.set(element, {
-      objectObserver: objectObserver,
-      observer: observer
+      objectObserver: observer,
+      observer: notifier
     });
   } else {
     throw '[oig:element] cannot observer dataContext for element: ' + element;
@@ -58,12 +58,12 @@ function elementUnObserveDataContext(element) {
  * @extends HTMLElement
  * @constructor
  */
-function Element() {
+function OigElement() {
 }
 
-Element.prototype = Object.create(HTMLElement.prototype, {
+OigElement.prototype = Object.create(HTMLElement.prototype, {
   /**
-   * @type {ObjectObserver}
+   * @type {OigObserver}
    */
   objectObserver: {
     value: null,
@@ -79,7 +79,7 @@ Element.prototype = Object.create(HTMLElement.prototype, {
      * @returns {Object}
      */
     get: function () {
-      return oig.dataContext(this);
+      return dataContextResolver(this);
     }
   },
   /**
@@ -107,10 +107,7 @@ Element.prototype = Object.create(HTMLElement.prototype, {
    */
   update: {
     value: function () {
-      console.warn('[oig:element] not implemented (update)', this);
+
     }
   }
 });
-
-oig.Element = Element;
-
