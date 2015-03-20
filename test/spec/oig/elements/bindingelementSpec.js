@@ -82,7 +82,7 @@ describe('binding element', function () {
 
     beforeEach(function () {
       viewModel.name = 'test';
-      elementObserverMap.get(bindingElement).objectObserver.notifyAll();
+      bindingElement.update();
     });
 
     afterEach(function () {
@@ -96,54 +96,5 @@ describe('binding element', function () {
     it('should have updated the text content', function () {
       expect(bindingElement.shadowRoot.textContent).to.equal(viewModel.name);
     });
-  });
-
-  describe('bind once', function () {
-
-    function verifyBindOnce() {
-      beforeEach(function () {
-
-        return new Promise(function (resolve) {
-          Object.observe(viewModel, function observer(changes) {
-            Object.unobserve(viewModel, observer);
-            resolve();
-          });
-          viewModel.name = 'test';
-        });
-      });
-
-      afterEach(function () {
-        parent.parentNode && parent.parentNode.removeChild(parent);
-      });
-
-      it('should not have updated the name attribute', function () {
-        expect(element.getAttribute('name')).to.equal('John Doe');
-      });
-
-      it('should not have updated the text content', function () {
-        expect(bindingElement.shadowRoot.textContent).to.equal('John Doe');
-      });
-    }
-
-    describe('update binding using once attribute', function () {
-
-      beforeEach(function () {
-        bindingElement.setAttribute('once', '');
-        document.body.appendChild(parent);
-      });
-
-      verifyBindOnce();
-    });
-
-    describe('update binding using once attribute true', function () {
-
-      beforeEach(function () {
-        bindingElement.setAttribute('once', 'true');
-        document.body.appendChild(parent);
-      });
-
-      verifyBindOnce();
-    });
-
   });
 });

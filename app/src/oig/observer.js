@@ -10,7 +10,7 @@
  * @param {OigObserverContext} observerContext
  * @constructor
  */
-function OigObserver(observable, observerContext) {
+function OigObserver(observerContext) {
 
   /**
    * list of observers to notify on change
@@ -107,7 +107,7 @@ function OigObserver(observable, observerContext) {
    *
    * @param {Function} observer
    */
-  function observe(observer) {
+  function observe(observable, observer) {
     observers.push(observer);
     deepObserve(observable);
   }

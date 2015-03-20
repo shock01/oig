@@ -1,3 +1,8 @@
+var OigMockElement = document.registerElement('oig-mock', {
+  prototype: OigElement.prototype
+});
+
+
 (function () {
   'use strict';
 
@@ -14,8 +19,14 @@
   }
 
   var oigResourceMock = setUpMock(OigResource.prototype);
+  var oigObserverMock = setUpMock(new OigObserver());
+
   oigLocator.register('oigResource', function () {
     return oigResourceMock;
+  });
+
+  oigLocator.register('oigObserver', function () {
+    return oigObserverMock;
   });
 
 }())

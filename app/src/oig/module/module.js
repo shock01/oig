@@ -8,6 +8,14 @@
     return oigResource;
   });
 
+  oigLocator.register('oigObserverContext', function () {
+    return new OigObserverContext();
+  });
+
+  oigLocator.register('oigObserver', function () {
+    return new OigObserver(oigLocator.resolve('oigObserverContext'));
+  });
+
   // export the elements
   window.OigBindingElement = OigBindingElement;
   window.OigContextElement = OigContextElement;
@@ -15,7 +23,6 @@
   window.OigIncludeElement = OigIncludeElement;
   window.OigReactElement = OigReactElement;
   window.OigTemplateElement = OigTemplateElement;
-
 }());
 
 

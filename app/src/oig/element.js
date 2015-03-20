@@ -29,8 +29,8 @@ function elementObserveDataContext(element) {
     notifier = element.update.bind(element);
 
   if (dataContext) {
-    observer = new OigObserver(dataContext, new OigObserverContext());
-    observer.observe(notifier);
+    observer = oigLocator.resolve('oigObserver');
+    observer.observe(dataContext, notifier);
     elementObserverMap.set(element, {
       objectObserver: observer,
       observer: notifier
