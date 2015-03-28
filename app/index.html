@@ -85,29 +85,29 @@
 
   <p>
   <dl class="dl-horizontal">
-  <dt>observer context</dt>
+  <dt><a href="#observer-content">observer context</a></dt>
   <dd>example on how to freeze objects (immutable)</dd>
-    <dt>binding element</dt>
+    <dt><a href="#binding-element">binding element</a></dt>
     <dd>data binding supporting one-way(default), two-way and once binding</dd>
-    <dt>context element</dt>
+    <dt><a href="#context-element">context element</a></dt>
     <dd>Like in XAML... adds a ViewModel to the view</dd>
-    <dt>if element</dt>
+    <dt><a href="#if-element">if element</a></dt>
     <dd>conditional elements by using oig-if, kinda like xsl:if</dd>
-    <dt>include element</dt>
+    <dt><a href="#include-element">include element</a></dt>
     <dd>include text,html or xml content inspired by XInclude. Used to build up this page with code and examples</dd>
-    <dt>listener element</dt>
+    <dt><a href="#listener-element">listener element</a></dt>
     <dd>event listening based on XForms, XMLEvents and XUL Listeners.</dd>
-  <dt>react element</dt>
+  <dt><a href="#react-element">react element</a></dt>
   <dd>Integrate ReactJS</dd>
-    <dt>template element</dt>
+    <dt><a href="#template-element">template element</a></dt>
     <dd>Use microtemplates (underscore) by default. Pluggable custom template engines like handlebars in example</dd>
   </dl>
   </p>
   <div>
 
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="observer-content">
       <div class="panel-heading">
-        <h2>observer context
+        <h2>Observer context
           <small>Using Object.freeze :-)</small>
         </h2>
       </div>
@@ -120,18 +120,16 @@
         <oig-include href="partials/observercontext/example.html"></oig-include>
         <span class="label label-info">code</span>
         <code>
-          <pre class="pre-scrollable">
-            <oig-include href="partials/observercontext/example.html" parse="text"></oig-include>
-          </pre>
+          <pre class="pre-scrollable"><oig-include href="partials/observercontext/example.html" parse="text"></oig-include></pre>
         </code>
       </div>
     </div>
 
     <hr/>
 
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="binding-element">
       <div class="panel-heading">
-        <h2>binding element
+        <h2>Binding element
           <small>basic text (parent) binding</small>
         </h2>
       </div>
@@ -152,9 +150,7 @@
         <oig-include href="partials/binding/parent.html"></oig-include>
         <span class="label label-info">code</span>
         <code>
-          <pre class="pre-scrollable">
-            <oig-include href="partials/binding/parent.html" parse="text"></oig-include>
-          </pre>
+          <pre class="pre-scrollable"><oig-include href="partials/binding/parent.html" parse="text"></oig-include></pre>
         </code>
       </div>
     </div>
@@ -163,7 +159,7 @@
 
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h2>binding element
+        <h2>Binding element
           <small>manual 2-way binding</small>
         </h2>
       </div>
@@ -178,8 +174,7 @@
         <oig-include href="partials/binding/twoway-manual.html"></oig-include>
         <span class="label label-info">code</span>
         <code>
-          <pre class="pre-scrollable">
-            <oig-include href="partials/binding/twoway-manual.html" parse="text"></oig-include></pre>
+          <pre class="pre-scrollable"><oig-include href="partials/binding/twoway-manual.html" parse="text"></oig-include></pre>
         </code>
       </div>
     </div>
@@ -188,7 +183,7 @@
 
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h2>binding element
+        <h2>Binding element
           <small>next sibling with manual 2-way binding</small>
         </h2>
       </div>
@@ -197,9 +192,7 @@
         <oig-include href="partials/binding/twoway-nextsibling.html"></oig-include>
         <span class="label label-info">code</span>
         <code>
-          <pre class="pre-scrollable">
-            <oig-include href="partials/binding/twoway-nextsibling.html" parse="text"></oig-include>
-          </pre>
+          <pre class="pre-scrollable"><oig-include href="partials/binding/twoway-nextsibling.html" parse="text"></oig-include></pre>
         </code>
       </div>
     </div>
@@ -208,7 +201,7 @@
 
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h2>binding element
+        <h2>Binding element
           <small>previous sibling</small>
         </h2>
       </div>
@@ -217,9 +210,7 @@
         <oig-include href="partials/binding/previoussibling.html"></oig-include>
         <span class="label label-info">code</span>
         <code>
-          <pre class="pre-scrollable">
-            <oig-include href="partials/binding/previoussibling.html" parse="text"></oig-include>
-          </pre>
+          <pre class="pre-scrollable"><oig-include href="partials/binding/previoussibling.html" parse="text"></oig-include></pre>
         </code>
       </div>
     </div>
@@ -227,7 +218,7 @@
     <hr>
 
 
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="context-element">
       <div class="panel-heading">
         <h2>Context element</h2>
       </div>
@@ -254,7 +245,7 @@
 
     <hr/>
 
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="if-element">
       <div class="panel-heading">
         <h2>if element
           <small>simple example</small>
@@ -265,18 +256,16 @@
         <oig-include href="partials/if/example.html" parse="xml"></oig-include>
         <span class="label label-info">code</span>
         <code>
-          <pre class="pre-scrollable">
-              <oig-include href="partials/if/example.html" parse="text"></oig-include>
-          </pre>
+          <pre class="pre-scrollable"><oig-include href="partials/if/example.html" parse="text"></oig-include></pre>
         </code>
       </div>
     </div>
 
     <hr>
 
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="include-element">
       <div class="panel-heading">
-        <h2>include element
+        <h2>Include element
           <small>basic inclusion</small>
         </h2>
       </div>
@@ -285,18 +274,16 @@
         <oig-include href="partials/include/example.html" parse="xml"></oig-include>
         <span class="label label-info">code</span>
         <code>
-          <pre class="pre-scrollable">
-              <oig-include href="partials/include/example.html" parse="text"></oig-include>
-          </pre>
+          <pre class="pre-scrollable"><oig-include href="partials/include/example.html" parse="text"></oig-include></pre>
         </code>
       </div>
     </div>
 
     <hr/>
 
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="listener-element">
       <div class="panel-heading">
-        <h2>listener element
+        <h2>Listener element
           <small></small>
         </h2>
       </div>
@@ -305,16 +292,14 @@
         <oig-include href="partials/listener/example.html"></oig-include>
         <span class="label label-info">code</span>
         <code>
-          <pre class="pre-scrollable">
-            <oig-include href="partials/listener/example.html" parse="text"></oig-include>
-          </pre>
+          <pre class="pre-scrollable"><oig-include href="partials/listener/example.html" parse="text"></oig-include></pre>
         </code>
       </div>
     </div>
 
     <hr/>
 
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="react-element">
       <div class="panel-heading">
         <h2>React element
           <small>Using JSX Components</small>
@@ -325,16 +310,14 @@
         <oig-include href="partials/react/example.html"></oig-include>
         <span class="label label-info">code</span>
         <code>
-          <pre class="pre-scrollable">
-            <oig-include href="partials/react/example.html" parse="text"></oig-include>
-          </pre>
+          <pre class="pre-scrollable"><oig-include href="partials/react/example.html" parse="text"></oig-include></pre>
         </code>
       </div>
     </div>
 
     <hr/>
 
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="template-element">
       <div class="panel-heading">
         <h2>Template element
           <small></small>
@@ -345,9 +328,7 @@
         <oig-include href="partials/template/example.html"></oig-include>
         <span class="label label-info">code</span>
         <code>
-          <pre class="pre-scrollable">
-            <oig-include href="partials/template/example.html" parse="text"></oig-include>
-          </pre>
+          <pre class="pre-scrollable"><oig-include href="partials/template/example.html" parse="text"></oig-include></pre>
         </code>
       </div>
     </div>
