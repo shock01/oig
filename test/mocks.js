@@ -20,6 +20,7 @@ var OigMockElement = document.registerElement('oig-mock', {
 
   var oigResourceMock = setUpMock(OigResource.prototype);
   var oigObserverMock = setUpMock(new OigObserver());
+  var oigViewModelResolverMock = setUpMock(OigViewModelResolver);
 
   oigLocator.register('oigResource', function () {
     return oigResourceMock;
@@ -27,6 +28,10 @@ var OigMockElement = document.registerElement('oig-mock', {
 
   oigLocator.register('oigObserver', function () {
     return oigObserverMock;
+  });
+
+  oigLocator.register('oigViewModelResolver', function () {
+    return oigViewModelResolverMock;
   });
 
 }())

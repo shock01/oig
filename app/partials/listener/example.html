@@ -1,23 +1,22 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
   <script type="text/javascript">
     (function () {
-      var viewModel = {
-        clickCountA: 0,
-        clickCountB: 0,
+      oig.locator.register('listenerExample', function () {
+        var viewModel = {
+          clickCountA: 0,
+          clickCountB: 0,
 
-        methodA: function () {
-          this.clickCountA++;
-        },
-        methodB: function () {
-          this.clickCountB++;
-        }
-      };
-      Object.defineProperty(oig.viewModels, 'listenerExample', {
-        get: function () {
-          return viewModel;
-        }
+          methodA: function () {
+            this.clickCountA++;
+          },
+          methodB: function () {
+            this.clickCountB++;
+          }
+        };
+
+        return viewModel;
       });
-    }())
+    }());
   </script>
   <div is="oig-context" data-view-model="listenerExample">
     <oig-listener onclick="methodA()" selector="button > span:first-child" prevent-default></oig-listener>

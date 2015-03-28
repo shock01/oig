@@ -11,8 +11,9 @@ describe('listener element', function () {
     listener,
     button,
     secondaryButton,
-    viewModel = {};
-
+    viewModel = {},
+    oigViewModelResolver,
+    sandbox;
 
   function dispatch(element, eventType) {
     var event = document.createEvent('CustomEvent');
@@ -21,23 +22,22 @@ describe('listener element', function () {
     return event;
   }
 
+  before(function () {
+    sandbox = sinon.sandbox.create();
+    oigViewModelResolver = oigLocator.resolve('oigViewModelResolver');
+  });
+
   /**
    * setup
    */
-  before(function () {
-    Object.defineProperty(oig.viewModels, 'listenerelement', {
-      configurable: true,
-      get: function () {
-        return viewModel;
-      }
-    });
+  beforeEach(function () {
     viewModel = {};
+    sandbox.stub(oigViewModelResolver, 'resolve').returns(viewModel);
   });
 
   beforeEach(function () {
     viewModel.clickedCallback = sinon.spy();
   });
-
 
   beforeEach(function () {
     node = document.createElement('div', 'oig-context');
@@ -54,6 +54,7 @@ describe('listener element', function () {
   });
 
   afterEach(function () {
+    sandbox.restore();
     node.parentNode && node.parentNode.removeChild(node);
   });
 

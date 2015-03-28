@@ -24,7 +24,7 @@ module.exports = function(config) {
       'app/src/oig/*.js',
       {pattern: 'app/src/oig/**/*.js'},
       'test/mocks.js',
-      {pattern: 'test/spec/**/*Spec.js'},
+      {pattern: 'test/spec/**/*Spec.js'}
     ],
 
     coverageReporter: {

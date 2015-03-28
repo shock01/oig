@@ -1,12 +1,11 @@
 <script type="text/javascript">
   (function () {
-    var viewModel = {
-      ... define properties here
-    };
-    Object.defineProperty(oig.viewModels, 'myViewModel', {
-      get: function () {
-        return viewModel;
-      }
+    oig.locator.register('myViewModel', function () {
+      var viewModel = {
+        ... define properties here
+      };
+
+      return viewModel;
     });
   }())
 </script>

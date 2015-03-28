@@ -16,6 +16,12 @@
     return new OigObserver(oigLocator.resolve('oigObserverContext'));
   });
 
+  oigLocator.register('oigViewModelResolver', function() {
+    return OigViewModelResolver;
+  });
+
+  oig.locator = oigLocator;
+
   // export the elements
   window.OigBindingElement = OigBindingElement;
   window.OigContextElement = OigContextElement;

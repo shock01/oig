@@ -46,14 +46,14 @@ var OigContextElement = document.registerElement('oig-context', {
     attachedCallback: {
       value: function () {
         var viewModel = this.dataset.viewModel,
-          dataContext = null;
+          dataContext = null,
+          viewModelResolver = oig.locator.resolve('oigViewModelResolver');
         if (!viewModel) {
           throw '[oig:contextelement] required attribute data-view-model is missing';
         }
-        if (oig.viewModels.hasOwnProperty(viewModel)) {
-          dataContext = oig.viewModels[viewModel];
-        }
-        if (!dataContext) {
+        try {
+          dataContext = viewModelResolver.resolve(viewModel);
+        } catch (e) {
           throw '[oig:contextelement] no data context found for:' + viewModel;
         }
         this.dataContext = dataContext;
