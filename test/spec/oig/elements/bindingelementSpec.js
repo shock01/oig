@@ -19,18 +19,18 @@ describe('binding element', function () {
   var viewModel;
 
   /**
-   *
+   * @type {Object}
    */
-  var objectObserver;
+  var oigViewModelResolver;
+
+  /**
+   * @type {Object}
+   */
+  var sandbox;
 
   before(function () {
-
-    Object.defineProperty(oig.viewModels, 'binding', {
-      configurable: true,
-      get: function () {
-        return viewModel;
-      }
-    });
+    sandbox = sinon.sandbox.create();
+    oigViewModelResolver = oigLocator.resolve('oigViewModelResolver');
   });
 
   after(function () {
@@ -42,7 +42,7 @@ describe('binding element', function () {
     viewModel = {
       name: 'John Doe'
     };
-
+    sandbox.stub(oigViewModelResolver, 'resolve').returns(viewModel);
     parent = document.createElement('div');
     var html = '<div xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink" is="oig-context" data-view-model="binding">' +
       '<oig-binding name="name">name</oig-binding>' +
@@ -53,6 +53,9 @@ describe('binding element', function () {
     bindingElement = element.firstElementChild;
   });
 
+  afterEach(function () {
+    sandbox.restore();
+  });
 
   describe('binding', function () {
     beforeEach(function () {

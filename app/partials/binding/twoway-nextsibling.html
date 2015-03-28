@@ -1,14 +1,13 @@
 <div>
   <script type="text/javascript">
     (function () {
-      var viewModel = {
-        width: 200,
-        img: 'assets/images/daffyduck.png'
-      };
-      Object.defineProperty(oig.viewModels, 'twoWayNextSiblingBinding', {
-        get: function () {
-          return viewModel;
-        }
+      oig.locator.register('twoWayNextSiblingBinding', function () {
+        var viewModel = {
+          width: 200,
+          img: 'assets/images/daffyduck.png'
+        };
+
+        return viewModel;
       });
     }())
   </script>

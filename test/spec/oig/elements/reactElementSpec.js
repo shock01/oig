@@ -19,17 +19,22 @@ describe('react element', function () {
   var component;
   var componentImpl;
 
+  /**
+   * @type {Object}
+   */
+  var oigViewModelResolver;
+
+  /**
+   * @type {Object}
+   */
+  var sandbox;
+
   before(function () {
-    Object.defineProperty(oig.viewModels, 'reactelement', {
-      configurable: true,
-      get: function () {
-        return viewModel;
-      }
-    });
+    sandbox = sinon.sandbox.create();
+    oigViewModelResolver = oigLocator.resolve('oigViewModelResolver');
   });
 
   after(function () {
-    delete oig.viewModels.reactelement;
     delete window.React;
     delete window.MyJSX;
   });
@@ -43,10 +48,11 @@ describe('react element', function () {
     viewModel = {
       person: {name: "John Doe"}
     };
-
+    sandbox.stub(oigViewModelResolver, 'resolve').returns(viewModel);
   });
 
   afterEach(function () {
+    sandbox.restore();
     parent.parentNode && parent.parentNode.removeChild(parent);
   });
 

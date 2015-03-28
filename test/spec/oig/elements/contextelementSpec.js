@@ -10,7 +10,18 @@ describe('context element', function () {
    */
   var viewModel;
 
-  before(function (done) {
+  /**
+   * @type {Object}
+   */
+  var oigViewModelResolver;
+
+  /**
+   * @type {Object}
+   */
+  var sandbox;
+
+  beforeEach(function (done) {
+
     viewModel = {
       name: 'some viewmodel',
       onload: function () {
@@ -19,9 +30,9 @@ describe('context element', function () {
       }
     };
 
-    Object.defineProperty(oig.viewModels, 'me', {
-      value: viewModel
-    });
+    sandbox = sinon.sandbox.create();
+    oigViewModelResolver = oigLocator.resolve('oigViewModelResolver');
+    sandbox.stub(oigViewModelResolver, 'resolve').returns(viewModel);
 
     node = document.createElement('div', 'oig-context');
     node.setAttribute('data-view-model', 'me');
@@ -30,6 +41,7 @@ describe('context element', function () {
   });
 
   afterEach(function () {
+    sandbox.restore();
     if (node.parentNode) {
       node.parentNode.removeChild(node);
     }
@@ -45,7 +57,7 @@ describe('context element', function () {
     });
 
     it('should set the dataContext to the element', function () {
-      expect(node.dataContext).to.equal(oig.viewModels.me);
+      expect(node.dataContext).to.equal(viewModel);
     });
   });
 

@@ -1,16 +1,15 @@
 <div>
   <script type="text/javascript">
     (function () {
-      var viewModel = {
-        color: '#000',
-        name: 'Daffy Duck'
-      };
-      Object.defineProperty(oig.viewModels, 'twoWayBinding', {
-        get: function () {
-          return viewModel;
-        }
+      oig.locator.register('twoWayBinding', function() {
+        var viewModel = {
+          color: '#000',
+          name: 'Daffy Duck'
+        };
+
+        return viewModel;
       });
-    }())
+    }());
   </script>
   <div is="oig-context" data-view-model="twoWayBinding">
     <div class="form-group">

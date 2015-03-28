@@ -23,16 +23,15 @@
   </script>
   <script type="text/javascript">
     (function () {
-      var viewModel = {
-        count: 0,
-        increment: function () {
-          this.count++;
-        }
-      };
-      Object.defineProperty(oig.viewModels, 'reactBinding', {
-        get: function () {
-          return viewModel;
-        }
+      oig.locator.register('reactBinding', function () {
+        var viewModel = {
+          count: 0,
+          increment: function () {
+            this.count++;
+          }
+        };
+
+        return viewModel;
       });
     }())
   </script>
