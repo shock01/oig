@@ -1,14 +1,12 @@
 <div>
   <script type="text/javascript">
     (function () {
-      oig.locator.register('parentBinding', function () {
-        var viewModel = {
-          name: 'Daffy Duck',
-          color: 'red'
-        };
+      function ViewModel() {
+        this.name = 'Daffy Duck';
+        this.color = 'red';
+      }
 
-        return viewModel;
-      });
+      oig.bind('parentBinding').to(ViewModel).asNew();
     }())
   </script>
   <div class="form-group" is="oig-context" data-view-model="parentBinding">

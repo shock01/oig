@@ -1,21 +1,22 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
   <script type="text/javascript">
     (function () {
-      oig.locator.register('listenerExample', function () {
-        var viewModel = {
-          clickCountA: 0,
-          clickCountB: 0,
 
-          methodA: function () {
-            this.clickCountA++;
-          },
-          methodB: function () {
-            this.clickCountB++;
-          }
-        };
+      function ViewModel() {
+        this.clickCountA = 0;
+        this.clickCountB = 0;
+      }
 
-        return viewModel;
-      });
+      ViewModel.prototype = {
+        methodA: function () {
+          this.clickCountA++;
+        },
+        methodB: function () {
+          this.clickCountB++;
+        }
+      };
+      oig.bind('listenerExample').to(ViewModel).asNew();
+
     }());
   </script>
   <div is="oig-context" data-view-model="listenerExample">

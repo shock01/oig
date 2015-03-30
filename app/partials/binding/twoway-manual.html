@@ -1,14 +1,12 @@
 <div>
   <script type="text/javascript">
     (function () {
-      oig.locator.register('twoWayBinding', function() {
-        var viewModel = {
-          color: '#000',
-          name: 'Daffy Duck'
-        };
+      function ViewModel() {
+        this.color = '#000';
+        this.name = 'Daffy Duck';
+      }
 
-        return viewModel;
-      });
+      oig.bind('twoWayBinding').to(ViewModel).asNew();
     }());
   </script>
   <div is="oig-context" data-view-model="twoWayBinding">
@@ -17,8 +15,12 @@
       <label>Change text color</label>
       <input class="form-control" type="color"/>
 
-      <div>I am bound only once!!! color:<oig-binding once>color</oig-binding></div>
-      <div>I am bound forever!!! color:<oig-binding>color</oig-binding></div>
+      <div>I am bound only once!!! color:
+        <oig-binding once>color</oig-binding>
+      </div>
+      <div>I am bound forever!!! color:
+        <oig-binding>color</oig-binding>
+      </div>
 
     </div>
     <div class="form-group">

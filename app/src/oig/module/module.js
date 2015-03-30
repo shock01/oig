@@ -58,7 +58,6 @@
    * @return {*|OigDIContext.Binding|function(this:*)}
    */
   oig.bind = function (name) {
-    console.log('Registering', name);
     oigLocator.register(name, oigDIResolver);
     return oigLocator.resolve('oigDIContext').bind(name);
   };

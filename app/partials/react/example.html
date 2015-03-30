@@ -4,6 +4,7 @@
 
     (function () {
 
+
       'use strict';
 
       var OIGC = React.createClass({
@@ -13,7 +14,7 @@
          * @return {XML}
          */
         render: function render() {
-          return (React.createElement("div", null, "React says: Clicked ",  this.state ? this.state.count : 0, " times!!!"));
+          return (React.createElement("div", null, "React says: Clicked ", this.state ? this.state.count : 0, " times!!!"));
         }
       });
 
@@ -23,16 +24,17 @@
   </script>
   <script type="text/javascript">
     (function () {
-      oig.locator.register('reactBinding', function () {
-        var viewModel = {
-          count: 0,
-          increment: function () {
-            this.count++;
-          }
-        };
 
-        return viewModel;
-      });
+      function ViewModel() {
+        this.count = 0;
+      }
+
+      ViewModel.prototype = {
+        increment: function () {
+          this.count++;
+        }
+      }
+      oig.bind('reactBinding').to(ViewModel).asNew();
     }())
   </script>
   <p>
@@ -40,11 +42,11 @@
   </p>
 
   <div is="oig-context" data-view-model="reactBinding">
-      <oig-react component="OIGC"></oig-react>
-      <button>
-        <oig-listener onclick="increment()"></oig-listener>
-        <span>Increment!!!</span>
-      </button>
-    </div>
+    <oig-react component="OIGC"></oig-react>
+    <button>
+      <oig-listener onclick="increment()"></oig-listener>
+      <span>Increment!!!</span>
+    </button>
   </div>
+</div>
 </div>

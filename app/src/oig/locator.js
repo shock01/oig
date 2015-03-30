@@ -37,7 +37,7 @@ var oigLocator = (function () {
     if (!services.hasOwnProperty(name)) {
       throw '[oig:locator] unresolvable: ' + name;
     }
-    return services[name]();
+    return services[name](name);
   }
 
   /**

@@ -2,19 +2,17 @@
   <script type="text/javascript">
     (function () {
 
-      oig.locator.register('observerContext', function () {
-        var viewModel = {
-          frozen: {
-            name: 'Daffy Duck'
-          },
-          hot: {
-            name: 'Garfield'
-          }
+      function ViewModel() {
+        this.frozen = {
+          name: 'Daffy Duck'
         };
-        Object.freeze(viewModel.frozen);
+        this.hot = {
+          name: 'Garfield'
+        }
+        Object.freeze(this.frozen);
+      }
 
-        return viewModel;
-      });
+      oig.bind('observerContext').to(ViewModel).asNew();
 
     }())
   </script>
