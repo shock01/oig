@@ -15,6 +15,7 @@ function oigDIContextConstructor(binding, diContext) {
     constructorType = typeInfo.constructorType,
     args = [],
     instance = Object.create(typeInfo.type.prototype);
+
   if (Array.isArray(constructorType.arguments)) {
     constructorType.arguments.forEach(function (arg) {
       var dependency,
@@ -40,7 +41,6 @@ function oigDIContextConstructor(binding, diContext) {
       args.push(dependency);
     });
   }
-
   typeInfo.type.apply(instance, args);
   return instance;
 }

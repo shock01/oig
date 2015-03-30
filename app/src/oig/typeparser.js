@@ -7,6 +7,7 @@ var oigTypeParserRegExFnSplit = /\s*,\s*/;
  * @returns {Object}
  */
 function oigParseType(type) {
+
   return Object.create(null, {
       annotations: {
         get: function () {
