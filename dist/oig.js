@@ -787,7 +787,7 @@ var OigContextElement = document.registerElement('oig-context', {
  * <b>parse</b>
  *    Indicates whether to include the resource as parsed XML or as text.
  *    The parse attribute allows XInclude to give the author of the including document priority over the server of the included document
- *    in terms of how to process the included content.
+ *    in terms of how to parse the included content.
  *    A value of "html" indicates that the resource must be parsed as HTML(5)
  *    A value of "xml" indicates that the resource must be parsed as XML and the infosets merged.
  *    value of "text" indicates that the resource must be included as the character information items.

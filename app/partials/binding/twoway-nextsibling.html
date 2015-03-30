@@ -1,14 +1,13 @@
 <div>
   <script type="text/javascript">
     (function () {
-      oig.locator.register('twoWayNextSiblingBinding', function () {
-        var viewModel = {
-          width: 200,
-          img: 'assets/images/daffyduck.png'
-        };
 
-        return viewModel;
-      });
+      function ViewModel() {
+        this.width = 200;
+        this.img = 'assets/images/daffyduck.png';
+      }
+
+      oig.bind('twoWayNextSiblingBinding').to(ViewModel).asNew();
     }())
   </script>
   <div is="oig-context" data-view-model="twoWayNextSiblingBinding">
