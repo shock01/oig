@@ -1,0 +1,43 @@
+<div>
+  <script type="text/javascript">
+    (function () {
+
+      /**
+       * Service
+       * @constructor
+       */
+      function Service() {
+        this.message = 'Hello world!';
+      }
+
+      Service.prototype.getTime = function () {
+        return Date.now();
+      };
+
+      /**
+       * ViewModel
+       * @param diService
+       * @constructor
+       */
+      function ViewModel(diService) {
+        //# inject: args:(diService)
+        this.message = diService.message;
+        this.diService = diService;
+      }
+
+      ViewModel.prototype.onload = function () {
+          setInterval(function () {
+            this.time = this.diService.getTime();
+          }.bind(this), 500);
+      };
+
+      // bind the diContext
+      oig.bind('diService').to(Service);
+      oig.bind('di').to(ViewModel).asNew();
+
+    }())
+  </script>
+  <div class="form-group" is="oig-context" data-view-model="di">
+    The service says:<span><oig-binding>message</oig-binding> <oig-binding>time</oig-binding></span>
+  </div>
+</div>
