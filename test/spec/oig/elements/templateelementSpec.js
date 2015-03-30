@@ -21,13 +21,20 @@ describe('template element', function () {
   var defaultTemplateEngine;
   var customTemplateEngine;
 
+  /**
+   * @type {Object}
+   */
+  var oigViewModelResolver;
+
+  /**
+   * @type {Object}
+   */
+  var sandbox;
+
   before(function () {
-    Object.defineProperty(oig.viewModels, 'templateelement', {
-      configurable: true,
-      get: function () {
-        return viewModel;
-      }
-    });
+    sandbox = sinon.sandbox.create();
+    oigViewModelResolver = oigLocator.resolve('oigViewModelResolver');
+
     customTemplateEngine = {
       compile: sinon.stub()
     };
@@ -57,6 +64,7 @@ describe('template element', function () {
     viewModel = {
       count: 0
     };
+    sandbox.stub(oigViewModelResolver, 'resolve').returns(viewModel);
   });
 
   beforeEach(function () {
@@ -64,6 +72,7 @@ describe('template element', function () {
   });
 
   afterEach(function () {
+    sandbox.restore();
     defaultTemplateEngine.restore();
   });
 

@@ -1,14 +1,13 @@
 <div>
   <script type="text/javascript">
     (function () {
-      var viewModel = {
-        name: 'Daffy Duck',
-        color: 'red'
-      };
-      Object.defineProperty(oig.viewModels, 'parentBinding', {
-        get: function () {
-          return viewModel;
-        }
+      oig.locator.register('parentBinding', function () {
+        var viewModel = {
+          name: 'Daffy Duck',
+          color: 'red'
+        };
+
+        return viewModel;
       });
     }())
   </script>

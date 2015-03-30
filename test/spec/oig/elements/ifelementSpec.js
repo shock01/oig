@@ -17,13 +17,23 @@ describe('if element', function () {
    * @type {Object}
    */
   var viewModel;
+  /**
+   * @type {Object}
+   */
+  var oigViewModelResolver;
+  /**
+   * @type {Object}
+   */
+  var sandbox;
 
-  before(function () {
+  beforeEach(function () {
+    sandbox = sinon.sandbox.create();
     viewModel = {
       flag: true
     };
-    oig.viewModels.ifViewModel = viewModel;
-  })
+    oigViewModelResolver = oigLocator.resolve('oigViewModelResolver');
+    sandbox.stub(oigViewModelResolver, 'resolve').returns(viewModel);
+  });
 
   beforeEach(function () {
     parent = document.createElement('div', 'oig-context');
@@ -33,6 +43,7 @@ describe('if element', function () {
   });
 
   afterEach(function () {
+    sandbox.restore();
     parent.parentNode && parent.parentNode.removeChild(parent);
   });
 
