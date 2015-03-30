@@ -17,12 +17,14 @@ var oigLocator = (function () {
    * @param {String} name
    * @param {Function} resolver
    * @throws [oig:locator] argument resolver should be function
+   * @returns {OigLocator}
    */
   function register(name, resolver) {
     if (typeof resolver !== 'function') {
       throw '[oig:locator] argument resolver should be function';
     }
     services[name] = resolver;
+    return oigLocator;
   }
 
   /**
@@ -38,9 +40,19 @@ var oigLocator = (function () {
     return services[name]();
   }
 
+  /**
+   *
+   * @param {Sting} name
+   */
+  function remove(name) {
+    services[name] = null;
+    delete services[name];
+  }
+
   return {
     register: register,
-    resolve: resolve
+    resolve: resolve,
+    remove: remove
   };
 
 }());
