@@ -25,11 +25,10 @@
     })
     .register('oigObserver', function () {
       return new OigObserver(oigLocator.resolve('oigObserverContext'));
+    })
+    .register('oigViewModelResolver', function () {
+      return OigViewModelResolver;
     });
-
-  oigLocator.register('oigViewModelResolver', function() {
-    return OigViewModelResolver;
-  });
 
   oig.locator = oigLocator;
 

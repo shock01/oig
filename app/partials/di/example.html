@@ -22,13 +22,14 @@
       function ViewModel(diService) {
         //# inject: args:(diService)
         this.message = diService.message;
+        this.time = null;
         this.diService = diService;
       }
 
       ViewModel.prototype.onload = function () {
-          setInterval(function () {
-            this.time = this.diService.getTime();
-          }.bind(this), 500);
+        setInterval(function () {
+          this.time = this.diService.getTime();
+        }.bind(this), 500);
       };
 
       // bind the diContext
