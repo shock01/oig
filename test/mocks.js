@@ -19,19 +19,30 @@ var OigMockElement = document.registerElement('oig-mock', {
   }
 
   var oigResourceMock = setUpMock(OigResource.prototype);
+  var oigAnnotationParserMock = setUpMock(OigAnnotationParser.prototype);
+  var oigDIContextMock = setUpMock(OigDIContext.prototype);
+  var oigTypeParser = setUpMock(OigTypeParser.prototype);
   var oigObserverMock = setUpMock(new OigObserver());
   var oigViewModelResolverMock = setUpMock(OigViewModelResolver);
 
-  oigLocator.register('oigResource', function () {
-    return oigResourceMock;
-  });
-
-  oigLocator.register('oigObserver', function () {
-    return oigObserverMock;
-  });
-
-  oigLocator.register('oigViewModelResolver', function () {
-    return oigViewModelResolverMock;
-  });
+  oigLocator
+    .register('oigResource', function () {
+      return oigResourceMock;
+    })
+    .register('oigAnnotationParser', function () {
+      return oigAnnotationParserMock;
+    })
+    .register('oigObserver', function () {
+      return oigObserverMock;
+    })
+    .register('oigTypeParser', function () {
+      return oigTypeParser;
+    })
+    .register('oigDIContext', function () {
+      return oigDIContextMock;
+    })
+    .register('oigViewModelResolver', function () {
+      return oigViewModelResolverMock;
+    });
 
 }())

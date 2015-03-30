@@ -25,6 +25,7 @@
     "afterEach": true,
     "describe": true,
     "define": true,
+    "expect": true,
     "HTMLTemplateElement": true,
     "Promise": true,
     "WeakMap": true,
@@ -32,9 +33,20 @@
     "exports": true,
     "oig": true,
     "oigLocator": true,
+    "OigDIContext": true,
     "OigElement": true,
     "OigObserver": true,
     "OigObserverContext": true,
-    "elementAttributeTruthy": true
+    "OigTypeParser": true,
+    "OigAnnotationParser": true,
+    "OigResource": true,
+    "OigBindingElement": true,
+    "OigContextElement": true,
+    "OigIfElement": true,
+    "OigIncludeElement": true,
+    "OigReactElement": true,
+    "OigTemplateElement": true,
+    "elementAttributeTruthy": true,
+    "sinon": true
   }
 }

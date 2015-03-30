@@ -18,38 +18,19 @@ Meanwhile......just look at the demo. (Chrome latest or any updated evergreen we
 ------------------------------------------------------------------------------------------------------------------------
 
 ViewModels will be referred to as 'dataContext' when used in elements and/or views.
+ViewModels can be registered as Singleton(Default) or as new. 
+When registering as new it will create a new instance per context
 
-### Simple viewModels
-      // viewModel as object literal
-      var mainViewModel = {
-        name: 'Hello',
-        cta: function () {
-        }
-      };
-      
-      Object.defineProperty(oig.viewModels, 'main', {
-        value: mainViewModel
-      });
-      
-      // or simply
-      
-      oig.viewModels.main = mainViewModel
 
-### Prototype viewModels
-
-Using Object.defineProperty a getter can be added for each viewModel. Inside the getter any resource injection may occur.
-Also preserving viewModels or constructing new instances of a viewModel can be done in the getters
-
-      // viewModel as prototype
-      function MainViewModel() {
+### Registration
+      function ViewModel() {
+        this.name = 'I am a templated viewModel';
+        this.items = [{id: 0, name: "John Doe"}, {id: 1, name: "Jane Doe"}];
       }
 
-      Object.defineProperty(oig.viewModels, 'main', {
-        get: function () {
-          // pass prototype constructor arguments here
-          return new MainViewModel();
-        }
-      });
+      oig.bind('template').to(ViewModel).asNew();
+
+
 
 ------------------------------------------------------------------------------------------------------------------------
 
