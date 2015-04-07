@@ -2,12 +2,16 @@
 (function () {
   // set up the serviceLocator
 
-  var oigResource = new OigResource(),
+  var oigEventBus = new OigEventBus(),
+    oigResource = new OigResource(),
     oigAnnotationParser = new OigAnnotationParser(),
     oigTypeParser = new OigTypeParser(),
     oigDIContext = new OigDIContext();
 
   oigLocator
+    .register('oigEventBus', function () {
+      return oigEventBus;
+    })
     .register('oigResource', function () {
       return oigResource;
     })
