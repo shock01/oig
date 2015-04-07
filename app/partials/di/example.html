@@ -5,9 +5,17 @@
       /**
        * Service
        * @constructor
+       * @param {OigEventBus} eventBus
        */
-      function Service() {
+      function Service(oigEventBus) {
+        //# inject: args:(oigEventBus)
+        this.eventBus = oigEventBus;
         this.message = 'Hello world!';
+
+        setInterval(function () {
+          oigEventBus.trigger('random', Math.random() * Date.now());
+        }, 500)
+
       }
 
       Service.prototype.getTime = function () {
@@ -17,19 +25,27 @@
       /**
        * ViewModel
        * @param diService
+       * @param eventBus
        * @constructor
        */
-      function ViewModel(diService) {
-        //# inject: args:(diService)
+      function ViewModel(diService, oigEventBus) {
+        //# inject: args:(diService, oigEventBus)
         this.message = diService.message;
+        this.random = null;
         this.time = null;
         this.diService = diService;
+        this.eventBus = oigEventBus;
       }
 
       ViewModel.prototype.onload = function () {
         setInterval(function () {
           this.time = this.diService.getTime();
         }.bind(this), 500);
+        this.eventBus.register('random', this.handleRandomEvent.bind(this));
+      };
+
+      ViewModel.prototype.handleRandomEvent = function (eventDetails) {
+        this.random = eventDetails;
       };
 
       // bind the diContext
@@ -40,5 +56,7 @@
   </script>
   <div class="form-group" is="oig-context" data-view-model="di">
     The service says:<span><oig-binding>message</oig-binding> <oig-binding>time</oig-binding></span>
+    <br>Random:
+    <oig-binding>random</oig-binding>
   </div>
 </div>
