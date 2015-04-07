@@ -34,7 +34,7 @@ describe('datacontext', function () {
 
   beforeEach(function (done) {
     node = new OigContextElement();
-    node.setAttribute('data-view-model', 'my');
+    node.setAttribute('view-model', 'my');
     child = document.createElement('div');
     node.appendChild(child);
     document.body.appendChild(node);

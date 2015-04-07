@@ -44,9 +44,9 @@ describe('binding element', function () {
     };
     sandbox.stub(oigViewModelResolver, 'resolve').returns(viewModel);
     parent = document.createElement('div');
-    var html = '<div xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink" is="oig-context" data-view-model="binding">' +
+    var html = '<oig-context view-model="binding" xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">' +
       '<oig-binding name="name">name</oig-binding>' +
-      '</div>';
+      '</oig-context>';
 
     parent.innerHTML = html;
     element = parent.firstElementChild;

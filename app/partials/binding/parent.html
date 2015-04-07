@@ -9,7 +9,7 @@
       oig.bind('parentBinding').to(ViewModel).asNew();
     }())
   </script>
-  <div class="form-group" is="oig-context" data-view-model="parentBinding">
+  <oig-context class="form-group" view-model="parentBinding">
     My name is:<span><oig-binding style="'color:' + color">name</oig-binding></span>
-  </div>
+  </oig-context>
 </div>

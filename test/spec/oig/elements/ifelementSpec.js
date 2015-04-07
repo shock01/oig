@@ -36,8 +36,8 @@ describe('if element', function () {
   });
 
   beforeEach(function () {
-    parent = document.createElement('div', 'oig-context');
-    parent.setAttribute('data-view-model', 'ifViewModel');
+    parent = new OigContextElement();
+    parent.setAttribute('view-model', 'ifViewModel');
     ifElement = document.createElement('oig-if');
     parent.appendChild(ifElement);
   });

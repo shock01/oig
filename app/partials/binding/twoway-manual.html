@@ -9,7 +9,7 @@
       oig.bind('twoWayBinding').to(ViewModel).asNew();
     }());
   </script>
-  <div is="oig-context" data-view-model="twoWayBinding">
+  <oig-context view-model="twoWayBinding">
     <div class="form-group">
       <oig-listener onchange="color = event.target.value"></oig-listener>
       <label>Change text color</label>
@@ -32,5 +32,5 @@
           Result: <oig-binding style="'color:' + color">name</oig-binding>
         </span>
     </div>
-  </div>
+  </oig-context>
 </div>
