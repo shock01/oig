@@ -40,10 +40,10 @@ describe('react element', function () {
   });
 
   beforeEach(function () {
-    parent = document.createElement('div', 'oig-context');
+    parent = new OigContextElement();
     reactElement = document.createElement('oig-react');
     reactElement.setAttribute('component', 'MyJSX');
-    parent.setAttribute('data-view-model', 'reactelement');
+    parent.setAttribute('view-model', 'reactelement');
     parent.appendChild(reactElement);
     viewModel = {
       person: {name: "John Doe"}

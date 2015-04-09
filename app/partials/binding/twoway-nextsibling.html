@@ -10,7 +10,7 @@
       oig.bind('twoWayNextSiblingBinding').to(ViewModel).asNew();
     }())
   </script>
-  <div is="oig-context" data-view-model="twoWayNextSiblingBinding">
+  <oig-context view-model="twoWayNextSiblingBinding">
     <oig-listener oninput="width = event.target.value"/>
     <!-- image -->
     <div style="position:relative;height:220px;width:220px;">
@@ -22,5 +22,5 @@
       <oig-binding value="width" data-oig-target="nextSibling"></oig-binding>
       <input id="input-size" class="form-control" type="range" min="50" max="200"/>
     </div>
-  </div>
+  </oig-context>
 </div>

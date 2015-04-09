@@ -40,8 +40,8 @@ describe('listener element', function () {
   });
 
   beforeEach(function () {
-    node = document.createElement('div', 'oig-context');
-    node.setAttribute('data-view-model', 'listenerelement');
+    node = new OigContextElement();
+    node.setAttribute('view-model', 'listenerelement');
     listener = document.createElement('oig-listener');
     button = document.createElement('button');
     button.setAttribute('id', 'primaryButton');

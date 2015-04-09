@@ -9,6 +9,6 @@
     });
   }())
 </script>
-<div is="oig-context" data-view-model="myViewModel">
+<oig-context view-model="myViewModel">
   ... content here
-</div>
+</oig-context>

@@ -54,12 +54,12 @@ describe('template element', function () {
   });
 
   beforeEach(function () {
-    parent = document.createElement('div', 'oig-context');
+    parent = new OigContextElement();
     templateElement = document.createElement('div', 'oig-template');
     template = document.createElement('template');
 
     template.innerHTML = '<%=name%>';
-    parent.setAttribute('data-view-model', 'templateelement');
+    parent.setAttribute('view-model', 'templateelement');
     parent.appendChild(templateElement);
     viewModel = {
       count: 0

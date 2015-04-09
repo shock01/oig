@@ -19,7 +19,7 @@
 
     }());
   </script>
-  <div is="oig-context" data-view-model="listenerExample">
+  <oig-context view-model="listenerExample">
     <oig-listener onclick="methodA()" selector="button > span:first-child" prevent-default></oig-listener>
     <oig-listener target="my-button2" onclick="methodB();" stop-propagation></oig-listener>
 
@@ -38,5 +38,5 @@
       <oig-binding>clickCountB</oig-binding>
       times
     </p>
-  </div>
+  </oig-context>
 </div>

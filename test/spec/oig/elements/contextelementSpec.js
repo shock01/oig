@@ -34,8 +34,8 @@ describe('context element', function () {
     oigViewModelResolver = oigLocator.resolve('oigViewModelResolver');
     sandbox.stub(oigViewModelResolver, 'resolve').returns(viewModel);
 
-    node = document.createElement('div', 'oig-context');
-    node.setAttribute('data-view-model', 'me');
+    node = new OigContextElement();
+    node.setAttribute('view-model', 'me');
 
     done();
   });
