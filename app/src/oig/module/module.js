@@ -32,6 +32,9 @@
     })
     .register('oigViewModelResolver', function () {
       return OigViewModelResolver;
+    })
+    .register('oigValueResolve', function () {
+      return OigValueResolver;
     });
 
   oig.locator = oigLocator;
