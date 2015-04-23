@@ -49,14 +49,22 @@
 
   // facade
 
-  /**
-   *
-   * @param {String} name
-   * @return {Object|*}
-   */
-  function oigDIResolver(name) {
-    return oigLocator.resolve('oigDIContext').resolve(name);
+  function OigBindable(key) {
+    this.key = key;
   }
+  OigBindable.prototype = {
+    to: function (value) {
+      var key = this.key,
+        context;
+      if(typeof value === 'string' || typeof value === 'number') {
+        //return new OigValueBinding();
+      } else {
+        context = oigLocator.resolve('oigDIContext');
+        oigLocator.register(key, context.resolve.bind(context, key));
+        return context.register(key, value);
+      }
+    }
+  };
 
   /**
    * expose DIContext bind method on oigFacade
@@ -64,8 +72,7 @@
    * @return {*|OigDIContext.Binding|function(this:*)}
    */
   oig.bind = function (name) {
-    oigLocator.register(name, oigDIResolver);
-    return oigLocator.resolve('oigDIContext').bind(name);
+    return new OigBindable(name);
   };
 
 }());

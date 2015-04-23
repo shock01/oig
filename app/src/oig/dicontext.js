@@ -47,7 +47,6 @@ function oigDIContextConstructor(binding, diContext) {
 
 function OigDIContext() {
   /**
-   *
    * @type {Object<String, OigDIContext.Binding>}
    */
   this.bindings = {};
@@ -60,10 +59,11 @@ function OigDIContext() {
 OigDIContext.prototype = {
   /**
    * @param {String} name
+   * @param {Function} type
    * @returns {OigDIContext.Binding}
    */
-  bind: function (name) {
-    var binding = new OigDIContext.Binding(name);
+  register: function (name, type) {
+    var binding = new OigDIContext.Binding(name, type);
     this.bindings[name] = binding;
     return binding;
   },
@@ -105,14 +105,15 @@ OigDIContext.Scopes = {
 
 /**
  * @param {String} name
+ * @param {Function} type
  * @constructor
  */
-OigDIContext.Binding = function (name) {
+OigDIContext.Binding = function (name, type) {
   this.name = name;
   /**
    * @type {Function}
    */
-  this.type = null;
+  this.type = type;
 };
 
 OigDIContext.Binding.prototype = {
@@ -136,14 +137,6 @@ OigDIContext.Binding.prototype = {
    */
   asSingleton: function () {
     this.scope = OigDIContext.Scopes.SINGLETON;
-    return this;
-  },
-  /**
-   * @param {Function} type
-   * @return {OigDIContext.Binding}
-   */
-  to: function (type) {
-    this.type = type;
     return this;
   }
 };
