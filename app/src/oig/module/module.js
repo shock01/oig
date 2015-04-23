@@ -6,7 +6,8 @@
     oigResource = new OigResource(),
     oigAnnotationParser = new OigAnnotationParser(),
     oigTypeParser = new OigTypeParser(),
-    oigDIContext = new OigDIContext();
+    oigDIContext = new OigDIContext(),
+    oigValueContext = new OigValueContext();
 
   oigLocator
     .register('oigEventBus', function () {
@@ -33,8 +34,8 @@
     .register('oigViewModelResolver', function () {
       return OigViewModelResolver;
     })
-    .register('oigValueResolve', function () {
-      return OigValueResolver;
+    .register('oigValueContext', function () {
+      return oigValueContext;
     });
 
   oig.locator = oigLocator;
@@ -52,17 +53,18 @@
   function OigBindable(key) {
     this.key = key;
   }
+
   OigBindable.prototype = {
     to: function (value) {
       var key = this.key,
         context;
       if(typeof value === 'string' || typeof value === 'number') {
-        //return new OigValueBinding();
+        context = oigLocator.resolve('oigValueContext');
       } else {
         context = oigLocator.resolve('oigDIContext');
-        oigLocator.register(key, context.resolve.bind(context, key));
-        return context.register(key, value);
       }
+      oigLocator.register(key, context.resolve.bind(context, key));
+      return context.register(key, value);
     }
   };
 
