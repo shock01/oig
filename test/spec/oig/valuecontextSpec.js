@@ -1,8 +1,7 @@
 describe('valueResolver', function () {
   'use strict';
 
-  var resolved,
-    binding,
+  var binding,
     valueContext;
 
   it('should be defined', function () {
@@ -12,32 +11,6 @@ describe('valueResolver', function () {
   before(function() {
     valueContext = new OigValueContext();
   });
-
-  //describe('add mutable value', function () {
-  //  it('should return value', function () {
-  //    valueContext.register('key', 'thing', true);
-  //    resolved = valueContext.resolve('key');
-  //    expect(resolved).to.equal('thing');
-  //  });
-  //
-  //  it('should be possible to change returned value', function () {
-  //    valueContext.register('key', 'newthing', true);
-  //    resolved = valueContext.resolve('key');
-  //    expect(resolved).to.equal('newthing');
-  //  });
-  //});
-  //
-  //describe('add constant value', function () {
-  //  it('should return value', function () {
-  //    valueContext.register('key', 'thing', false);
-  //    resolved = valueContext.resolve('key');
-  //    expect(resolved).to.equal('thing');
-  //  });
-  //
-  //  it('should be not possible to change already registered constant', function () {
-  //    expect(resolved).to.equal('thing');
-  //  });
-  //});
 
   describe('register new value', function () {
 

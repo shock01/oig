@@ -17,7 +17,7 @@ OigValueContext.prototype = {
 
   /**
    * @param {String} key
-   * @returns {*}
+   * @returns {Number|String}
    */
   resolve: function (key) {
     return this.bindings[key].value;
@@ -46,6 +46,7 @@ OigValueContext.prototype = {
 
 /**
  * @param {String} key
+ * @param {String|Number} value
  * @constructor
  */
 OigValueContext.Binding = function (key, value) {

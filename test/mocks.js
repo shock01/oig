@@ -21,6 +21,7 @@ var OigMockElement = document.registerElement('oig-mock', {
   var oigResourceMock = setUpMock(OigResource.prototype);
   var oigAnnotationParserMock = setUpMock(OigAnnotationParser.prototype);
   var oigDIContextMock = setUpMock(OigDIContext.prototype);
+  var oigValueContextMock = setUpMock(OigValueContext.prototype);
   var oigTypeParser = setUpMock(OigTypeParser.prototype);
   var oigObserverMock = setUpMock(new OigObserver());
   var oigViewModelResolverMock = setUpMock(OigViewModelResolver);
@@ -43,6 +44,9 @@ var OigMockElement = document.registerElement('oig-mock', {
     })
     .register('oigViewModelResolver', function () {
       return oigViewModelResolverMock;
+    })
+    .register('oigValueContextMock', function () {
+      return oigValueContextMock;
     });
 
 }())
