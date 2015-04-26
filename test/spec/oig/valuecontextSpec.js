@@ -16,10 +16,15 @@ describe('valueResolver', function () {
 
     beforeEach(function () {
       binding = valueContext.register('key', 'thing');
+      valueContext.register('key', 'newthing');
     });
 
     it('should return OigValueContext.Binding', function () {
       expect(binding).to.be.instanceOf(OigValueContext.Binding);
+    });
+
+    it('should not change value', function () {
+      expect(valueContext.resolve('key')).to.be.equal('thing');
     });
 
   });
