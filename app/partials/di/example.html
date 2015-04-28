@@ -7,14 +7,14 @@
        * @constructor
        * @param {OigEventBus} eventBus
        */
-      function Service(oigEventBus) {
-        //# inject: args:(oigEventBus)
+      function Service(oigEventBus, interval, message) {
+        //# inject: args:(oigEventBus, interval, message)
         this.eventBus = oigEventBus;
-        this.message = 'Hello world!';
+        this.message = message;
 
         setInterval(function () {
           oigEventBus.trigger('random', Math.random() * Date.now());
-        }, 500)
+        }, interval)
 
       }
 
@@ -28,11 +28,12 @@
        * @param eventBus
        * @constructor
        */
-      function ViewModel(diService, oigEventBus) {
-        //# inject: args:(diService, oigEventBus)
+      function ViewModel(diService, oigEventBus, interval) {
+        //# inject: args:(diService, oigEventBus, interval)
         this.message = diService.message;
         this.random = null;
         this.time = null;
+        this.interval = interval;
         this.diService = diService;
         this.eventBus = oigEventBus;
       }
@@ -40,7 +41,7 @@
       ViewModel.prototype.onload = function () {
         setInterval(function () {
           this.time = this.diService.getTime();
-        }.bind(this), 500);
+        }.bind(this), this.constant);
         this.eventBus.register('random', this.handleRandomEvent.bind(this));
       };
 
@@ -50,12 +51,14 @@
 
       // bind the diContext
       oig.bind('diService').to(Service);
+      oig.bind('interval').to(500).asConstant();
+      oig.bind('message').to('Hello world!').asValue();
       oig.bind('di').to(ViewModel).asNew();
 
     }())
   </script>
   <oig-context class="form-group" view-model="di">
-    The service says:<span><oig-binding>message</oig-binding> <oig-binding>time</oig-binding></span>
+    The service says: <span><oig-binding>message</oig-binding> <oig-binding>time</oig-binding></span>
     <br>Random:
     <oig-binding>random</oig-binding>
   </oig-context>
