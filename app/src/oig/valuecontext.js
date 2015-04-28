@@ -31,7 +31,6 @@ OigValueContext.prototype = {
   register: function (key, value) {
     var binding = this.bindings[key];
     if (binding) {
-      console.log("THAT: ", binding);
       if (binding.scope === OigValueContext.Scopes.CONSTANT) {
         return binding;
       }
