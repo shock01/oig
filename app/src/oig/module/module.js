@@ -1,4 +1,5 @@
 'use strict';
+/* global OigValueContext,OigViewModelResolver,OigBindable */
 (function () {
   // set up the serviceLocator
 
