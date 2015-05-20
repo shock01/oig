@@ -145,7 +145,7 @@ function OigObserver(observerContext) {
    *
    * @param {Function} observer
    */
-  function unObserve(observer) {
+  function unObserve(observable, observer) {
     var index;
     if ((index = observers.indexOf(observer)) > -1) {
       observers.splice(index, 1);

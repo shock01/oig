@@ -1,8 +1,9 @@
+'use strict';
 /**
  * Wrapper around oig locator for resolving view models
  */
+/*exported OigViewModelResolver*/
 var OigViewModelResolver = (function () {
-  'use strict';
 
   /**
    *
@@ -15,5 +16,5 @@ var OigViewModelResolver = (function () {
 
   return {
     resolve: resolve
-  }
+  };
 }());

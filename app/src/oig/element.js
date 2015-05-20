@@ -1,5 +1,5 @@
 'use strict';
-
+/* global dataContextResolver */
 /**
  * @see listenerelement.js
  *

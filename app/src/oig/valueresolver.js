@@ -1,5 +1,6 @@
+'use strict';
+/*exported OigValueResolver */
 var OigValueResolver = (function () {
-  'use strict'
 
   var values = {};
 
@@ -12,7 +13,7 @@ var OigValueResolver = (function () {
       Object.defineProperty(values, key, {
         value: value,
         writable: mutable
-      })
+      });
     } catch (e) {
       throw '[oig:valueresolver] attempt to rewrite value property: ' + key;
     }
@@ -21,6 +22,6 @@ var OigValueResolver = (function () {
   return {
     resolve: resolve,
     register: register
-  }
+  };
 
 }());
