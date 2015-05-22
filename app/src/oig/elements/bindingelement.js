@@ -5,7 +5,9 @@
  * WeakMap for storing MutationObservers
  * weak lookup map that can be garbage collected
  */
-var bindingElementMutationMap = new WeakMap();
+var bindingElementMutationMap = new WeakMap(),
+  booleanAttributes = ['checked', 'selected', 'disabled', 'readonly', 'multiple',
+    'ismap', 'defer', 'declare', 'noresize', 'nowrap', 'noshade', 'compact'];
 
 /**
  * observes mutation in childList of element
@@ -22,6 +24,18 @@ function bindingElementObserveDOM(element) {
   });
   bindingElementMutationMap.set(element, mutationObserver);
 }
+
+function* elementAttributes(attributes) {
+  var i = 0,
+    attribute;
+
+  while ((attribute = attributes[i++]) !== undefined) {
+    if (attribute.name.substring(0, 8) !== 'data-oig') {
+      yield attribute;
+    }
+  }
+}
+
 
 /**
  *
@@ -62,18 +76,26 @@ var OigBindingElement = document.registerElement('oig-binding', {
     update: {
       value: function () {
         var targetElement = this.targetElement,
-          dataContext = this.dataContext;
+          dataContext = this.dataContext,
+          namespace,
+          value;
+
         // bind all attributes not starting with data-oig
-        // @todo use a generator method to yield
-        for (var i = 0, attribute; (attribute = this.attributes[i++]);) {
-          if (attribute.name.substring(0, 8) !== 'data-oig') {
-            if (!attribute.namespaceURI) {
-              targetElement.setAttribute(attribute.name, oig.evaluate(dataContext, attribute.value));
+        for (var /**String*/attribute of elementAttributes(this.attributes)) {
+          namespace = attribute.namespaceURI ? attribute.namespaceURI : null;
+          value = oig.evaluate(dataContext, attribute.value);
+
+          if (booleanAttributes.indexOf(attribute.name) === -1) {
+            targetElement.setAttributeNS(namespace, attribute.name, value);
+          } else {
+            if (value) {
+              targetElement.setAttributeNS(namespace, attribute.name, '');
             } else {
-              targetElement.setAttributeNS(attribute.namespaceURI, attribute.name, oig.evaluate(dataContext, attribute.value));
+              targetElement.removeAttributeNS(namespace, attribute.name);
             }
           }
         }
+
         // update the textContent
         if (typeof this.textContent === 'string') {
           if (!this.shadowRoot) {

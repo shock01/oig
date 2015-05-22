@@ -37,67 +37,124 @@ describe('binding element', function () {
     delete oig.viewModels.binding;
   });
 
-
-  beforeEach(function () {
-    viewModel = {
-      name: 'John Doe'
-    };
-    sandbox.stub(oigViewModelResolver, 'resolve').returns(viewModel);
-    parent = document.createElement('div');
-    var html = '<oig-context view-model="binding" xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">' +
-      '<oig-binding name="name">name</oig-binding>' +
-      '</oig-context>';
-
-    parent.innerHTML = html;
-    element = parent.firstElementChild;
-    bindingElement = element.firstElementChild;
-  });
-
-  afterEach(function () {
-    sandbox.restore();
-  });
-
-  describe('binding', function () {
+  describe('attribute change and text content', function() {
     beforeEach(function () {
-      document.body.appendChild(parent);
+      viewModel = {
+        name: 'John Doe'
+      };
+      sandbox.stub(oigViewModelResolver, 'resolve').returns(viewModel);
+      parent = document.createElement('div');
+      var html = '<oig-context view-model="binding" xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">' +
+        '<div><oig-binding name="name">name</oig-binding></div>' +
+        '</oig-context>';
+
+      parent.innerHTML = html;
+      element = parent.querySelector('div');
+      bindingElement = element.firstElementChild;
     });
 
     afterEach(function () {
-      parent.parentNode && parent.parentNode.removeChild(parent);
+      sandbox.restore();
     });
 
-    it('should have updated the name attribute', function () {
-      expect(element.getAttribute('name')).to.equal(viewModel.name);
+    describe('binding', function () {
+      beforeEach(function () {
+        document.body.appendChild(parent);
+      });
+
+      afterEach(function () {
+        parent.parentNode && parent.parentNode.removeChild(parent);
+      });
+
+      it('should have updated the name attribute', function () {
+        expect(element.getAttribute('name')).to.equal(viewModel.name);
+      });
+
+      it('should have updated the text content', function () {
+        expect(bindingElement.shadowRoot.textContent).to.equal(viewModel.name);
+      });
+    })
+
+
+    describe('update binding', function () {
+
+      beforeEach(function () {
+        document.body.appendChild(parent);
+      });
+
+
+      beforeEach(function () {
+        viewModel.name = 'test';
+        bindingElement.update();
+      });
+
+      afterEach(function () {
+        parent.parentNode && parent.parentNode.removeChild(parent);
+      });
+
+      it('should have updated the name attribute', function () {
+        expect(element.getAttribute('name')).to.equal(viewModel.name);
+      });
+
+      it('should have updated the text content', function () {
+        expect(bindingElement.shadowRoot.textContent).to.equal(viewModel.name);
+      });
     });
+  });
 
-    it('should have updated the text content', function () {
-      expect(bindingElement.shadowRoot.textContent).to.equal(viewModel.name);
-    });
-  })
-
-
-  describe('update binding', function () {
-
+  describe('special attributes', function() {
     beforeEach(function () {
-      document.body.appendChild(parent);
-    });
+      viewModel = {
+        disabled: true
+      };
+      sandbox.stub(oigViewModelResolver, 'resolve').returns(viewModel);
+      parent = document.createElement('div');
+      var html = '<oig-context view-model="binding" xmlns="http://www.w3.org/1999/xhtml" xmlns:xlink="http://www.w3.org/1999/xlink">' +
+        '<div><oig-binding disabled="disabled" data-oig-value="123"></oig-binding></div>' +
+        '</oig-context>';
 
-
-    beforeEach(function () {
-      viewModel.name = 'test';
-      bindingElement.update();
+      parent.innerHTML = html;
+      element = parent.querySelector('div');
+      bindingElement = element.firstElementChild;
     });
 
     afterEach(function () {
-      parent.parentNode && parent.parentNode.removeChild(parent);
+      sandbox.restore();
     });
 
-    it('should have updated the name attribute', function () {
-      expect(element.getAttribute('name')).to.equal(viewModel.name);
+    describe('binding', function () {
+      beforeEach(function () {
+        document.body.appendChild(parent);
+      });
+
+      afterEach(function () {
+        parent.parentNode && parent.parentNode.removeChild(parent);
+      });
+
+      it('should have updated the name attribute', function () {
+        expect(element.getAttribute('disabled')).to.equal('');
+      });
     });
 
-    it('should have updated the text content', function () {
-      expect(bindingElement.shadowRoot.textContent).to.equal(viewModel.name);
+    describe('update binding', function () {
+
+      beforeEach(function () {
+        document.body.appendChild(parent);
+      });
+
+
+      beforeEach(function () {
+        viewModel.disabled = false;
+        bindingElement.update();
+      });
+
+      afterEach(function () {
+        parent.parentNode && parent.parentNode.removeChild(parent);
+      });
+
+      it('should remove attribute', function () {
+        expect(element.hasAttributes('disabled')).to.equal(false)
+      });
     });
   });
 });
