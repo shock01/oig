@@ -33,7 +33,7 @@ describe('dicontext', function () {
   describe('bind', function () {
     var binding;
     beforeEach(function () {
-      binding = diContext.bind('test').to(Component);
+      binding = diContext.register('test', Component);
     });
     it('should return a binding', function () {
       assert.equal(binding.name, 'test');
@@ -49,9 +49,9 @@ describe('dicontext', function () {
       dependencyTypeInfo;
 
     beforeEach(function () {
-      binding = diContext.bind('test').to(Component);
+      binding = diContext.register('test', Component);
       dependency = new Injectable();
-      diContext.bind('dependency').to(Injectable);
+      diContext.register('dependency', Injectable);
 
       sandbox.stub(typeParser, 'parse', function (type) {
         if (type === Component) {

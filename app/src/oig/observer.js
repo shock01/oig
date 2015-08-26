@@ -4,6 +4,28 @@
 
 /**
  *
+ * @param {Object} obj
+ * @return {boolean}
+ */
+function isObjLiteral(obj) {
+  var test = obj;
+  return (  typeof obj !== 'object' || obj === null ?
+    false :
+    (
+      (function () {
+        while (!false) {
+          if (Object.getPrototypeOf(test = Object.getPrototypeOf(test)) === null) {
+            break;
+          }
+        }
+        return Object.getPrototypeOf(obj) === test;
+      })()
+    )
+  );
+}
+
+/**
+ *
  * observable should be set as property or passed as argument to observe
  *
  * @param {Object} observable
@@ -96,7 +118,14 @@ function OigObserver(observerContext) {
         } else {
           Object.observe(observable, objectCallback);
           Object.keys(observable).forEach(function (key) {
-            deepObserve(observable[key]);
+            /**
+             * prevent watching non literals and arrays. These are not data structures
+             * and may trigger max call stack exceeded when they have references to same objects.
+             * noticed when injecting eventBus and setting eventBus on viewModel
+             */
+            if (Array.isArray(observable[key]) || isObjLiteral(observable[key])) {
+              deepObserve(observable[key]);
+            }
           });
         }
       }
@@ -116,7 +145,7 @@ function OigObserver(observerContext) {
    *
    * @param {Function} observer
    */
-  function unObserve(observer) {
+  function unObserve(observable, observer) {
     var index;
     if ((index = observers.indexOf(observer)) > -1) {
       observers.splice(index, 1);

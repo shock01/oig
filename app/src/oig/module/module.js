@@ -1,13 +1,19 @@
 'use strict';
+/* global OigValueContext,OigViewModelResolver,OigBindable */
 (function () {
   // set up the serviceLocator
 
-  var oigResource = new OigResource(),
+  var oigEventBus = new OigEventBus(),
+    oigResource = new OigResource(),
     oigAnnotationParser = new OigAnnotationParser(),
     oigTypeParser = new OigTypeParser(),
-    oigDIContext = new OigDIContext();
+    oigDIContext = new OigDIContext(),
+    oigValueContext = new OigValueContext();
 
   oigLocator
+    .register('oigEventBus', function () {
+      return oigEventBus;
+    })
     .register('oigResource', function () {
       return oigResource;
     })
@@ -28,6 +34,9 @@
     })
     .register('oigViewModelResolver', function () {
       return OigViewModelResolver;
+    })
+    .register('oigValueContext', function () {
+      return oigValueContext;
     });
 
   oig.locator = oigLocator;
@@ -40,25 +49,13 @@
   window.OigReactElement = OigReactElement;
   window.OigTemplateElement = OigTemplateElement;
 
-  // facade
-
-  /**
-   *
-   * @param {String} name
-   * @return {Object|*}
-   */
-  function oigDIResolver(name) {
-    return oigLocator.resolve('oigDIContext').resolve(name);
-  }
-
   /**
    * expose DIContext bind method on oigFacade
    * @param {String} name
    * @return {*|OigDIContext.Binding|function(this:*)}
    */
   oig.bind = function (name) {
-    oigLocator.register(name, oigDIResolver);
-    return oigLocator.resolve('oigDIContext').bind(name);
+    return new OigBindable(name);
   };
 
 }());

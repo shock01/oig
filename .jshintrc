@@ -35,6 +35,7 @@
     "oigLocator": true,
     "OigDIContext": true,
     "OigElement": true,
+    "OigEventBus": true,
     "OigObserver": true,
     "OigObserverContext": true,
     "OigTypeParser": true,

@@ -2,10 +2,6 @@
 'use strict';
 /**
  *
- * Adds dataContext to HTMLDivElement.
- * HTMLDivElement is the only element that can contain a dataContext because
- * the div element is used to define sections/regions in a html document.
- *
  * CustomEvent contextload
  * will be dispatched before leaving attachedCallback
  * bubbles: false
@@ -24,12 +20,10 @@
  * when an onunload method is defined on the viewModel the onunload will be called
  * before dispatching the viewunload event
  *
- * <div is="oig-context" data-view-model="">
+ * <oig-context view-model="">
  */
 var OigContextElement = document.registerElement('oig-context', {
-  extends: 'div',
-  prototype: Object.create(HTMLDivElement.prototype, {
-
+  prototype: Object.create(OigElement.prototype, {
     dataContext: {
       value: null,
       writable: true
@@ -41,15 +35,15 @@ var OigContextElement = document.registerElement('oig-context', {
      * calls onload when defined on dataContext
      * dispatches contextload event
      *
-     * @throws 'required attribute data-view-model is missing'
+     * @throws 'required attribute view-model is missing'
      */
     attachedCallback: {
       value: function () {
-        var viewModel = this.dataset.viewModel,
+        var viewModel = this.getAttribute('view-model'),
           dataContext = null,
           viewModelResolver = oig.locator.resolve('oigViewModelResolver');
         if (!viewModel) {
-          throw '[oig:contextelement] required attribute data-view-model is missing';
+          throw '[oig:contextelement] required attribute view-model is missing';
         }
         try {
           dataContext = viewModelResolver.resolve(viewModel);
