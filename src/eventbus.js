@@ -1,3 +1,4 @@
+/*exported OigEventBus */
 'use strict';
 function OigEventBus() {
   /**
@@ -13,10 +14,10 @@ OigEventBus.prototype = {
    * @param {String} eventName
    * @param {Object?} eventDetails
    */
-  trigger: function (eventName, eventDetails) {
+  trigger: function(eventName, eventDetails) {
     var registrations = this.eventRegistrations[eventName];
     if (Array.isArray(registrations)) {
-      registrations.forEach(function (/**OigEventBus.Registration*/handler) {
+      registrations.forEach(function( /**OigEventBus.Registration*/ handler) {
         handler.trigger(eventDetails);
       });
     }
@@ -28,7 +29,7 @@ OigEventBus.prototype = {
    * @param {Function} callback
    * @return {OigEventBus.Registration}
    */
-  register: function (eventName, callback) {
+  register: function(eventName, callback) {
     if (!this.eventRegistrations.hasOwnProperty(eventName)) {
       this.eventRegistrations[eventName] = [];
     }
@@ -41,15 +42,15 @@ OigEventBus.prototype = {
    * @param {String} eventName
    * @param {Function} callback
    */
-  unregister: function (eventName, callback) {
+  unregister: function(eventName, callback) {
     var registrations = this.eventRegistrations[eventName];
     if (Array.isArray(registrations)) {
-      this.eventRegistrations[eventName] = registrations.filter(function (/**OigEventBus.Registration*/handler) {
+      this.eventRegistrations[eventName] = registrations.filter(function( /**OigEventBus.Registration*/ handler) {
         return handler.callback !== callback;
       });
     }
   },
-  dispose: function () {
+  dispose: function() {
     this.eventRegistrations = {};
   }
 };
@@ -61,13 +62,13 @@ OigEventBus.prototype = {
  * @param {Function} callback
  * @constructor
  */
-OigEventBus.Registration = function (eventBus, eventName, callback) {
+OigEventBus.Registration = function(eventBus, eventName, callback) {
   this.eventBus = eventBus;
   this.eventName = eventName;
   this.callback = callback;
 };
 OigEventBus.Registration.prototype = {
-  dispose: function () {
+  dispose: function() {
     this.eventBus.unregister(this.eventName, this.callback);
   },
   /**
@@ -75,11 +76,11 @@ OigEventBus.Registration.prototype = {
    * will dispatch oigError event on eventBus
    * @param {Object} eventDetails
    */
-  trigger: function (eventDetails) {
+  trigger: function(eventDetails) {
     try {
       this.callback(eventDetails);
     } catch (e) {
-      this.eventBus.trigger('oigError', e);
+    this.eventBus.trigger('oigError', e);
     }
   }
 };

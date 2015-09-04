@@ -1,3 +1,4 @@
+/*exported OigValueContext */
 'use strict';
 
 function OigValueContext() {
@@ -19,7 +20,7 @@ OigValueContext.prototype = {
    * @param {String} key
    * @returns {Number|String}
    */
-  resolve: function (key) {
+  resolve: function(key) {
     return this.bindings[key].value;
   },
 
@@ -28,7 +29,7 @@ OigValueContext.prototype = {
    * @param {String|Number} value
    * @returns {OigValueContext.Binding}
    */
-  register: function (key, value) {
+  register: function(key, value) {
     var binding = this.bindings[key];
     if (binding) {
       if (binding.scope === OigValueContext.Scopes.CONSTANT) {
@@ -48,7 +49,7 @@ OigValueContext.prototype = {
  * @param {String|Number} value
  * @constructor
  */
-OigValueContext.Binding = function (key, value) {
+OigValueContext.Binding = function(key, value) {
   this.key = key;
   this.value = value;
 };
@@ -61,13 +62,13 @@ OigValueContext.Binding.prototype = {
   /**
    * will set scope of value to constant
    */
-  asConstant: function () {
+  asConstant: function() {
     this.scope = OigValueContext.Scopes.CONSTANT;
   },
   /**
    * will set scope of value to value
    */
-  asValue: function () {
+  asValue: function() {
     this.scope = OigValueContext.Scopes.VALUE;
   }
 };

@@ -32,7 +32,7 @@ describe('viewContextSpec', function() {
     describe('when data-oig-viewmodel is set', function() {
       var viewModelName = 'viewmodel';
       beforeEach(function() {
-        element.dataset.oigViewmodel = viewModelName
+        element.setAttribute(OigAttrs.VIEWMODEL, viewModelName);
       });
 
       beforeEach(function() {
@@ -58,8 +58,8 @@ describe('viewContextSpec', function() {
     describe('when data-oig-view is set', function() {
       var viewName = 'view';
       beforeEach(function() {
-        element.dataset.oigViewmodel = 'test';
-        element.dataset.oigView = viewName;
+        element.setAttribute(OigAttrs.VIEWMODEL, 'test');
+        element.setAttribute(OigAttrs.VIEW, viewName);
       });
 
       beforeEach(function() {
@@ -87,7 +87,7 @@ describe('viewContextSpec', function() {
   describe('resolve', function() {
     describe('when element is registered', function() {
       beforeEach(function() {
-        element.dataset.oigViewmodel = 'test';
+        element.setAttribute(OigAttrs.VIEWMODEL, 'test');
         viewContext.register(element);
       });
       it('should return the context', function() {

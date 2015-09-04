@@ -1,3 +1,4 @@
+/*exported OigObserverContext */
 'use strict';
 /**
  *
@@ -13,7 +14,7 @@ OigObserverContext.prototype = {
    * @param {Object} object
    * @returns boolean
    */
-  canObserve: function (object) {
+  canObserve: function(object) {
     return object === Object(object) && !Object.isFrozen(object);
   }
 };

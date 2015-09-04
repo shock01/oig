@@ -1,3 +1,4 @@
+/*exported oigBootstrap */
 /**
 * @param {Element} element
 */

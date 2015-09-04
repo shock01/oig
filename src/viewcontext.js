@@ -1,3 +1,4 @@
+/*exported OigViewContext */
 'use strict';
 /**
 * @constructor
@@ -14,7 +15,7 @@ function OigViewContext(diContext) {
 */
 function oigIsContextElement(element) {
   // @todo abstract Attributes to OigAttributes as constants and replace all files where used
-  return element.hasAttribute('data-oig-viewmodel');
+  return element.hasAttribute(OigAttrs.VIEWMODEL);
 }
 
 OigViewContext.prototype = {
@@ -24,10 +25,10 @@ OigViewContext.prototype = {
   */
   init: function(element) {
     var /**String*/ viewModelName;
-    if (typeof (viewModelName = element.dataset.oigViewmodel) !== 'string') {
+    if (typeof (viewModelName = element.getAttribute(OigAttrs.VIEWMODEL)) !== 'string') {
       throw '[oig:viewcontext] no data-oig-viewmodel attribute is set';
     }
-    return this.register(element, viewModelName, element.dataset.oigView);
+    return this.register(element, viewModelName, element.getAttribute(OigAttrs.VIEW));
   },
   /**
   * @param {Element} element

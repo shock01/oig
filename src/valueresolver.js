@@ -1,6 +1,7 @@
-'use strict';
 /*exported OigValueResolver */
-var OigValueResolver = (function () {
+'use strict';
+
+var OigValueResolver = (function() {
 
   var values = {};
 
@@ -15,7 +16,7 @@ var OigValueResolver = (function () {
         writable: mutable
       });
     } catch (e) {
-      throw '[oig:valueresolver] attempt to rewrite value property: ' + key;
+    throw '[oig:valueresolver] attempt to rewrite value property: ' + key;
     }
   }
 

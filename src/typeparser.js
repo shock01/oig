@@ -1,3 +1,4 @@
+/*exported OigTypeParser */
 'use strict';
 
 var oigTypeParserRegExInject = /inject\:\s*(.*)?\s*args\:\(([^)]+)\)/m;
@@ -82,12 +83,13 @@ OigTypeParser.prototype = {
         methods: {
           get: function() {
             var map = {},
-              /**Function*/ method,
+              i,
+              t,
               methods = proto.prototype;
-            for (var i in methods) {
-              if (typeof methods[i] === 'function') {
-                method = methods[i];
-                map[i] = oigParseType(annotationParser, method);
+            for (i in methods) {
+              t = methods[i];
+              if (typeof t === 'function') {
+                map[i] = oigParseType(annotationParser, t);
               }
             }
             return map;

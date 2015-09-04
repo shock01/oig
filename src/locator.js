@@ -1,10 +1,10 @@
-/* jshint unused: false */
+/*exported oigLocator */
 'use strict';
 /**
  * Service Locator pattern used to register/resolve.
  * DI can use a DI Aware resolvable
  */
-var oigLocator = (function () {
+var oigLocator = (function() {
 
   /**
    *

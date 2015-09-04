@@ -1,3 +1,4 @@
+/*exported OigDIContext */
 'use strict';
 
 /**
@@ -125,7 +126,7 @@ OigDIContext.Binding.prototype = {
   /**
    * default scope of binding
    */
-  scope: OigDIContext.Scopes.SINGLETON,
+  scope: OigDIContext.Scopes.PROTO,
   /**
    * will set the bindingScope to PROTO
    * by default bindings will be singleton
