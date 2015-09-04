@@ -20,11 +20,13 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'app/src/oig/oig.js',
-      'app/src/oig/*.js',
-      {pattern: 'app/src/oig/**/*.js'},
+      'bower_components/object.observe/dist/object-observe.js',
+
+      'src/oig.js',
+      'src/*.js',
+      {pattern: 'src/**/*.js'},
       'test/mocks.js',
-      {pattern: 'test/spec/**/*Spec.js'}
+      { pattern: 'test/spec/**/*Spec.js' }
     ],
 
     coverageReporter: {

@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>OIG</title>
+    <script src="oig.js"></script>
+</head>
+<body>
+    <h1>Playground to try....try...and come up with ideas</h1>
+     <div id="vm_test_1" data-oig-viewmodel="viewModel1" data-oig-view="myView">
+       <button onclick="$viewModel.sayHello($viewModel.name); $view.whatever()">item 1</button>
+
+       <div id="vm_test_2" data-oig-viewmodel="viewModel2">
+         <button onclick="$viewModel.sayHello($viewModel.name);event.stopPropagation()">item 2 </button>
+       </div>
+
+     </div>
+     <script>
+
+     // polyfill window.event for firefox, also use strict cannot use arguments.callee.caller.arguments[0] to get event
+     (function ( ){
+      if(!('event' in window)) {
+        var currentEvent,
+          keys = Object.keys(window),
+          length = keys.length,
+          key;
+
+        while(length > 0) {
+          key = keys[--length];
+          if(key.substring(0, 2) === 'on') {
+            window.addEventListener(key.substr(2), function (event) {
+              currentEvent = event;
+            }, true);
+          }
+        }
+        Object.defineProperty(window, 'event', {
+          get: function () {
+            return currentEvent;
+          }
+        })
+      }
+       'use strict';
+       function oigGetViewModel() {
+           var element = this.event.target;
+           return oig.locator.resolve('oigViewContext').resolve(element).viewModel;
+       }
+
+       function oigGetView() {
+          var element = this.event.target;
+           return oig.locator.resolve('oigViewContext').resolve(element).view;
+       }
+       // combine into Object.defineProperties
+       // $viewModel , $view are defaults.....but should be
+       Object.defineProperty(window, '$viewModel', {
+         get: oigGetViewModel
+       });
+       Object.defineProperty(window, '$view', {
+         get: oigGetView
+       });
+
+        function MyViewModel() {
+            this.name = 'World';
+        }
+        MyViewModel.prototype.sayHello = function (name) {
+          console.log('Hello:' + this.name + ':' + name)
+        }
+
+        function MyView() {
+
+        }
+        MyView.prototype.whatever = function () {
+          console.log('Whatever dude');
+        };
+
+        oig.bind('viewModel1').to(MyViewModel);
+        oig.bind('viewModel2').to(MyViewModel);
+        oig.bind('myView').to(MyView);
+     }());
+
+     function bootstrap(element) {
+       parse(element);
+       observe(element)
+        //.init(document.getElementById('vm_test_1'));
+     }
+
+     function observe(document) {
+       var viewContext = oig.locator.resolve('oigViewContext');
+       var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          var i = 0,
+            node;
+          while(node = mutation.removedNodes[i++]) {
+            dispose(node);
+          }
+          i = 0;
+          while(node = mutation.addedNodes[i++]) {
+            parse(node);
+          }
+        });
+      });
+      // pass in the target node, as well as the observer options
+      observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+     }
+
+     function dispose(element) {
+       var viewContext = oig.locator.resolve('oigViewContext');
+       var treeWalker = document.createTreeWalker(element, NodeFilter.SHOW_ELEMENT, null, false);
+       while(treeWalker.nextNode()) {
+         viewContext.dispose(treeWalker.currentNode);
+       }
+     }
+
+     function parse(element) {
+
+       var viewContext = oig.locator.resolve('oigViewContext');
+       var treeWalker = document.createTreeWalker(element, NodeFilter.SHOW_ELEMENT, {
+         acceptNode: function (node) {
+           if(node.hasAttribute('data-oig-viewmodel')) {
+             return NodeFilter.FILTER_ACCEPT;
+           }
+         }
+       }, false);
+       while(treeWalker.nextNode()) {
+         viewContext.init(treeWalker.currentNode);
+       }
+     }
+
+     document.addEventListener('DOMContentLoaded', function (event) {
+       bootstrap(event.target);
+
+       // testing insertion
+       var count = 0;
+       setInterval(function () {
+         var element = document.getElementById('vm_test_2');
+         var clone1 = element.cloneNode(true);
+         clone1.querySelector('button').textContent = 'test_' + (++count)
+         var clone2 = clone1.cloneNode(true);
+         clone2.querySelector('button').textContent = 'test_' + (++count)
+         document.body.insertBefore(clone1, element.nextElementSibling);
+         document.body.insertBefore(clone2, element.nextElementSibling);
+         if(clone1.previousElementSibling !== element) {
+
+           document.body.removeChild(clone1.previousElementSibling);
+         }
+       }, 2000);
+     });
+     </script>
+
+</body>
+</html>

@@ -1,64 +1,69 @@
 /* jshint node:true */
 'use strict';
-// generated on 2014-12-11 using generator-gulp-webapp 0.2.0
 var gulp = require('gulp');
-var livereload = require('gulp-livereload');
+var concat = require('gulp-concat-util');
 var jshint = require('gulp-jshint');
-var usemin = require('gulp-usemin');
-var wrap = require("gulp-wrap");
+var rimraf = require('gulp-rimraf');
+var uglify = require('gulp-uglify');
+var sourcemaps = require('gulp-sourcemaps');
+var rename = require('gulp-rename');
 
+var scripts = [
+  'src/*.js',
+  'src/module/module.js'
+]
 
-gulp.task('jshint', function () {
-  return gulp.src('app/src/oig/**/*.js')
+gulp.task('jshint', function() {
+  return gulp.src('src/**/*.js')
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('usemin', function () {
-  return gulp.src('./app/index.html')
-    .pipe(usemin({
-      js: [wrap('(function(exports, module){\n<%= contents %>\n})(window);')]
-    }))
-    .pipe(gulp.dest('dist/'));
+gulp.task('clean', function(cb) {
+  rimraf('target/*', cb);
 });
 
-gulp.task('clean', require('del').bind(null, ['dist']));
+gulp.task('concat', function() {
+  gulp.src(scripts)
+    .pipe(sourcemaps.init())
+    .pipe(concat('oig.js', {
+      process: function(src) {
+        return (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
+      }
+    }))
+    .pipe(concat.header('﻿/*! OIG MVVM (c) 2015 */(function (/*!oig*/exports, /*!imij*/module) {\n\'use strict\';\n'))
+    .pipe(concat.footer('\n﻿})(window);\n'))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('./target'));
+});
 
-gulp.task('connect', function () {
+gulp.task('compress', function() {
+  return gulp.src('target/oig.js')
+    .pipe(uglify({
+      preserveComments: 'license'
+    }))
+    .pipe(rename({
+      extname: '.min.js'
+    }))
+    .pipe(gulp.dest('target'));
+});
+
+gulp.task('connect', function() {
   var serveStatic = require('serve-static');
   var serveIndex = require('serve-index');
   var app = require('connect')()
-    .use(require('connect-livereload')({port: 35729}))
-    .use(serveStatic('app'))
-    .use(serveIndex('app'));
+    .use(serveStatic('demo'))
+    .use(serveStatic('target'))
+    .use(serveIndex('demo'));
 
   require('http').createServer(app)
-    .listen(9000)
-    .on('listening', function () {
-      console.log('Started connect web server on http://localhost:9000');
+    .listen(8000)
+    .on('listening', function() {
+      console.log('Started connect web server on http://localhost:8000');
     });
 });
 
-gulp.task('serve', ['connect', 'watch'], function () {
-
-});
-
-gulp.task('watch', ['connect'], function () {
-  livereload.listen();
-
-  // watch for changes
-  gulp.watch([
-    'app/*.html',
-    'app/scripts/**/*.js',
-    'src/**/*.js'
-  ]).on('change', livereload.changed);
-
-  gulp.watch('bower.json');
-});
-
-gulp.task('build', ['jshint', 'concat'], function () {
-});
-
-gulp.task('default', ['clean'], function () {
-  gulp.start('build');
-});
+gulp.task('serve', ['compile', 'connect']);
+gulp.task('compile', ['clean', 'concat']);
+gulp.task('build', ['jshint', 'compile', 'compress']);
+gulp.task('default', ['build']);

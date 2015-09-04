@@ -1,0 +1,16 @@
+// rsolving viewModel
+
+Object.defineProperty(window, 'viewModel', {
+    get: function () {
+        console.log(arguments.callee.caller.arguments[0].target)
+        var element = this;
+    return {
+		sayHello: function () {
+            console.log(element)
+			alert(1)
+        }
+	}
+    }
+});
+console.clear()
+console.log(test);

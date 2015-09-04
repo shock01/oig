@@ -1,11 +1,6 @@
-node_modules
 .tmp
-reports
 .project
 .idea
-
-app/bower_components
-
-app/demo
-
-dist/index.html
+node_modules
+reports
+target
