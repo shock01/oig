@@ -76,8 +76,6 @@ OigTypeParser.prototype = {
         },
         /**
          * returns map of type infos
-         * no need to make this uglify save because
-         * code will never  require to get methods by name, only by annotation
          * @returns {Object<String, Object>}
          */
         methods: {

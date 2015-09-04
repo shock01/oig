@@ -11,10 +11,9 @@ function OigViewContext(diContext) {
 
 /**
 * @param {Element} element
-* @returns boolean
+* @returns {Boolean}
 */
 function oigIsContextElement(element) {
-  // @todo abstract Attributes to OigAttributes as constants and replace all files where used
   return element.hasAttribute(OigAttrs.VIEWMODEL);
 }
 
@@ -37,16 +36,17 @@ OigViewContext.prototype = {
   * @returns {viewModel: Object, view: Object}
   */
   register: function(element, viewModelName, viewName) {
-    var context;
+    var context,
+      map = this.map;
 
-    if (!(context = this.map.get(element))) {
+    if (!(context = map.get(element))) {
       // @todo check if viewModel has method updateView and call it when viewModel changes
       // @todo assing viewModel to the view
       context = {
         viewModel: this.diContext.resolve(viewModelName),
         view: viewName ? this.diContext.resolve(viewName) : null
       };
-      this.map.set(element, context);
+      map.set(element, context);
     }
     return context;
   },
