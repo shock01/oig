@@ -42,6 +42,10 @@ OigViewContext.prototype = {
     if (!(context = map.get(element))) {
       // @todo check if viewModel has method updateView and call it when viewModel changes
       // @todo assing viewModel to the view
+      // @todo use a Promise to resolve the viewModel??? what if ViewModel is loaded async???
+      // we can use eventBus to notify that a view model was registered (or that anything is registered)
+      // then using setTimeout we can garantee....that the other dependencies are also added by the async script
+      // then we 
       context = {
         viewModel: this.diContext.resolve(viewModelName),
         view: viewName ? this.diContext.resolve(viewName) : null
