@@ -26,7 +26,8 @@ module.exports = function(config) {
       'src/*.js',
       {pattern: 'src/**/*.js'},
       'test/mocks.js',
-      { pattern: 'test/spec/**/*Spec.js' }
+      { pattern: 'test/spec/**/*Spec.js' },
+      { pattern: 'test/it/**/*Spec.js' }
     ],
 
     coverageReporter: {
