@@ -1,34 +1,7 @@
 ## OIG
 
-
-DISCLAIMER: Documentation is really not finished yet!!!
-
-# Currently migrating from oig repo to oig-mvvm!!!!!
-
-
-
-> A simple MVVM based framework with DI and fancy stuff like that).
-> Run it like:
-  1) npm install
-  2) gulp serve
-
-## Defining viewModels
-
-------------------------------------------------------------------------------------------------------------------------
-
-ViewModels will be referred to as 'dataContext' when used in elements and/or views.
-ViewModels can be registered as Singleton(Default) or as new.
-When registering as new it will create a new instance per context
-
-
-### Registration
-      function ViewModel() {
-        this.name = 'I am a templated viewModel';
-        this.items = [{id: 0, name: "John Doe"}, {id: 1, name: "Jane Doe"}];
-      }
-
-      oig.bind('template').to(ViewModel).asNew();
-
+- Just a small framework for dependency injection, MVVM etc.
+- Trying out and playing around with es6
 
 
 The MIT License

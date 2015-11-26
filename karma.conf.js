@@ -7,10 +7,9 @@ module.exports = function(config) {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
 
-
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['jasmine'],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
@@ -20,14 +19,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'bower_components/object.observe/dist/object-observe.js',
-
-      'src/oig.js',
-      'src/*.js',
-      {pattern: 'src/**/*.js'},
-      'test/mocks.js',
-      { pattern: 'test/spec/**/*Spec.js' },
-      { pattern: 'test/it/**/*Spec.js' }
+      'app/src/**/*.js',
+      'test/**/*.js'
     ],
 
     coverageReporter: {
@@ -36,20 +29,13 @@ module.exports = function(config) {
     },
 
     // list of files to exclude
-    exclude: [
-    ],
+    exclude: ['app/src/oig/oig.js'],
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress','coverage'],
-
-    client: {
-      mocha: {
-        reporter: 'html'
-      }
-    },
+    reporters: ['progress', 'coverage'],
 
     // web server port
     port: 9876,
@@ -70,7 +56,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: ['Chrome' /*,'PhantomJs'*/ ],
 
 
     // Continuous Integration mode

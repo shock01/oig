@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>OIG</title>
+    <script src="../oig/oig.js"></script>
+    <script src="../src/elements/include.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Playground to try....try...and come up with ideas</h1>
+    <div>
+      <oig-include href="https://api.github.com/users/shock01" parse="text"></oig-include>
+    </div>
+
+     <div id="vm_test_1" data-oig-viewmodel="viewModel1" data-oig-view="myView">
+       <button onclick="$viewModel.sayHello($viewModel.name); $view.whatever()">item 1</button>
+
+       <div id="vm_test_2" data-oig-viewmodel="viewModel2">
+         <button onclick="$viewModel.sayHello($viewModel.name);event.stopPropagation()">item 2 </button>
+       </div>
+
+     </div>
+     <script>
+
+     // polyfill window.event for firefox, also use strict cannot use arguments.callee.caller.arguments[0] to get event
+     (function ( ){
+        function MyViewModel() {
+            this.name = 'World';
+        }
+        MyViewModel.prototype.sayHello = function (name) {
+          console.log('Hello:' + this.name + ':' + name)
+        };
+
+        function MyView() {
+
+        }
+        MyView.prototype.whatever = function () {
+          console.log('Whatever dude');
+        };
+
+        oig.bind('viewModel1').to(MyViewModel);
+        oig.bind('viewModel2').to(MyViewModel);
+        oig.bind('myView').to(MyView);
+     }());
+
+     document.addEventListener('DOMContentLoaded', function (event) {
+       oig.bootstrap.run(document.body);
+
+       // testing insertion
+       var count = 0;
+       setInterval(function () {
+         var element = document.getElementById('vm_test_2');
+         var clone1 = element.cloneNode(true);
+         clone1.querySelector('button').textContent = 'test_' + (++count)
+         var clone2 = clone1.cloneNode(true);
+         clone2.querySelector('button').textContent = 'test_' + (++count)
+         document.body.insertBefore(clone1, element.nextElementSibling);
+         document.body.insertBefore(clone2, element.nextElementSibling);
+         if(clone1.previousElementSibling !== element) {
+           document.body.removeChild(clone1.previousElementSibling);
+         }
+       }, 2000);
+     });
+     </script>
+
+</body>
+</html>

@@ -15,7 +15,8 @@
   "undef": true,
   "unused": true,
   "strict": true,
-  "mocha": true,
+  "mocha": false,
+  "jasmine": true,
   "globals": {
     "it": true,
     "assert": true,
@@ -31,19 +32,6 @@
     "define": true,
     "exports": true,
     "oig": true,
-    "OigAttrs" : true,
-    "oigBootstrap": true,
-    "oigEvaluate": true,
-    "oigLocator": true,
-    "OigDIContext": true,
-    "OigViewContext": true,
-    "OigEventBus": true,
-    "OigObserver": true,
-    "OigObserverContext": true,
-    "OigTypeParser": true,
-    "OigAnnotationParser": true,
-    "OigValueContext": true,
-    "OigBindable": true,
-    "sinon": true
+    "setUpMock": true
   }
 }
