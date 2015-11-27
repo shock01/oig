@@ -1,6 +1,13 @@
 'use strict';
 var oig;
 (function(oig) {
+
+  function assignViewModelToView(viewModel, view) {
+    (function() {
+      this.$viewModel = viewModel;
+    }).call(view);
+  }
+
   /**
   * @constructor
   * @param {OigDIContext} diContext
@@ -34,7 +41,8 @@ var oig;
     */
     register: function(element, viewModelName, viewName) {
       var context,
-        map = this.map;
+        map = this.map,
+        view, viewModel;
 
       if (!(context = map.get(element))) {
         // @todo eventBus
@@ -44,10 +52,12 @@ var oig;
         // we can use eventBus to notify that a view model was registered (or that anything is registered)
         // then using setTimeout we can garantee....that the other dependencies are also added by the async script
         // then we
-        context = {
-          viewModel: this.diContext.resolve(viewModelName),
-          view: viewName ? this.diContext.resolve(viewName) : null
-        };
+        viewModel = this.diContext.resolve(viewModelName);
+        view = viewName ? this.diContext.resolve(viewName) : null;
+        if (view) {
+          assignViewModelToView(viewModel, view);
+        }
+        context = { viewModel: viewModel, view: view };
         map.set(element, context);
       }
       // @todo eventBus

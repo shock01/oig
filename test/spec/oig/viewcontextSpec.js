@@ -1,4 +1,4 @@
-describe('viewContextSpec', function() {
+fdescribe('viewContextSpec', function() {
   'use strict';
   var element;
   var viewName;
@@ -84,31 +84,42 @@ describe('viewContextSpec', function() {
   });
 
   // @todo, what are we testing here?
-  describe('resolve', function() {
+  describe('when register element', function() {
+    var view = {'view': true},
+      viewModel = {'viewModel': true};
+
     describe('when element is registered', function() {
       beforeEach(function() {
-        spyOn(diContext, 'resolve').and.returnValue({});
+        spyOn(diContext, 'resolve').and.callFake(function(name) {
+          return name === 'viewModel' ? viewModel : view;
+        });
         viewContext.register(element, 'viewModel', 'view');
       });
       it('should return the context', function() {
         var context = viewContext.resolve(element);
         expect(diContext.resolve).toHaveBeenCalledWith('view');
         expect(diContext.resolve).toHaveBeenCalledWith('viewModel');
-        expect(context.view).toBeDefined();
-        expect(context.viewModel).toBeDefined();
+        expect(context.view).toBe(view);
+        expect(context.viewModel).toBe(viewModel);
+        expect(view.$viewModel).toBe(viewModel);
       });
 
       describe('when a child element wants to resolve', function() {
-        var childElement;
+        var childElement,
+          strategyCalls = 0;
         beforeEach(function() {
           childElement = document.createElement('div');
           childElement.setAttribute('id', 'child');
           element.appendChild(childElement);
-          spyOn(elementStrategy, 'isViewModel').and.returnValue(true);
+          spyOn(elementStrategy, 'isViewModel').and.callFake(function() {
+            // first call checks childElement which doesn't have viewModel, but next(parent) has it
+            return strategyCalls++ > 0;
+          });
         });
+
         it('should return the context', function() {
-          var context = viewContext.resolve(childElement, 'viewModel', 'view');
-          expect(context.viewModel).toBeDefined();
+          var context = viewContext.resolve(childElement);
+          expect(context.viewModel).toBe(viewModel);
         });
       });
     });
