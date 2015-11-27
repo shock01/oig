@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="../oig/oig.js"></script>
+  <title></title>
+</head>
+<body>
+<div data-oig-viewmodel="todoViewModel" data-oig-view="todoView">
+  <ul>
+    <li>Item 1</li>
+  </ul>
+  <input type="text" name="todo" onkeyup="$view.updateCurrentTodo(event)" placeholder="Add new todo item" />
+  <input type="submit" value="Submit" onclick="$view.addTodo(event)" />
+</div>
+
+
+<script>
+  (function() {
+    function TodoViewModel() {
+
+    }
+
+    function TodoView() {
+      this.currentTodo = '';
+      this.viewModel = oig.locator.resolve('todoViewModel');
+    }
+
+    TodoView.prototype.addTodo = function(event) {
+      // how to resolve viewModel of current view?
+      this.viewModel.addTodo(this.currentTodo);
+      this.resetCurrentTodo();
+    };
+
+    TodoView.prototype.updateCurrentTodo = function(event) {
+      this.currentTodo = event.currentTarget.value;
+    };
+
+    TodoView.prototype.resetCurrentTodo = function() {
+      this.currentTodo = '';
+    };
+
+    oig.bind('todoViewModel').to(TodoViewModel);
+    oig.bind('todoView').to(TodoView);
+  })();
+
+  document.addEventListener('DOMContentLoaded', function(event) {
+    oig.bootstrap.run(document.body);
+  });
+</script>
+
+</body>
+</html>

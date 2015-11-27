@@ -51,9 +51,9 @@
        setInterval(function () {
          var element = document.getElementById('vm_test_2');
          var clone1 = element.cloneNode(true);
-         clone1.querySelector('button').textContent = 'test_' + (++count)
+         clone1.querySelector('button').textContent = 'test_' + (++count);
          var clone2 = clone1.cloneNode(true);
-         clone2.querySelector('button').textContent = 'test_' + (++count)
+         clone2.querySelector('button').textContent = 'test_' + (++count);
          document.body.insertBefore(clone1, element.nextElementSibling);
          document.body.insertBefore(clone2, element.nextElementSibling);
          if(clone1.previousElementSibling !== element) {
