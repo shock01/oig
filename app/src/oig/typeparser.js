@@ -36,44 +36,37 @@ var oig;
   TypeParser.prototype = {
     /**
      * @todo. Should be cached and not be parsed everytime on accessed
-     * @param {Function} proto
+     * @param {Function} subject
      * @returns {Object}
      */
-    parse: function(proto) {
-      var typeInfo = Object.create(Object.prototype, {
-        /**
-         * reference to the proto(type)
-         */
-        type: {
-          value: proto
-        },
-        /**
-         * constructor typeInfo
-         */
-        constructorType: {
-          value: parseType(proto)
-        },
-        /**
-         * returns map of type infos
-         * @returns {Object<String, Object>}
-         */
-        methods: {
-          get: function() {
-            var map = {},
-              i,
-              t,
-              methods = proto.prototype;
-            for (i in methods) {
-              t = methods[i];
-              if (typeof t === 'function') {
-                map[i] = parseType(t);
+    parse: function(subject) {
+      if (Object.keys(subject.prototype).length === 0) {
+        return parseType(subject);
+      } else {
+        return Object.create(null, {
+          type: {
+            value: subject
+          },
+          constructorType: {
+            value: parseType(subject)
+          },
+          methods: {
+            get: function() /**{Object<String, Object>}*/ {
+              var map = {},
+                i,
+                t,
+                methods = subject.prototype;
+              for (i in methods) {
+                t = methods[i];
+                if (typeof t === 'function') {
+                  map[i] = parseType(t);
+                }
               }
+              return map;
             }
-            return map;
           }
-        }
-      });
-      return typeInfo;
+        });
+      }
     }
   };
   oig.TypeParser = TypeParser;

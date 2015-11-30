@@ -1,4 +1,4 @@
-fdescribe('viewContextSpec', function() {
+describe('viewContextSpec', function() {
   'use strict';
   var element;
   var viewName;
@@ -85,8 +85,12 @@ fdescribe('viewContextSpec', function() {
 
   // @todo, what are we testing here?
   describe('when register element', function() {
-    var view = {'view': true},
-      viewModel = {'viewModel': true};
+    var view = {
+        'view': true
+      },
+      viewModel = {
+        'viewModel': true
+      };
 
     describe('when element is registered', function() {
       beforeEach(function() {

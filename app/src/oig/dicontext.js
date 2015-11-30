@@ -13,19 +13,23 @@ var oig;
     /**TypeParser*/ typeParser,
     /**Locator*/ locator) /**Object*/ {
     var typeInfo = typeParser.parse(binding.type),
-      constructorType = typeInfo.constructorType,
+      constructorType = typeInfo.constructorType ? typeInfo.constructorType : binding.type,
+      dependencies = constructorType.arguments,
       args = [],
       instance;
 
-    if (Array.isArray(constructorType.arguments)) {
-      constructorType.arguments.forEach(function(arg) {
+    if (Array.isArray(dependencies)) {
+      dependencies.forEach(function(arg) {
         var dependency,
           dependencyTypeInfo,
           dependencyBinding = diContext.bindings[arg.name];
 
         if (dependencyBinding && dependencyBinding instanceof DIContext.Binding) {
           dependencyTypeInfo = typeParser.parse(dependencyBinding.type);
+
+          // @todo not fixing this now. There's another issue opened that will resolve circular dependencies
           if (dependencyTypeInfo &&
+            dependencyTypeInfo.constructorType &&
             Array.isArray(dependencyTypeInfo.constructorType.arguments)) {
             dependencyTypeInfo.constructorType.arguments.forEach(function(dependencyArgument) {
               if (dependencyArgument.name === binding.name) {
@@ -45,9 +49,12 @@ var oig;
         args.push(dependency);
       });
     }
-    // optimize this (jsperf apply vs...)
-    instance = Object.create(typeInfo.type.prototype);
-    typeInfo.type.apply(instance, args);
+    if (typeInfo.type) {
+      instance = Object.create(typeInfo.type.prototype);
+      typeInfo.type.apply(instance, args);
+    } else {
+      instance = constructorType.apply(null, args);
+    }
     // @todo eventBus
     return instance;
   }
