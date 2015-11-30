@@ -3,6 +3,30 @@
 - Just a small framework for dependency injection, MVVM etc.
 - Trying out and playing around with es6
 
+## Code Style
+- Use JSDoc comments on prototypes
+```
+/**
+* @constructor
+* @param {String} name
+*/
+function Klazz(name) {
+
+}
+```
+- Use inline JSDoc comment on methods. And place @throws when throwing on method comment
+
+```
+/**
+* @throws IllegalArgument
+*/
+function stringToLower(/**String*/value) /**String*/ {
+  if(value === void 0) {
+    throw 'IllegalArgument';
+  }
+  return value.toLowerCase();
+}
+```
 
 The MIT License
 ===============

@@ -3,13 +3,8 @@ var oig;
 (function(oig) {
   var TypeParserRegExFn = /function[^(]*\(([^)]*)\)/i,
     TypeParserRegExArgSplit = /\s*,\s*/;
-  /**
-   * @param {OigAnnotationParser} annotationParser
-   * @param {Function} type
-   * @returns {Object}
-   */
-  function parseType(annotationParser, type) {
 
+  function parseType( /**Function*/ type) /**Object*/ {
     return Object.create(null, {
       arguments: {
         get: function() {
@@ -34,10 +29,8 @@ var oig;
    * uses syntax //# inject: @controller(test) args:(first, second) to make
    * sure comments are preserved when minified.
    * @constructor
-   * @param {OigAnnotationParser} annotationParser
    */
-  function TypeParser(annotationParser) {
-    this.annotationParser = annotationParser;
+  function TypeParser() {
   }
 
   TypeParser.prototype = {
@@ -47,40 +40,39 @@ var oig;
      * @returns {Object}
      */
     parse: function(proto) {
-      var annotationParser = this.annotationParser,
-        typeInfo = Object.create(Object.prototype, {
-          /**
-           * reference to the proto(type)
-           */
-          type: {
-            value: proto
-          },
-          /**
-           * constructor typeInfo
-           */
-          constructorType: {
-            value: parseType(annotationParser, proto)
-          },
-          /**
-           * returns map of type infos
-           * @returns {Object<String, Object>}
-           */
-          methods: {
-            get: function() {
-              var map = {},
-                i,
-                t,
-                methods = proto.prototype;
-              for (i in methods) {
-                t = methods[i];
-                if (typeof t === 'function') {
-                  map[i] = parseType(annotationParser, t);
-                }
+      var typeInfo = Object.create(Object.prototype, {
+        /**
+         * reference to the proto(type)
+         */
+        type: {
+          value: proto
+        },
+        /**
+         * constructor typeInfo
+         */
+        constructorType: {
+          value: parseType(proto)
+        },
+        /**
+         * returns map of type infos
+         * @returns {Object<String, Object>}
+         */
+        methods: {
+          get: function() {
+            var map = {},
+              i,
+              t,
+              methods = proto.prototype;
+            for (i in methods) {
+              t = methods[i];
+              if (typeof t === 'function') {
+                map[i] = parseType(t);
               }
-              return map;
             }
+            return map;
           }
-        });
+        }
+      });
       return typeInfo;
     }
   };

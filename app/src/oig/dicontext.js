@@ -5,14 +5,13 @@ var oig;
    * will return an injected instance by name
    * when instance has dependencies then these dependencies will be resolved
    * from oigLocator
-   * @param {oig.DIContext.Binding} binding
-   * @param {oig.DIContext} diContext
-   * @param {oig.TypeParser} typeParser
-   * @param {oig.Locator} locator
    * @throws [oig:dicontext] instantiate failed to resolve: {name}
-   * @returns {Object}
    */
-  function diContextConstructor(binding, diContext, typeParser, locator) {
+  function diContextConstructor(
+    /**DIContext.Binding*/ binding,
+    /**DIContext*/ diContext,
+    /**TypeParser*/ typeParser,
+    /**Locator*/ locator) /**Object*/ {
     var typeInfo = typeParser.parse(binding.type),
       constructorType = typeInfo.constructorType,
       args = [],

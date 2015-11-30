@@ -7,7 +7,7 @@
       length = keys.length,
       key;
 
-    var eventListener = function(event) {
+    var eventListener = function( /**Event*/ event) {
       currentEvent = event;
     };
 
