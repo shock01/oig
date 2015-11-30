@@ -1,5 +1,7 @@
 ## OIG
 
+[![Build Status](https://travis-ci.org/shock01/oig.svg?branch=master)](https://travis-ci.org/shock01/oig)
+
 - Just a small framework for dependency injection, MVVM etc.
 - Trying out and playing around with es6
 
