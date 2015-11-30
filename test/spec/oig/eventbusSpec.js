@@ -1,6 +1,5 @@
 describe('eventBus', function() {
   'use strict';
-
   /**
    * @type {EventBus}
    */

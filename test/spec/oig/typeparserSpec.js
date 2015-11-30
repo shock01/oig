@@ -39,33 +39,32 @@ describe('typeparse', function() {
     });
   });
 
-  [Proto /*, Functional*/ ].forEach(function(Type, index) {
-    describe('parsing type:' + index, function() {
-      beforeEach(function() {
-        typeInfo = typeParser.parse(Type);
+  describe('parsing type', function() {
+    beforeEach(function() {
+      typeInfo = typeParser.parse(Proto);
+    });
+
+    it('should have a type', function() {
+      expect(typeInfo.type).toEqual(Proto);
+    });
+
+    describe('constructorType', function() {
+      it('should have a constructor type', function() {
+        expect(typeInfo.constructorType).toBeDefined();
       });
 
-      it('should have a type', function() {
-        expect(typeInfo.type).toEqual(Type);
+      it('should have 2 arguments', function() {
+        expect(typeInfo.constructorType.arguments.length).toEqual(2);
+        expect(typeInfo.constructorType.arguments[0].name).toEqual('first');
+        expect(typeInfo.constructorType.arguments[1].name).toEqual('second');
       });
+    });
 
-      describe('constructorType', function() {
-        it('should have a constructor type', function() {
-          expect(typeInfo.constructorType).toBeDefined();
-        });
-
-        it('should have 2 arguments', function() {
-          expect(typeInfo.constructorType.arguments.length).toEqual(2);
-          expect(typeInfo.constructorType.arguments[0].name).toEqual('first');
-          expect(typeInfo.constructorType.arguments[1].name).toEqual('second');
-        });
-      });
-
-      describe('methodType', function() {
-        it('should have a method type', function() {
-          expect(typeInfo.methods.methodA).toBeDefined();
-        });
+    describe('methodType', function() {
+      it('should have a method type', function() {
+        expect(typeInfo.methods.methodA).toBeDefined();
       });
     });
   });
+
 });
