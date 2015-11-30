@@ -2,7 +2,10 @@
 var oig;
 (function(oig) {
 
-  function Bootstrap( /**OigViewContext*/ viewContext, elementStrategy) {
+  function Bootstrap(
+    /**oig.ViewContext*/ viewContext,
+    /**oig.ElementStrategy*/ elementStrategy,
+    /**Document*/ document) {
 
     function parse( /**Element*/ element) {
       if (element.nodeType !== Node.ELEMENT_NODE) {

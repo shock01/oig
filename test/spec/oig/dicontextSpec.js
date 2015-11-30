@@ -30,7 +30,28 @@ describe('dicontext', function() {
     });
   });
 
-  describe('resolve', function() {
+  describe('resolve method', function() {
+    var binding,
+      method;
+    beforeEach(function() {
+      method = jasmine.createSpy('instance');
+      binding = diContext.register('test', method);
+      spyOn(typeParser, 'parse').and.returnValue({
+        arguments: [{
+          name: 'dependency'
+        }]
+      });
+    });
+
+    beforeEach(function() {
+      diContext.resolve('test');
+    });
+    it('should have called the typeparser', function() {
+      expect(typeParser.parse).toHaveBeenCalledWith(method);
+    });
+  });
+
+  describe('resolve instance', function() {
     var instance,
       dependency,
       binding,

@@ -21,8 +21,16 @@ var oig;
     .register('oigViewContext', function() {
       return viewContext;
     });
+  // registering document and window so that they can be injected and mocked
+  locator
+    .register('document', function() {
+      return document;
+    })
+    .register('window', function() {
+      return window;
+    });
 
-  oig.bootstrap = new oig.Bootstrap(viewContext, elementStrategy);
+  oig.bootstrap = new oig.Bootstrap(viewContext, elementStrategy, document);
   oig.locator = locator;
   /**
    * expose DIContext bind method on oigFacade

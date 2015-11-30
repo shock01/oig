@@ -25,6 +25,20 @@ describe('typeparse', function() {
   });
 
 
+  describe('parsing a simple function', function() {
+    it('should return the typeInfo', function() {
+      expect(typeParser.parse(function() {})).toBeDefined();
+    });
+    it('should return the arguments', function() {
+      expect(typeParser.parse(function(name, person) {
+        return name + person;
+      }).arguments[0].name).toBe('name');
+      expect(typeParser.parse(function(name, person) {
+        return name + person;
+      }).arguments[1].name).toBe('person');
+    });
+  });
+
   [Proto /*, Functional*/ ].forEach(function(Type, index) {
     describe('parsing type:' + index, function() {
       beforeEach(function() {
