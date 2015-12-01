@@ -11,10 +11,12 @@ var oig;
   /**
   * @constructor
   * @param {oig.DIContext} diContext
+  * @param {Window} window
   * @param {oig.ElementStrategy} elementStrategy
   */
-  function ViewContext(diContext, elementStrategy) {
+  function ViewContext(diContext, window, elementStrategy) {
     this.diContext = diContext;
+    this.window = window;
     this.elementStrategy = elementStrategy;
     this.map = new WeakMap();
   }
@@ -29,7 +31,13 @@ var oig;
       if (!this.elementStrategy.isViewModel(element)) {
         throw '[oig:viewcontext] no data-oig-viewmodel attribute is set';
       }
-      return this.register(element, this.elementStrategy.viewModel(element), this.elementStrategy.view(element));
+      var context = this.register(element, this.elementStrategy.viewModel(element), this.elementStrategy.view(element)),
+        event = new CustomEvent('load', {
+          detail: context
+        });
+      this.window.event = event;
+      element.dispatchEvent(event);
+      return context;
     },
     /**
     *
@@ -62,7 +70,6 @@ var oig;
           view: view
         };
         map.set(element, context);
-        element.dispatchEvent(new CustomEvent('load', view));
       }
       // @todo eventBus
       return context;

@@ -20,6 +20,9 @@
     Object.defineProperty(window, 'event', {
       get: function() {
         return currentEvent;
+      },
+      set: function (event) {
+        currentEvent = event;
       }
     });
   }

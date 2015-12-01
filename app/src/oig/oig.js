@@ -6,7 +6,7 @@ var oig;
     typeParser = new oig.TypeParser(),
     diContext = new oig.DIContext(typeParser, locator),
     elementStrategy = new oig.ElementStrategy(),
-    viewContext = new oig.ViewContext(diContext, elementStrategy);
+    viewContext = new oig.ViewContext(diContext, window, elementStrategy);
 
   locator
     .register('oigEventBus', function() {

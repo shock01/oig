@@ -9,7 +9,7 @@ describe('viewContextSpec', function() {
   beforeEach(function() {
     elementStrategy = setUpMock(new oig.ElementStrategy());
     diContext = setUpMock(new oig.DIContext());
-    viewContext = new oig.ViewContext(diContext, elementStrategy);
+    viewContext = new oig.ViewContext(diContext, window, elementStrategy);
   });
 
   beforeEach(function() {
@@ -51,6 +51,7 @@ describe('viewContextSpec', function() {
 
       it('should have called the dispatchEvent', function () {
         var event = element.dispatchEvent.calls.argsFor(0)[0];
+        expect(window.event).toBe(event);
         expect(event.type).toEqual('load');
         expect(event instanceof CustomEvent).toBe(true);
       });
