@@ -61,7 +61,8 @@ var oig;
 
   /**
   * @constructor
-  * @param {OigTypeParser} typeParser
+  * @param {oig.TypeParser} typeParser
+  * @param {oig.Locator} locator
   */
   function DIContext(typeParser, locator) {
     this.typeParser = typeParser;

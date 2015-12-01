@@ -10,8 +10,8 @@ var oig;
 
   /**
   * @constructor
-  * @param {OigDIContext} diContext
-  * @param {OigElementStrategy} elementStrategy
+  * @param {oig.DIContext} diContext
+  * @param {oig.ElementStrategy} elementStrategy
   */
   function ViewContext(diContext, elementStrategy) {
     this.diContext = diContext;
@@ -57,7 +57,10 @@ var oig;
         if (view) {
           assignViewModelToView(viewModel, view);
         }
-        context = { viewModel: viewModel, view: view };
+        context = {
+          viewModel: viewModel,
+          view: view
+        };
         map.set(element, context);
       }
       // @todo eventBus
