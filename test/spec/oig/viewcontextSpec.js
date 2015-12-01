@@ -9,7 +9,7 @@ describe('viewContextSpec', function() {
   beforeEach(function() {
     elementStrategy = setUpMock(new oig.ElementStrategy());
     diContext = setUpMock(new oig.DIContext());
-    viewContext = new oig.ViewContext(diContext, elementStrategy);
+    viewContext = new oig.ViewContext(diContext, window, elementStrategy);
   });
 
   beforeEach(function() {
@@ -19,6 +19,7 @@ describe('viewContextSpec', function() {
   });
 
   describe('init', function() {
+
     it('should throw when element is not valid viewmodel', function() {
       spyOn(elementStrategy, 'isViewModel').and.returnValue(false);
       expect(function() {
@@ -27,11 +28,12 @@ describe('viewContextSpec', function() {
       expect(elementStrategy.isViewModel).toHaveBeenCalledWith(element);
     });
 
-    describe('when  element is valid', function() {
+    describe('when element is valid', function() {
       var viewModelName = 'viewmodel';
       beforeEach(function() {
         spyOn(elementStrategy, 'isViewModel').and.returnValue(true);
         spyOn(elementStrategy, 'viewModel').and.returnValue(viewModelName);
+        spyOn(element, 'dispatchEvent');
       });
 
       beforeEach(function() {
@@ -39,13 +41,26 @@ describe('viewContextSpec', function() {
         viewContext.init(element);
       });
 
+      afterEach(function () {
+        viewContext.dispose(element);
+      });
+
       it('should resolve the viewmodel', function() {
         expect(diContext.resolve).toHaveBeenCalledWith(viewModelName);
+      });
+
+      it('should have called the dispatchEvent', function () {
+        var event = element.dispatchEvent.calls.argsFor(0)[0];
+        expect(event.type).toEqual('load');
+        expect(event instanceof CustomEvent).toBe(true);
       });
 
       describe('when element is already initialized', function() {
         beforeEach(function() {
           viewContext.init(element);
+        });
+        afterEach(function () {
+          viewContext.dispose(element);
         });
         it('should not resolve the viewmodel again', function() {
           viewContext.init(element);

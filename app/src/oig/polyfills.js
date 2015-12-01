@@ -1,4 +1,55 @@
 /**
+* contains polyfill for es5 features which have not been implemented fully or
+* that are broken (CustomEvent in IE)
+*/
+'use strict';
+// polyfill window.event for firefox, also use strict cannot use arguments.callee.caller.arguments[0] to get event
+if (!('event' in window)) {
+  (function() {
+    var currentEvent,
+      keys = Object.keys(window),
+      length = keys.length,
+      key;
+
+    var eventListener = function( /**Event*/ event) {
+      currentEvent = event;
+    };
+
+    while (length > 0) {
+      key = keys[--length];
+      if (key.substring(0, 2) === 'on') {
+        window.addEventListener(key.substr(2), eventListener, true);
+      }
+    }
+    Object.defineProperty(window, 'event', {
+      get: function() {
+        return currentEvent;
+      },
+      set: function(event) {
+        currentEvent = event;
+      }
+    });
+  }())
+}
+// polyfill for CustomEvent for PhantomJS and IE
+if (typeof window.CustomEvent !== 'function') {
+  (function() {
+    function customEvent(event, params) {
+      params = params || {
+          bubbles: false,
+          cancelable: false,
+          detail: undefined
+        };
+      var evt = document.createEvent('CustomEvent');
+      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+      return evt;
+    }
+    customEvent.prototype = window.Event.prototype;
+    window.CustomEvent = customEvent;
+  })();
+}
+/* jshint ignore:start */
+/**
  * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
@@ -50,3 +101,4 @@ if (typeof WeakMap === 'undefined') {
     window.WeakMap = WeakMap;
   })();
 }
+/* jshint ignore:end */

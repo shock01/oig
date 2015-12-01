@@ -14,11 +14,14 @@ var oig;
       if (elementStrategy.isViewModel(element)) {
         viewContext.init(element);
       }
-      var treeWalker = document.createTreeWalker(element, NodeFilter.SHOW_ELEMENT, {
-        acceptNode: function(node) {
+      var filter = function(node) {
           return elementStrategy.isViewModel(node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
-        }
-      }, false);
+        },
+        treeWalker;
+      // Fix for Bad TreeWalker implementations
+      // @see http://stackoverflow.com/questions/5982648/recommendations-for-working-around-ie9-treewalker-filter-bug
+      filter.acceptNode = filter;
+      treeWalker = document.createTreeWalker(element, NodeFilter.SHOW_ELEMENT, filter, false);
       while (treeWalker.nextNode()) {
         viewContext.init(treeWalker.currentNode);
       }
