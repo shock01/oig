@@ -25,7 +25,7 @@ describe('dicontext', function() {
       binding = diContext.register('test', Component);
     });
     it('should return a binding', function() {
-      expect(binding.name).toEqual('test');
+      expect(binding.name).toEqual('aap');
       expect(binding.type).toEqual(Component);
     });
   });
