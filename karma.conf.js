@@ -18,7 +18,6 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'app/src/oig/*.js',
-      'test/shim/*.js',
       'test/**/*.js'
     ],
 
