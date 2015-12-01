@@ -62,6 +62,7 @@ var oig;
           view: view
         };
         map.set(element, context);
+        element.dispatchEvent(new CustomEvent('load', view));
       }
       // @todo eventBus
       return context;
