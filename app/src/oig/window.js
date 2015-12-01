@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  
+
   Object.defineProperties(window, {
     '$viewModel': {
       get: function() {

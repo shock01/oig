@@ -2,10 +2,10 @@
 * contains polyfill for es5 features which have not been implemented fully or
 * that are broken (CustomEvent in IE)
 */
-  'use strict';
+'use strict';
 // polyfill window.event for firefox, also use strict cannot use arguments.callee.caller.arguments[0] to get event
-(function() {
-  if (!('event' in window)) {
+if (!('event' in window)) {
+  (function() {
     var currentEvent,
       keys = Object.keys(window),
       length = keys.length,
@@ -29,27 +29,25 @@
         currentEvent = event;
       }
     });
-  }
-}())
-
+  }())
+}
 // polyfill for CustomEvent for PhantomJS and IE
-(function() {
-  if (typeof CustomEvent === 'function') {
-    return;
-  }
-  function customEvent(event, params) {
-    params = params || {
-        bubbles: false,
-        cancelable: false,
-        detail: undefined
-      };
-    var evt = document.createEvent('CustomEvent');
-    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-    return evt;
-  }
-  customEvent.prototype = window.Event.prototype;
-  window.CustomEvent = customEvent;
-})();
+if (typeof window.CustomEvent !== 'function') {
+  (function() {
+    function customEvent(event, params) {
+      params = params || {
+          bubbles: false,
+          cancelable: false,
+          detail: undefined
+        };
+      var evt = document.createEvent('CustomEvent');
+      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+      return evt;
+    }
+    customEvent.prototype = window.Event.prototype;
+    window.CustomEvent = customEvent;
+  })();
+}
 /* jshint ignore:start */
 /**
  * @license
