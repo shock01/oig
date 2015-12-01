@@ -1,6 +1,46 @@
 'use strict';
 var oig;
 (function(oig) {
+  var hasWindowEvent = true;
+  // polyfill window.event for firefox, also use strict cannot use arguments.callee.caller.arguments[0] to get event
+  if (!('event' in window)) {
+    hasWindowEvent = false;
+    var currentEvent,
+      keys = Object.keys(window),
+      length = keys.length,
+      key;
+
+    var eventListener = function( /**Event*/ event) {
+      currentEvent = event;
+    };
+
+    while (length > 0) {
+      key = keys[--length];
+      if (key.substring(0, 2) === 'on') {
+        window.addEventListener(key.substr(2), eventListener, true);
+      }
+    }
+    Object.defineProperty(window, 'event', {
+      get: function() {
+        return currentEvent;
+      },
+      set: function (event) {
+        currentEvent = event;
+      }
+    });
+  }
+  // polyfill for CustomEvent for PhantomJS and IE
+  (function () {
+    if (typeof CustomEvent === 'function') { return; }
+    function customEvent(event, params) {
+        params = params || {bubbles: false, cancelable: false, detail: undefined};
+        var evt = document.createEvent('CustomEvent');
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        return evt;
+    }
+    customEvent.prototype = window.Event.prototype;
+    window.CustomEvent = customEvent;
+  })();
 
   function assignViewModelToView(viewModel, view) {
     (function() {
@@ -32,10 +72,10 @@ var oig;
         throw '[oig:viewcontext] no data-oig-viewmodel attribute is set';
       }
       var context = this.register(element, this.elementStrategy.viewModel(element), this.elementStrategy.view(element)),
-        event = new CustomEvent('load', {
-          detail: context
-        });
-      this.window.event = event;
+        event = new CustomEvent('load', {cancelable: false});
+      if(!hasWindowEvent) {
+        this.window.event = event;
+      }
       element.dispatchEvent(event);
       return context;
     },

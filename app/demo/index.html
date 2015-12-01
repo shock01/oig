@@ -3,14 +3,10 @@
 <head>
     <title>OIG</title>
     <script src="../oig/oig.js"></script>
-    <script src="../src/elements/include.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Playground to try....try...and come up with ideas</h1>
-    <div>
-      <oig-include href="https://api.github.com/users/shock01" parse="text"></oig-include>
-    </div>
 
      <div id="vm_test_1" data-oig-viewmodel="viewModel1" data-oig-view="myView" onload="$view.onload()">
        <button onclick="$viewModel.sayHello($viewModel.name); $view.whatever()">item 1</button>

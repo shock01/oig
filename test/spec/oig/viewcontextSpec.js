@@ -51,7 +51,6 @@ describe('viewContextSpec', function() {
 
       it('should have called the dispatchEvent', function () {
         var event = element.dispatchEvent.calls.argsFor(0)[0];
-        expect(window.event).toBe(event);
         expect(event.type).toEqual('load');
         expect(event instanceof CustomEvent).toBe(true);
       });
