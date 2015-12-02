@@ -2,12 +2,6 @@
 var oig;
 (function(oig) {
 
-  function assignViewModelToView(viewModel, view) {
-    (function() {
-      this.$viewModel = viewModel;
-    }).call(view);
-  }
-
   /**
   * @constructor
   * @param {oig.DIContext} diContext
@@ -24,21 +18,21 @@ var oig;
   ViewContext.prototype = {
     /**
     * @param {Element} element
-    * @throws '[oig:viewcontext] no data-oig-viewmodel attribute is set'
-    * @returns {viewModel: Object, view: Object}
+    * @throws '[oig:viewcontext] no data-oig-view attribute is set'
+    * @returns {Object} view
     */
     init: function(element) {
-      if (!this.elementStrategy.isViewModel(element)) {
-        throw '[oig:viewcontext] no data-oig-viewmodel attribute is set';
+      if (!this.elementStrategy.isView(element)) {
+        throw '[oig:viewcontext] no data-oig-view attribute is set';
       }
-      var context = this.register(element, this.elementStrategy.viewModel(element), this.elementStrategy.view(element)),
+      var view = this.register(element, this.elementStrategy.view(element)),
         event = new CustomEvent('load', {cancelable: false});
       // in IE window.event is readonly and will fail using use-strict
       try {
         this.window.event = event;
       } catch (e) {}
       element.dispatchEvent(event);
-      return context;
+      return view;
     },
     /**
     *
@@ -46,14 +40,13 @@ var oig;
     * @param {Element} element
     * @param {String} viewModelName
     * @param {String?} viewName
-    * @returns {viewModel: Object, view: Object}
+    * @returns {Object} view
     */
-    register: function(element, viewModelName, viewName) {
-      var context,
-        map = this.map,
-        view, viewModel;
+    register: function(element, viewName) {
+      var map = this.map,
+        view = map.get(element);
 
-      if (!(context = map.get(element))) {
+      if (!view) {
         // @todo eventBus
         // @todo check if viewModel has method updateView and call it when viewModel changes
         // @todo assing viewModel to the view
@@ -61,45 +54,37 @@ var oig;
         // we can use eventBus to notify that a view model was registered (or that anything is registered)
         // then using setTimeout we can garantee....that the other dependencies are also added by the async script
         // then we
-        viewModel = this.diContext.resolve(viewModelName);
         view = viewName ? this.diContext.resolve(viewName) : null;
-        if (view) {
-          assignViewModelToView(viewModel, view);
-        }
-        context = {
-          viewModel: viewModel,
-          view: view
-        };
-        map.set(element, context);
+        map.set(element, view);
       }
       // @todo eventBus
-      return context;
+      return view;
     },
     /**
     * @param Element element
-    * @returns {viewModel: Object, view?: Object}}
+    * @returns {Object} view
     */
     resolve: function(element) {
-      var context,
-        elementStrategy = this.elementStrategy,
+      var elementStrategy = this.elementStrategy,
         map = this.map,
-        /**Element*/ parentElement;
-      if (!(context = map.get(element))) {
-        if (elementStrategy.isViewModel(element)) {
-          context = this.init(element);
+        /**Element*/ parentElement,
+        view = map.get(element);
+      if (!view) {
+        if (elementStrategy.isView(element)) {
+          view = this.init(element);
         } else {
           parentElement = element;
           while ((parentElement = parentElement.parentElement)) {
-            if (elementStrategy.isViewModel(parentElement)) {
-              context = this.resolve(parentElement);
-              map.set(element, context);
+            if (elementStrategy.isView(parentElement)) {
+              view = this.resolve(parentElement);
+              map.set(element, view);
               break;
             }
           }
         }
       }
       // @todo eventBus
-      return context;
+      return view;
     },
     /**
     * @param Element element

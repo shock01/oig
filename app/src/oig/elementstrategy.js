@@ -16,6 +16,9 @@ var oig;
     viewModel: function(element) {
       return element.getAttribute('data-oig-viewmodel');
     },
+    isView: function(element) {
+      return element.nodeType === Node.ELEMENT_NODE && element.hasAttribute('data-oig-view');
+    },
     view: function(element) {
       return element.getAttribute('data-oig-view');
     }
