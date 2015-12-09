@@ -11,7 +11,8 @@ var oig;
     /**DIContext.Binding*/ binding,
     /**DIContext*/ diContext,
     /**TypeParser*/ typeParser,
-    /**Locator*/ locator) /**Object*/ {
+    /**Locator*/ locator,
+    /**Object*/ provider) /**Object*/ {
     var typeInfo = typeParser.parse(binding.type),
       constructorType = typeInfo.constructorType ? typeInfo.constructorType : binding.type,
       dependencies = constructorType.arguments,
@@ -22,28 +23,36 @@ var oig;
       dependencies.forEach(function(arg) {
         var dependency,
           dependencyTypeInfo,
+          dependencyProvider,
           dependencyBinding = diContext.bindings[arg.name];
 
-        if (dependencyBinding && dependencyBinding instanceof DIContext.Binding) {
-          dependencyTypeInfo = typeParser.parse(dependencyBinding.type);
-
-          // @todo not fixing this now. There's another issue opened that will resolve circular dependencies
-          if (dependencyTypeInfo &&
-            dependencyTypeInfo.constructorType &&
-            Array.isArray(dependencyTypeInfo.constructorType.arguments)) {
-            dependencyTypeInfo.constructorType.arguments.forEach(function(dependencyArgument) {
-              if (dependencyArgument.name === binding.name) {
-                // @todo eventBus
-                throw '[oig:dicontext] circular dependency: ' + binding.name + ' <> ' + arg.name;
-              }
-            });
+        if (provider && provider[arg.name]) {
+          dependencyProvider = provider[arg.name];
+          if (typeof(dependencyProvider) !== 'function') {
+            throw '[oig:dicontext] dependency in provider should callable: ' + arg.name;
           }
-        }
-        try {
-          dependency = locator.resolve(arg.name);
-        } catch (e) {
-        // @todo eventBus
-        throw '[oig:dicontext] instantiate failed to resolve: ' + arg.name;
+          dependency = dependencyProvider();
+        } else {
+          if (dependencyBinding && dependencyBinding instanceof DIContext.Binding) {
+            dependencyTypeInfo = typeParser.parse(dependencyBinding.type);
+            // @todo not fixing this now. There's another issue opened that will resolve circular dependencies
+            if (dependencyTypeInfo &&
+              dependencyTypeInfo.constructorType &&
+              Array.isArray(dependencyTypeInfo.constructorType.arguments)) {
+              dependencyTypeInfo.constructorType.arguments.forEach(function(dependencyArgument) {
+                if (dependencyArgument.name === binding.name) {
+                  // @todo eventBus
+                  throw '[oig:dicontext] circular dependency: ' + binding.name + ' <> ' + arg.name;
+                }
+              });
+            }
+          }
+          try {
+            dependency = locator.resolve(arg.name);
+          } catch (e) {
+            // @todo eventBus
+            throw '[oig:dicontext] instantiate failed to resolve: ' + arg.name;
+          }
         }
         // @todo eventBus
         args.push(dependency);
@@ -97,7 +106,7 @@ var oig;
      * @returns {Object}
      * @throws [oig:dicontext] unknown type: {name}
      */
-    resolve: function(name) {
+    resolve: function(name, provider) {
       var binding = this.bindings[name],
         singletonMap = this.singletonMap,
         instance;
@@ -111,11 +120,11 @@ var oig;
         if (singletonMap.hasOwnProperty(name)) {
           instance = singletonMap[name];
         } else {
-          instance = diContextConstructor(binding, this, this.typeParser, this.locator);
+          instance = diContextConstructor(binding, this, this.typeParser, this.locator, provider);
           singletonMap[name] = instance;
         }
       } else {
-        instance = diContextConstructor(binding, this, this.typeParser, this.locator);
+        instance = diContextConstructor(binding, this, this.typeParser, this.locator, provider);
       }
       // @todo eventBus
       return instance;

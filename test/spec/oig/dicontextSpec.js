@@ -146,6 +146,29 @@ describe('dicontext', function() {
       });
     });
 
+    describe('with provider', function () {
+      var providerDependency = { provider: true};
+      beforeEach(function() {
+        typeInfo = {
+          type: Component,
+          constructorType: {
+            arguments: [{name: 'newDependency'}]
+          }
+        };
+      });
+
+      it('should throw error if dependency in provider is not a function', function() {
+        expect(function() {
+          diContext.resolve('test', {'newDependency': providerDependency})
+        }).toThrow('[oig:dicontext] dependency in provider should callable: newDependency');
+      });
+
+      it('should resolve the dependency provided by provider', function() {
+        instance = diContext.resolve('test', {'newDependency': function() { return providerDependency}});
+        expect(instance.dependency).toEqual(providerDependency);
+      });
+    });
+
     describe('with circular dependency', function() {
 
       beforeEach(function() {
