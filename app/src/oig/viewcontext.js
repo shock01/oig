@@ -55,7 +55,9 @@ var oig;
         // we can use eventBus to notify that a view model was registered (or that anything is registered)
         // then using setTimeout we can garantee....that the other dependencies are also added by the async script
         // then we
-        provider.element = element;
+        provider.element = function() {
+          return element;
+        };
         view = viewName ? this.diContext.resolve(viewName, provider) : null;
         map.set(element, view);
       }

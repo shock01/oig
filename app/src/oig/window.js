@@ -11,7 +11,9 @@
     '$view': {
       get: function() {
         var element = this.event.target;
-        return oig.locator.resolve('oigViewContext').resolve(element).view;
+        var resolve = oig.locator.resolve('oigViewContext').resolve(element);
+        console.log("Resolved " , resolve);
+        return resolve;
       }
     }
   });

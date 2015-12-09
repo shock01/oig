@@ -21,14 +21,15 @@
 
     }
 
-    function TodoView() {
+    function TodoView(element) {
       this.currentTodo = '';
       this.viewModel = oig.locator.resolve('todoViewModel');
+      console.log("element", element);
     }
 
     TodoView.prototype.addTodo = function(event) {
       // how to resolve viewModel of current view?
-      this.viewModel.addTodo(this.currentTodo);
+      //this.viewModel.addTodo(this.currentTodo);
       this.resetCurrentTodo();
     };
 

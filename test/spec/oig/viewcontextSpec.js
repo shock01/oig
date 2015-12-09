@@ -46,7 +46,7 @@ describe('viewContextSpec', function() {
       });
 
       it('should resolve the viewmodel', function() {
-        expect(diContext.resolve).toHaveBeenCalledWith(viewName, {element: element});
+        expect(diContext.resolve).toHaveBeenCalledWith(viewName, {element: jasmine.any(Function)});
       });
 
       it('should have called the dispatchEvent', function () {
@@ -82,7 +82,7 @@ describe('viewContextSpec', function() {
       });
 
       it('should resolve the view', function() {
-        expect(diContext.resolve).toHaveBeenCalledWith(viewName, {element: element});
+        expect(diContext.resolve).toHaveBeenCalledWith(viewName, {element: jasmine.any(Function)});
       });
 
       describe('when element is already initialized', function() {
@@ -112,7 +112,7 @@ describe('viewContextSpec', function() {
       });
       it('should return the context', function() {
         var registeredView = viewContext.resolve(element);
-        expect(diContext.resolve).toHaveBeenCalledWith('view', {element: element});
+        expect(diContext.resolve).toHaveBeenCalledWith('view', {element: jasmine.any(Function)});
         expect(registeredView).toBe(view);
       });
 
