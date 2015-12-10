@@ -21,15 +21,16 @@ var oig;
 
     if (Array.isArray(dependencies)) {
       dependencies.forEach(function(arg) {
-        var dependency,
+        var dependencyName = arg.name,
+          dependency,
           dependencyTypeInfo,
           dependencyProvider,
-          dependencyBinding = diContext.bindings[arg.name];
+          dependencyBinding = diContext.bindings[dependencyName];
 
-        if (provider && provider[arg.name]) {
-          dependencyProvider = provider[arg.name];
+        if (provider && provider[dependencyName]) {
+          dependencyProvider = provider[dependencyName];
           if (typeof(dependencyProvider) !== 'function') {
-            throw '[oig:dicontext] dependency in provider should callable: ' + arg.name;
+            throw '[oig:dicontext] dependency in provider should callable: ' + dependencyName;
           }
           dependency = dependencyProvider();
         } else {
@@ -42,16 +43,16 @@ var oig;
               dependencyTypeInfo.constructorType.arguments.forEach(function(dependencyArgument) {
                 if (dependencyArgument.name === binding.name) {
                   // @todo eventBus
-                  throw '[oig:dicontext] circular dependency: ' + binding.name + ' <> ' + arg.name;
+                  throw '[oig:dicontext] circular dependency: ' + binding.name + ' <> ' + dependencyName;
                 }
               });
             }
           }
           try {
-            dependency = locator.resolve(arg.name);
+            dependency = locator.resolve(dependencyName);
           } catch (e) {
             // @todo eventBus
-            throw '[oig:dicontext] instantiate failed to resolve: ' + arg.name;
+            throw '[oig:dicontext] instantiate failed to resolve: ' + dependencyName;
           }
         }
         // @todo eventBus
